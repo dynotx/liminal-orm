@@ -1,0 +1,20 @@
+name: Update Draft Release
+on:
+  push:
+    branches:
+      - main
+permissions:
+  contents: read
+jobs:
+  update_release_draft:
+    permissions:
+      contents: write
+      pull-requests: write
+    name: Update Draft Release
+    runs-on:
+      - ubuntu-latest
+    steps:
+      - id: release-drafter
+        uses: release-drafter/release-drafter@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

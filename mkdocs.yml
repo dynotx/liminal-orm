@@ -1,0 +1,49 @@
+site_name: Liminal ORM
+nav:
+  - index.md
+  - Guides:
+      - guides/prerequisites.md
+      - guides/installation.md
+      - guides/initializing-your-repo.md
+      - guides/first-migration.md
+      - guides/downgrading.md
+      - SOP - Benchling change management: guides/sop-benchling-change-management.md
+  - Code Documentation:
+      - Benchling:
+          - code/benchling-service.md
+          - code/dropdowns.md
+          - code/entity-schemas.md
+  - Case Studies:
+      - case_studies/dynotx.md
+theme:
+  name: material
+  logo: assets/logo.png
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: pink
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: pink
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - content.code.copy
+    - content.code.select
+    - search.suggest
+    - search.share
+    - search.highlight
+    - content.tabs.link
+    - toc.integrate
+    - header.autohide
+repo_url: https://github.com/dynotx/liminal-orm
+repo_name: dynotx/liminal-orm

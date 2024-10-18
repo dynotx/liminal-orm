@@ -1,0 +1,27 @@
+name: Test PyPI publish
+# Publish to PyPi test once a maintainer creates a pre-release
+on:
+  release:
+    types: [released]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install poetry
+        run: pipx install poetry
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+          cache: "poetry"
+
+      - name: Bump version number
+        run: poetry version ${{ github.event.release.tag_name }}
+
+      - name: Build and publish to PyPi
+        run: |
+          poetry build
+          poetry publish -u __token__ -p ${{ secrets.PYPI_API_TOKEN_LIMINAL }} --skip-existing

@@ -1,0 +1,68 @@
+name: liminal
+
+on:
+  workflow_dispatch:
+  push:
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  lint:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.10.9"]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install poetry
+        run: pipx install poetry
+
+      - name: setup python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "poetry"
+
+      - name: Install dependencies
+        run: poetry install --all-extras
+
+      - name: Cache mypy
+        uses: actions/cache@v3
+        with:
+          path: .mypy_cache
+          key: ${{ runner.os }}-mypy-${{ hashFiles('**/*.py') }}
+          restore-keys: |
+            ${{ runner.os }}-mypy-
+
+      - name: pre-commit
+        run: |
+          poetry run pre-commit run -a
+
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.10.9"]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install poetry
+        run: pipx install poetry
+
+      - name: setup python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "poetry"
+
+      - name: Install dependencies
+        run: poetry install --all-extras
+
+      - name: Run tests
+        run: poetry run pytest liminal/

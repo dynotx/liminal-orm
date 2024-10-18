@@ -1,0 +1,57 @@
+[tool.poetry]
+name = "liminal-orm"
+version = "0.1.4"
+description = "An ORM and toolkit that builds on top of Benchling's platform to keep your schemas and downstream code dependencies in sync."
+authors = ["ndamania00 <ndamania00@gmail.com>"]
+readme = "README.md"
+packages = [{include = "liminal"}]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<4"
+benchling-sdk = ">=1.8.0"
+bs4 = "^0.0.2"
+pandas = "^2.2.3"
+pydantic = "^2.9.2"
+requests = "^2.32.3"
+rich = "^13.9.2"
+sqlalchemy = "1.4.49"
+tenacity = "^9.0.0"
+typer = "^0.12.5"
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.5"
+mkdocs-material = "^9.5.41"
+mypy = "^1.11.2"
+pre-commit = "^4.0.1"
+pytest = "^8.3.3"
+ruff = "^0.6.9"
+sqlalchemy = "1.4.49"
+sqlalchemy-stubs = "^0.4"
+types-beautifulsoup4 = "^4.12.0.20240907"
+types-requests = "^2.32.0.20240914"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+liminal = "liminal.cli.cli:app"
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+explicit_package_bases = true
+mypy_path = "$MYPY_CONFIG_FILE_DIR/"
+namespace_packages = true
+no_implicit_optional = true
+strict_optional = true
+packages = "liminal"
+plugins = ["pydantic.mypy", "numpy.typing.mypy_plugin"]
+show_error_codes = true
+warn_unused_ignores = true
+disable_error_code=["union-attr"]
+
+[[tool.mypy.overrides]]
+module = ["sqlalchemy.*"]
+ignore_missing_imports = true
