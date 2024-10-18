@@ -8,26 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://liminal.github.io/en/latest/">
+        <link rel="canonical" href="https://liminal.github.io/en/latest/code/benchling-service/">
       
       
+        <link rel="prev" href="../../guides/sop-benchling-change-management/">
       
-        <link rel="next" href="guides/prerequisites/">
+      
+        <link rel="next" href="../dropdowns/">
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.41">
     
     
       
-        <title>Liminal ORM</title>
+        <title>Benchling service - Liminal ORM</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.0253249f.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.0253249f.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -46,9 +48,9 @@
       
     
     
-      <link rel="stylesheet" href="stylesheets/extra.css">
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -73,11 +75,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#liminal-orm" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -90,7 +87,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Liminal ORM" class="md-header__button md-logo" aria-label="Liminal ORM" data-md-component="logo">
+    <a href="../.." title="Liminal ORM" class="md-header__button md-logo" aria-label="Liminal ORM" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -110,7 +107,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Liminal ORM
+              Benchling service
             
           </span>
         </div>
@@ -216,11 +213,9 @@
         
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="." class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
         
   
     
@@ -239,7 +234,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="guides/prerequisites/" class="md-tabs__link">
+        <a href="../../guides/prerequisites/" class="md-tabs__link">
           
   
   Guides
@@ -253,17 +248,21 @@
         
   
   
+    
+  
   
     
     
       
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="code/benchling-service/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
           
   
   Code Documentation
@@ -284,7 +283,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="case_studies/dynotx/" class="md-tabs__link">
+        <a href="../../case_studies/dynotx/" class="md-tabs__link">
           
   
   Case Studies
@@ -325,7 +324,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Liminal ORM" class="md-nav__button md-logo" aria-label="Liminal ORM" data-md-component="logo">
+    <a href="../.." title="Liminal ORM" class="md-nav__button md-logo" aria-label="Liminal ORM" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -352,19 +351,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -373,7 +363,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -423,7 +412,7 @@
   
   
     <li class="md-nav__item">
-      <a href="guides/prerequisites/" class="md-nav__link">
+      <a href="../../guides/prerequisites/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -444,7 +433,7 @@
   
   
     <li class="md-nav__item">
-      <a href="guides/installation/" class="md-nav__link">
+      <a href="../../guides/installation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -465,7 +454,7 @@
   
   
     <li class="md-nav__item">
-      <a href="guides/initializing-your-repo/" class="md-nav__link">
+      <a href="../../guides/initializing-your-repo/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -486,7 +475,7 @@
   
   
     <li class="md-nav__item">
-      <a href="guides/first-migration/" class="md-nav__link">
+      <a href="../../guides/first-migration/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -507,7 +496,7 @@
   
   
     <li class="md-nav__item">
-      <a href="guides/downgrading/" class="md-nav__link">
+      <a href="../../guides/downgrading/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -528,7 +517,7 @@
   
   
     <li class="md-nav__item">
-      <a href="guides/sop-benchling-change-management/" class="md-nav__link">
+      <a href="../../guides/sop-benchling-change-management/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -553,23 +542,28 @@
       
   
   
+    
   
   
+  
     
     
     
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -580,7 +574,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Code Documentation
@@ -591,6 +585,8 @@
                 
   
   
+    
+  
   
   
     
@@ -600,11 +596,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" checked>
         
           
           <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
@@ -618,7 +614,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3_1">
             <span class="md-nav__icon md-icon"></span>
             Benchling
@@ -629,10 +625,17 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="code/benchling-service/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -641,6 +644,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -653,7 +657,7 @@
   
   
     <li class="md-nav__item">
-      <a href="code/dropdowns/" class="md-nav__link">
+      <a href="../dropdowns/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -674,7 +678,7 @@
   
   
     <li class="md-nav__item">
-      <a href="code/entity-schemas/" class="md-nav__link">
+      <a href="../entity-schemas/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -748,7 +752,7 @@
   
   
     <li class="md-nav__item">
-      <a href="case_studies/dynotx/" class="md-nav__link">
+      <a href="../../case_studies/dynotx/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -787,8 +791,9 @@
   
 
 
-<h1 id="liminal-orm">Liminal ORM</h1>
-<p>🚧 10/18: This site is under construction</p>
+  <h1>Benchling service</h1>
+
+
 
 
 
@@ -843,10 +848,10 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "content.code.copy", "content.code.select", "search.suggest", "search.share", "search.highlight", "content.tabs.link", "toc.integrate", "header.autohide"], "search": "assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "content.code.copy", "content.code.select", "search.suggest", "search.share", "search.highlight", "content.tabs.link", "toc.integrate", "header.autohide"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="assets/javascripts/bundle.83f73b43.min.js"></script>
+      <script src="../../assets/javascripts/bundle.83f73b43.min.js"></script>
       
     
   </body>
