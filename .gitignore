@@ -12,3 +12,6 @@ wheels/
 
 .DS_store
 **/*.ipynb
+
+# mkdocs documentation
+/site
