@@ -2,9 +2,10 @@ name: Test PyPI publish
 # Publish to PyPi test once a maintainer creates a pre-release
 on:
   release:
-    types: [prereleased]
+    types: [published]
 jobs:
   build:
+    if: startsWith(github.event.release.tag_name, 'v') && github.event.release.prerelease == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
