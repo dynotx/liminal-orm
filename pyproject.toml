@@ -10,7 +10,7 @@ packages = [{include = "liminal"}]
 python = ">=3.9,<4"
 benchling-sdk = ">=1.8.0"
 bs4 = "^0.0.2"
-pandas = "^2.2.3"
+pandas = ">=1.5.3"
 pydantic = ">=2,<=2.7" # TODO: We need to assess this upgrade
 requests = "^2.32.3"
 rich = "^13.9.2"
