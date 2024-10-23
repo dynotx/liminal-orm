@@ -1,16 +1,12 @@
 repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
   - repo: local
     hooks:
-      - id: ruff-check
-        name: ruff-check
-        entry: ruff check --fix
-        language: system
-        pass_filenames: false
-      - id: ruff-format
-        name: ruff-format
-        entry: ruff format
-        language: system
-        pass_filenames: false
       - id: mypy
         name: mypy
         entry: mypy --sqlite-cache
