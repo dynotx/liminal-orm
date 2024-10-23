@@ -4,13 +4,21 @@ from pathlib import Path
 from liminal.connection.benchling_connection import BenchlingConnection
 
 
+def _check_env_file(env_file_path: Path) -> None:
+    """Raises an exception if the env.py file does not exist at the given path."""
+    if not env_file_path.exists():
+        raise Exception(
+            f"No {env_file_path} file found. Run `liminal init` or check your current working directory for liminal/env.py."
+        )
+
+
 def read_local_env_file(
     env_file_path: Path, benchling_tenant: str
 ) -> tuple[str, BenchlingConnection]:
     """Imports the env.py file from the current working directory and returns the CURRENT_REVISION_ID variable.
     The env.py file is expected to have the CURRENT_REVISION_ID variable set to the revision id you are currently on.
     """
-
+    _check_env_file(env_file_path)
     module_path = Path.cwd() / env_file_path
     spec = importlib.util.spec_from_file_location(env_file_path.stem, module_path)
     if spec is None or spec.loader is None:

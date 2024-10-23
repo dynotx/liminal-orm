@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import sys
 from pathlib import Path
 
 import typer
@@ -218,15 +217,4 @@ def live_test(
 
 
 print("Starting Liminal CLI...")
-if sys.argv[1:] and (
-    not sys.argv[1]
-    or sys.argv[1] in ["init"]
-    or "--help" in sys.argv
-    or "-h" in sys.argv
-):
-    app()
-else:
-    print(sys.argv)
-    raise Exception(
-        f"No {ENV_FILE_PATH} file found. Run `liminal init` or check your directory."
-    )
+app()
