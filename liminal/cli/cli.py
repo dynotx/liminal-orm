@@ -2,7 +2,9 @@
 from pathlib import Path
 
 import typer
+from click import Context
 from rich import print
+from typer.core import TyperGroup
 
 from liminal.cli.controller import (
     autogenerate_revision_file,
@@ -18,31 +20,22 @@ from liminal.connection.benchling_service import BenchlingService
 from liminal.migrate.revisions_timeline import RevisionsTimeline
 from liminal.migrate.utils import read_local_env_file, update_env_revision_id
 
+
+class OrderCommands(TyperGroup):
+    def list_commands(self, ctx: Context) -> list[str]:
+        """Return list of commands in the order the commands are defined."""
+        return list(self.commands)
+
+
 app = typer.Typer(
     name="liminal",
+    cls=OrderCommands,
     no_args_is_help=True,
     help="The Liminal CLI allows you to run revisions against different Benchling tenants and keep tenants in sync with dropdowns and schemas defined in code.",
 )
 
 ENV_FILE_PATH = Path("liminal/env.py")
 VERSIONS_DIR_PATH = Path("liminal/versions")
-
-
-@app.command(
-    name="current",
-    help="Returns the CURRENT_REVISION_ID that your Benchling tenant is on. Reads from liminal/env.py.",
-)
-def current(
-    benchling_tenant: str = typer.Argument(
-        ..., help="Benchling tenant (or alias) to connect to."
-    ),
-) -> None:
-    current_revision_id, benchling_connection = read_local_env_file(
-        ENV_FILE_PATH, benchling_tenant
-    )
-    print(
-        f"[blue]{benchling_connection.current_revision_id_var_name}: {current_revision_id}[/blue]"
-    )
 
 
 @app.command(
@@ -97,6 +90,23 @@ def generate_files(
         write_path.mkdir()
         print(f"[green]Created directory: {write_path}")
     generate_all_files(benchling_service, Path(write_path))
+
+
+@app.command(
+    name="current",
+    help="Returns the CURRENT_REVISION_ID that your Benchling tenant is on. Reads from liminal/env.py.",
+)
+def current(
+    benchling_tenant: str = typer.Argument(
+        ..., help="Benchling tenant (or alias) to connect to."
+    ),
+) -> None:
+    current_revision_id, benchling_connection = read_local_env_file(
+        ENV_FILE_PATH, benchling_tenant
+    )
+    print(
+        f"[blue]{benchling_connection.current_revision_id_var_name}: {current_revision_id}[/blue]"
+    )
 
 
 @app.command(
@@ -179,6 +189,7 @@ def downgrade(
 
 @app.command(
     name="live-test",
+    hidden=True,
     help="Kicks off a live test migration to check that the CLI and operations are working.",
 )
 def live_test(
