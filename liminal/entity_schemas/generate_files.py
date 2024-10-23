@@ -1,7 +1,9 @@
 from pathlib import Path
 
-from liminal.base.base_dropdown import BaseDropdown
+from rich import print
+
 from liminal.connection.benchling_service import BenchlingService
+from liminal.dropdowns.utils import get_benchling_dropdowns_dict
 from liminal.entity_schemas.utils import get_converted_tag_schemas
 from liminal.enums import BenchlingEntityType, BenchlingFieldType
 from liminal.mappers import convert_benchling_type_to_python_type
@@ -22,10 +24,6 @@ def get_entity_mixin(entity_type: BenchlingEntityType) -> str:
     if entity_type not in type_to_mixin_map:
         raise ValueError(f"Unknown entity type: {entity_type}")
     return type_to_mixin_map[entity_type]
-
-
-def get_dropdowns_map() -> dict[str, str]:
-    return {d.__benchling_name__: d.__name__ for d in BaseDropdown.__subclasses__()}
 
 
 def get_file_subdirectory(entity_type: BenchlingEntityType) -> str:
@@ -56,7 +54,11 @@ def generate_all_entity_schema_files(
     tab = "    "
     has_date = False
     subdirectory_map: dict[str, list[tuple[str, str]]] = {}
-    dropdown_map: dict[str, str] = get_dropdowns_map()
+    benchling_dropdowns = get_benchling_dropdowns_dict(benchling_service)
+    dropdown_name_to_classname_map: dict[str, str] = {
+        dropdown_name: pascalize(dropdown_name)
+        for dropdown_name in benchling_dropdowns.keys()
+    }
     wh_name_to_classname: dict[str, str] = {
         sp.warehouse_name: pascalize(sp.name) for sp, _ in models
     }
@@ -83,15 +85,18 @@ def generate_all_entity_schema_files(
         dropdowns = []
         relationship_strings = []
         for col_name, col in columns.items():
+            dropdown_classname = None
+            if col.dropdown_link:
+                dropdown_classname = dropdown_name_to_classname_map[col.dropdown_link]
+                dropdowns.append(dropdown_classname)
             column_strings.append(
-                f"""{tab}{col_name}: SqlColumn = Column(name="{col.name}", type={str(col.type)}, required={col.required}{', is_multi=True' if col.is_multi else ''}{', parent_link=True' if col.parent_link else ''}{f', entity_link="{col.entity_link}"' if col.entity_link else ''}{f', dropdown={dropdown_map[col.dropdown_link]}' if col.dropdown_link else ''})"""
+                f"""{tab}{col_name}: SqlColumn = Column(name="{col.name}", type={str(col.type)}, required={col.required}{', is_multi=True' if col.is_multi else ''}{', parent_link=True' if col.parent_link else ''}{f', entity_link="{col.entity_link}"' if col.entity_link else ''}{f', dropdown={dropdown_classname}' if dropdown_classname else ''})"""
             )
             if col.required and col.type:
                 init_strings.append(
                     f"""{tab}{col_name}: {convert_benchling_type_to_python_type(col.type).__name__},"""
                 )
-            if col.dropdown_link:
-                dropdowns.append(dropdown_map[col.dropdown_link])
+
             if col.type == BenchlingFieldType.DATE:
                 if not has_date:
                     import_strings.append("from datetime import datetime")
@@ -126,7 +131,9 @@ def generate_all_entity_schema_files(
         for col_name, col in columns.items():
             if col.dropdown_link:
                 init_strings.append(
-                    tab + dropdown_map[col.dropdown_link] + f".validate({col_name})"
+                    tab
+                    + dropdown_name_to_classname_map[col.dropdown_link]
+                    + f".validate({col_name})"
                 )
 
         columns_string = "\n".join(column_strings)

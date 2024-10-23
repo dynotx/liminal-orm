@@ -21,13 +21,7 @@ def generate_all_files(benchling_service: BenchlingService, write_path: Path) ->
     write_path : Path
         The path to write the generated files to.
     """
-    dropdowns_init_path = generate_all_dropdown_files(benchling_service, write_path)
-    if dropdowns_init_path is not None:
-        exec(dropdowns_init_path.read_text())
-    else:
-        raise Exception(
-            f"No dropdown imports found in the generated {dropdowns_init_path} file."
-        )
+    generate_all_dropdown_files(benchling_service, write_path)
     generate_all_entity_schema_files(benchling_service, write_path)
 
 

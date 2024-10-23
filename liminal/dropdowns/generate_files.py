@@ -9,7 +9,7 @@ from liminal.utils import pascalize, to_snake_case
 
 def generate_all_dropdown_files(
     benchling_service: BenchlingService, write_path: Path
-) -> Path:
+) -> None:
     """Generate all dropdown files from your Benchling tenant and writes to the given dropdowns/ path.
     This is used to initialize your code for Liminal and transfer the information from your Benchling tenant to your local codebase.
     Note: This will overwrite any existing dropdowns that exist in the given path.
@@ -48,5 +48,3 @@ class {classname}(BaseDropdown):
         print(
             f"[green]Generated {write_path / '__init__.py'} with {len(file_names_to_classname)} dropdown imports."
         )
-
-    return write_path / "__init__.py"
