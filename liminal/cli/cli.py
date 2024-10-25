@@ -78,8 +78,8 @@ def generate_files(
     benchling_tenant: str = typer.Argument(
         ..., help="Benchling tenant (or alias) to connect to."
     ),
-    write_path: Path = typer.Argument(
-        ..., help="The path to write the generated files to."
+    write_path: Path = typer.Option(
+        Path("."), help="The path to write the generated files to."
     ),
 ) -> None:
     current_revision_id, benchling_connection = read_local_env_file(
