@@ -9,14 +9,14 @@ from liminal.connection.benchling_service import BenchlingService
 
 def pascalize(input_string: str) -> str:
     return "".join(
-        re.sub(r"[\[\]{}()]", "", word).capitalize()
+        re.sub(r"[\[\]{}():]", "", word).capitalize()
         for word in re.split(r"[ /_\-]", input_string)
     )
 
 
 def to_snake_case(input_string: str) -> str:
     return "_".join(
-        re.sub(r"[\[\]{}()]", "", word).lower()
+        re.sub(r"[\[\]{}():]", "", word).lower()
         for word in re.split(r"[ /_\-]", input_string)
     )
 
