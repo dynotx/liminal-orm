@@ -90,7 +90,7 @@ def generate_all_entity_schema_files(
                 dropdown_classname = dropdown_name_to_classname_map[col.dropdown_link]
                 dropdowns.append(dropdown_classname)
             column_strings.append(
-                f"""{tab}{col_name}: SqlColumn = Column(name="{col.name}", type={str(col.type)}, required={col.required}{', is_multi=True' if col.is_multi else ''}{', parent_link=True' if col.parent_link else ''}{f', entity_link="{col.entity_link}"' if col.entity_link else ''}{f', dropdown={dropdown_classname}' if dropdown_classname else ''})"""
+                f"""{tab}{col_name}: SqlColumn = Column(name="{col.name}", type={str(col.type)}, required={col.required}{', is_multi=True' if col.is_multi else ''}{', parent_link=True' if col.parent_link else ''}{f', entity_link="{col.entity_link}"' if col.entity_link else ''}{f', dropdown={dropdown_classname}' if dropdown_classname else ''}{f', tooltip="{col.tooltip}"' if col.tooltip else ''})"""
             )
             if col.required and col.type:
                 init_strings.append(
