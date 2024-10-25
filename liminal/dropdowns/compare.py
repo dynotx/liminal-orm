@@ -19,7 +19,7 @@ def compare_dropdowns(
 ) -> dict[str, list[CompareOperation]]:
     dropdown_operations: dict[str, list[CompareOperation]] = {}
     benchling_dropdowns: dict[str, Dropdown] = get_benchling_dropdowns_dict(
-        benchling_service
+        benchling_service, include_archived=True
     )
     processed_benchling_names = set()
     model_dropdowns = BaseDropdown.get_all_subclasses(dropdown_names)

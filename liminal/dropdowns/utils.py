@@ -57,15 +57,15 @@ def get_benchling_dropdown_by_name(
 
 def get_benchling_dropdowns_dict(
     benchling_service: BenchlingService,
+    include_archived: bool = False,
 ) -> dict[str, Dropdown]:
-    with requests.Session() as session:
-        request = session.get(
-            f"https://{benchling_service.benchling_tenant}.benchling.com/1/api/schema-field-selectors/?registryId={benchling_service.registry_id}",
-            headers=benchling_service.custom_post_headers,
-            cookies=benchling_service.custom_post_cookies,
-        )
-    return {
-        d["name"]: Dropdown(
+    def _convert_dropdown_from_json(
+        d: dict[str, Any], include_archived: bool = False
+    ) -> Dropdown:
+        all_options = d["allSchemaFieldSelectorOptions"]
+        if not include_archived:
+            all_options = [o for o in all_options if not o["archiveRecord"]]
+        return Dropdown(
             id=d["id"],
             name=d["name"],
             archive_record=BenchlingArchiveRecord(reason=d["archiveRecord"]["purpose"])
@@ -81,11 +81,26 @@ def get_benchling_dropdowns_dict(
                     if o["archiveRecord"]
                     else None,
                 )
-                for o in d["allSchemaFieldSelectorOptions"]
+                for o in all_options
             ],
         )
-        for d in request.json()["selectorsByRegistryId"][benchling_service.registry_id]
+
+    with requests.Session() as session:
+        request = session.get(
+            f"https://{benchling_service.benchling_tenant}.benchling.com/1/api/schema-field-selectors/?registryId={benchling_service.registry_id}",
+            headers=benchling_service.custom_post_headers,
+            cookies=benchling_service.custom_post_cookies,
+        )
+        all_dropdowns = request.json()["selectorsByRegistryId"][
+            benchling_service.registry_id
+        ]
+        if not include_archived:
+            all_dropdowns = [d for d in all_dropdowns if not d["archiveRecord"]]
+    dropdowns = {
+        d["name"]: _convert_dropdown_from_json(d, include_archived)
+        for d in all_dropdowns
     }
+    return dropdowns
 
 
 def dropdown_exists_in_benchling(

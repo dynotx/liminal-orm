@@ -41,6 +41,9 @@ def convert_tag_schema_to_internal_schema(
     dropdowns_map: dict[str, str],
     include_archived_fields: bool = False,
 ) -> tuple[SchemaProperties, dict[str, BaseFieldProperties]]:
+    all_fields = tag_schema.allFields
+    if not include_archived_fields:
+        all_fields = [f for f in all_fields if not f.archiveRecord]
     return (
         SchemaProperties(
             name=tag_schema.name,
@@ -63,11 +66,7 @@ def convert_tag_schema_to_internal_schema(
         ).set_archived(tag_schema.archiveRecord is not None),
         {
             f.systemName: convert_tag_schema_field_to_field_properties(f, dropdowns_map)
-            for f in (
-                tag_schema.allFields
-                if include_archived_fields
-                else [f for f in tag_schema.allFields if not f.archiveRecord]
-            )
+            for f in all_fields
         },
     )
 
