@@ -58,5 +58,9 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
+extra:
+  analytics:
+    provider: google
+    property: G-Z8YQTKP7B6
 repo_url: https://github.com/dynotx/liminal-orm
 repo_name: dynotx/liminal-orm

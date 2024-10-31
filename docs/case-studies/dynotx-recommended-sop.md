@@ -13,7 +13,7 @@ Let's say a change has to be made to the Benchling schema...
 
 2. If they are confident that they know the exact changes needed to be made to the Liminal schemas in order to reflect their changes in TEST, they move onto the migration step, and only migrate the changes to PROD. However if they are not 100% confident, Liminal offers the ability to revert back to the original state automatically.
 
-    #### Reverting Test to the original state
+    **Reverting Test to the original state**
 
     a. Run `liminal autogenerate TEST 'description'`. This will generate a revision file, and create a list of operations to migrate TEST to be in sync with the schemas defined in code.
 
