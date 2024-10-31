@@ -2,6 +2,8 @@
 
 Thank you in advance for your contribution to Liminal! A contribution of any kind has an impact on the community. Remember to star the repo on GitHub and share Liminal with your colleagues to grow our community!
 
+Feel free to reach out directly or on GitHub for any questions at all!
+
 ## Ways to Contribute
 
 Everyone in the community has the ability to influence the roadmap of Liminal, no matter how big or small the contribution. Below are some ways you can contribute:

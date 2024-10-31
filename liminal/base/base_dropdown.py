@@ -3,6 +3,16 @@ from typing import Any
 
 
 class BaseDropdown(ABC):
+    """_summary_
+
+    Parameters
+    ----------
+    __benchling_name__: str
+        The name of the dropdown in Benchling. There can be no duplicate dropdown names in Benchling.
+    __allowed_values__: list[str]
+        The list of values for the dropdown. Order matters and reflects the order of the dropdown in Benchling. Values must be unique.
+    """
+
     __benchling_name__: str
     __allowed_values__: list[str]
 

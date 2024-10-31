@@ -1,21 +1,28 @@
 site_name: Liminal ORM
 site_url: https://dynotx.github.io/liminal-orm/
 nav:
-  - index.md
-  - Guides:
-      - guides/prerequisites.md
-      - guides/installation.md
-      - guides/initializing-your-repo.md
-      - guides/first-migration.md
-      - guides/downgrading.md
-      - SOP - Benchling change management: guides/sop-benchling-change-management.md
-  - Code Documentation:
-      - Benchling:
-          - code/benchling-service.md
-          - code/dropdowns.md
-          - code/entity-schemas.md
+  - Home: index.md
+  - Getting Started:
+      - getting-started/prerequisites.md
+      - getting-started/installation.md
+      - getting-started/setup.md
+      - getting-started/first-migration.md
+      - getting-started/downgrading.md
+      - getting-started/tutorials.md
+  - Reference:
+      - reference/benchling-connection.md
+      - reference/benchling-session.md
+      - reference/dropdowns.md
+      - reference/entity-schemas.md
+      - reference/validators.md
+      - reference/revision-file.md
+      - reference/operations.md
   - Case Studies:
-      - case_studies/dynotx.md
+      - DynoTx Recommended SOP: case-studies/dynotx-recommended-sop.md
+  - Contributing:
+      - contributing.md
+  - Future Direction:
+      - future-direction.md
 theme:
   name: material
   logo: assets/logo.png
@@ -46,5 +53,10 @@ theme:
     - content.tabs.link
     - toc.integrate
     - header.autohide
+    - navigation.footer
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
 repo_url: https://github.com/dynotx/liminal-orm
 repo_name: dynotx/liminal-orm

@@ -1,21 +1,22 @@
 # [Liminal ORM](#liminal-orm)
 
-Liminal ORM<sup>1</sup> is a Python package that builds on top of [Benchling](https://www.benchling.com/)'s LIMS<sup>2</sup> platform to keep your Benchling schemas and downstream code dependencies in sync. Liminal provides an ORM framework using [SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) that allows you to define all your Benchling schemas in code. This creates a single source of truth that Benchling managers can use to keep multiple tenants in sync. This enables a code-first approach for managing Benchling tenants and accessing Benchling data. With the schemas defined in code, you can now take advantage of the additional capabilities that the Liminal toolkit provides. This includes:
+Liminal ORM<sup>1</sup> is an open-source Python package that builds on [Benchling's](https://www.benchling.com/) LIMS<sup>2</sup> platform and provides a simple framework to keep your upstream Benchling schemas and downstream dependencies in sync. Liminal provides an ORM framework using [SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) along with a schema migration service inspired by [Alembic](https://alembic.sqlalchemy.org/en/latest/). This allows you to define your Benchling schemas in code and create a *single source of truth* that synchronizes with your upstream Benchling tenant(s) and downstream dependencies. Through one line CLI commands, Liminal enables a code-first approach for managing Benchling tenants and accessing Benchling data. With the schemas defined in code, you can also take advantage of the additional capabilities that the Liminal toolkit provides. This includes:
 
-- The ability to run migrations to your Benchling tenant(s) through an easy to use CLI<sup>3</sup>.
+- The ability to run migrations to your Benchling tenant(s) through an easy to use CLI.
 - One source of truth defined in code for your Benchling schema model that your many Benchling tenants can stay in sync with.
 - Easy to implement validation rules to reflect business logic for all of your Benchling entities.
 - Strongly typed queries for all your Benchling entities.
 - CI/CD integration with GitHub Actions to ensure that your Benchling schemas and code are always in sync.
-- And more!
+- And more based on community contributions/feedback :)
 
 Benchling is an industry standard cloud platform for life sciences R&D. Liminal builds on top of Benchling's platform and assumes that you already have a Benchling tenant set up and have (or have access to) an admin user account. If not, learn more about getting started with Benchling [here](https://www.benchling.com/explore-benchling)!
 
-For a full and in-depth overview of Liminal, please refer to our [full documentation](https://dynotx.github.io/liminal-orm/). Below is a [quickstart guide](#getting-started) to get you Liminal set up in your project.
+If you are a Benchling user, try out Liminal by following the [quickstart guide](./getting-started/prerequisites.md)! Reach out in the [Discussions](https://github.com/dynotx/liminal-orm/discussions) forum with any questions or to simply introduce yourself! If there is something blocking you from using Liminal or you're having trouble setting Liminal up, please share in [Issues](https://github.com/dynotx/liminal-orm/issues) or reach out directly (contact information below). You can expect responses within 48 hours :)
 
-Reach out in the [Discussions](https://github.com/dynotx/liminal-orm/discussions) forum with any questions or to simply introduce yourself! If you run into any issues, during setup or usage, don't hesitate to post in [Issues](https://github.com/dynotx/liminal-orm/issues) or reach out directly at <opensource@dynotx.com>. You can expect responses within 48 hours :) 
+Nirmit Damania is the creator and current maintainer of Liminal (I post Liminal updates to [Discussions](https://github.com/dynotx/liminal-orm/discussions) and my [LinkedIn](https://www.linkedin.com/in/nirmit-damania/)). Most importantly, **you** have the ability to influence the future of Liminal! Any feedback, positive or negative, is highly encouraged and will be used to steer the direction of Liminal. Refer to the [Contributing guide](https://github.com/dynotx/liminal-orm/blob/main/CONTRIBUTING.md) to learn more about how you can contribute to Liminal.
 
 ⭐️ Leave a star on the repo to spread the word!
+If you or your organization use Liminal, please consider adding yourself or your organization to the [Users](https://github.com/dynotx/liminal-orm/blob/main/USERS.md) list.
 
 <img width="793" alt="liminal_simple_graph" src="https://github.com/user-attachments/assets/52e32cd0-3407-49f5-b100-5763bee3830c">
 
@@ -27,6 +28,7 @@ Reach out in the [Discussions](https://github.com/dynotx/liminal-orm/discussions
   - [Setup](#setup)
   - [Migration](#migration)
   - [Toolkit](#toolkit)
+- [Mission](#mission)
 - [Community](#community)
 - [Contributing](#contributing)
 - [License](#license)
@@ -144,6 +146,10 @@ With your schemas defined in code, you can now take advantage of the additional 
 
 4. And more to come!
 
+## [Mission](#mission)
+
+The democratization of software in Biotech is crucial. By building a community around complex, yet common, problems and creating open-source solutions, we can work together to tackle these challenges together and enable faster innovation in the industry. By breaking down the silos between private platforms, we can enable a more dynamic and open ecosystem. This was the motivation for Liminal's creation. Liminal's goal is to create an open-source software product that enables a standard, code-first approach to configuration and change management for LIMS systems. We started with Benchling, but the goal is to make Liminal the go-to solution for any LIMS system.
+
 ## [Community](#community)
 
 We're excited to hear from you! Feel free to introduce yourself on the [Liminal GitHub Discussions page](https://github.com/dynotx/liminal-orm/discussions/categories/intros)
@@ -160,6 +166,11 @@ Please refer to [CONTRIBUTING.md](./CONTRIBUTING.md) to learn how to contribute 
 ## [License](#license)
 
 Liminal ORM is distributed under the [Apache License, Version 2.0](./LICENSE.md).
+
+## [Direct Contact](#direct-contact)
+
+- Email: <opensource@dynotx.com>
+- LinkedIn: [Nirmit Damania](https://www.linkedin.com/in/nirmit-damania/)
 
 ## [Acknowledgements](#acknowledgements)
 

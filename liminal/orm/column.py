@@ -15,21 +15,21 @@ class Column(SqlColumn):
 
     Parameters
     ----------
-    name : str | None
+    name : str
         The external facing name of the field.
-    type : BenchlingFieldType | None
+    type : BenchlingFieldType
         The type of the field.
-    required : bool | None
+    required : bool
         Whether the field is required.
-    is_multi : bool | None
+    is_multi : bool = False
         Whether the field is a multi-value field.
-    parent_link : bool | None
+    parent_link : bool = False
         Whether the entity link field is a parent of the entity schema.
-    dropdown : str | None
-        The name of the dropdown for the field.
-    entity_link : str | None
+    dropdown : Type[BaseDropdown] | None = None
+        The dropdown for the field.
+    entity_link : str | None = None
         The warehouse name of the entity the field links to.
-    tooltip : str | None
+    tooltip : str | None = None
         The tooltip text for the field.
     """
 
