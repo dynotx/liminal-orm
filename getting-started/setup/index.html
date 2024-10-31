@@ -8,21 +8,21 @@
       
       
       
-        <link rel="canonical" href="https://dynotx.github.io/liminal-orm/code/entity-schemas/">
+        <link rel="canonical" href="https://dynotx.github.io/liminal-orm/getting-started/setup/">
       
       
-        <link rel="prev" href="../dropdowns/">
+        <link rel="prev" href="../installation/">
       
       
-        <link rel="next" href="../../case_studies/dynotx/">
+        <link rel="next" href="../first-migration/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.41">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.42">
     
     
       
-        <title>Entity schemas - Liminal ORM</title>
+        <title>Setup - Liminal ORM</title>
       
     
     
@@ -51,6 +51,16 @@
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-Z8YQTKP7B6"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-Z8YQTKP7B6",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-Z8YQTKP7B6",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
     
     
@@ -104,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Entity schemas
+              Setup
             
           </span>
         </div>
@@ -217,7 +227,7 @@
   
     
   
-  Liminal ORM
+  Home
 
       </a>
     </li>
@@ -227,48 +237,19 @@
         
   
   
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../guides/prerequisites/" class="md-tabs__link">
-          
-  
-  Guides
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-    
-  
-  
-    
-    
-      
-  
-  
     
   
   
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../benchling-service/" class="md-tabs__link">
+        <a href="../prerequisites/" class="md-tabs__link">
           
   
-  Code Documentation
+  Getting Started
 
         </a>
       </li>
-    
-  
-
     
   
 
@@ -280,10 +261,64 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../case_studies/dynotx/" class="md-tabs__link">
+        <a href="../../reference/benchling-connection/" class="md-tabs__link">
+          
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../case-studies/dynotx-recommended-sop/" class="md-tabs__link">
           
   
   Case Studies
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../contributing/" class="md-tabs__link">
+          
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../future-direction/" class="md-tabs__link">
+          
+  
+  Future Direction
 
         </a>
       </li>
@@ -354,182 +389,11 @@
         
   
   <span class="md-ellipsis">
-    Liminal ORM
+    Home
   </span>
   
 
       </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Guides
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2">
-            <span class="md-nav__icon md-icon"></span>
-            Guides
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guides/prerequisites/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Prerequisites
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guides/installation/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Installation
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guides/initializing-your-repo/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Initializing your repo
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guides/first-migration/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    First migration
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guides/downgrading/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Downgrading
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guides/sop-benchling-change-management/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    SOP - Benchling change management
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -556,64 +420,24 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   <span class="md-ellipsis">
-    Code Documentation
+    Getting Started
   </span>
   
 
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
-            Code Documentation
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Benchling
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3_1">
-            <span class="md-nav__icon md-icon"></span>
-            Benchling
+            Getting Started
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -624,11 +448,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../benchling-service/" class="md-nav__link">
+      <a href="../prerequisites/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Benchling service
+    Prerequisites
   </span>
   
 
@@ -645,11 +469,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../dropdowns/" class="md-nav__link">
+      <a href="../installation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Dropdowns
+    Installation
   </span>
   
 
@@ -677,7 +501,7 @@
         
   
   <span class="md-ellipsis">
-    Entity schemas
+    Setup
   </span>
   
 
@@ -688,9 +512,256 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../first-migration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    First migration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../downgrading/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Downgrading
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tutorials
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/benchling-connection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Benchling connection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/benchling-session/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Benchling session
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/dropdowns/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dropdowns
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/entity-schemas/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Entity schemas
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/validators/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Validators
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/revision-file/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Revision file
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/operations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Operations
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -748,11 +819,143 @@
   
   
     <li class="md-nav__item">
-      <a href="../../case_studies/dynotx/" class="md-nav__link">
+      <a href="../../case-studies/dynotx-recommended-sop/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Dynotx
+    DynoTx Recommended SOP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Contributing
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Contributing to Liminal ORM
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Future Direction
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Future Direction
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../future-direction/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Future direction
   </span>
   
 
@@ -787,7 +990,79 @@
   
 
 
-  <h1>Entity schemas</h1>
+  <h1>Setup</h1>
+
+<ol>
+<li>
+<p><code>cd</code> into the directory where you want to instantiate your <em>Liminal environment</em>. This will be the root directory where your schemas will be defined. Note: the Liminal CLI must always be run from within this root directory.</p>
+</li>
+<li>
+<p>Run <code>liminal init</code> in your CLI to initialize your <em>Liminal environment</em>. This will create a <code>liminal/</code> directory that contains an <code>env.py</code> file and a <code>versions/</code> directory.</p>
+<ul>
+<li>The <code>env.py</code> file is used to store your Benchling connection information.</li>
+<li>The <code>versions/</code> directory is used to store your revision files.</li>
+</ul>
+</li>
+<li>
+<p>Populate the <code>env.py</code> file with your Benchling connection information, following the instructions in the file. For example:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">liminal.connection</span> <span class="kn">import</span> <span class="n">BenchlingConnection</span>
+
+    <span class="n">PROD_CURRENT_REVISION_ID</span> <span class="o">=</span> <span class="s2">&quot;12b31776a755b&quot;</span>
+
+    <span class="c1"># It is highly recommended to use a secrets manager to store your credentials.</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">BenchlingConnection</span><span class="p">(</span>
+        <span class="n">tenant_name</span><span class="o">=</span><span class="s2">&quot;pizzahouse-prod&quot;</span><span class="p">,</span>
+        <span class="n">tenant_alias</span><span class="o">=</span><span class="s2">&quot;prod&quot;</span><span class="p">,</span>
+        <span class="n">current_revision_id_var_name</span><span class="o">=</span><span class="s2">&quot;PROD_CURRENT_REVISION_ID&quot;</span><span class="p">,</span>
+        <span class="n">api_client_id</span><span class="o">=</span><span class="s2">&quot;my-secret-api-client-id&quot;</span><span class="p">,</span>
+        <span class="n">api_client_secret</span><span class="o">=</span><span class="s2">&quot;my-secret-api-client-secret&quot;</span><span class="p">,</span>
+        <span class="n">warehouse_connection_string</span><span class="o">=</span><span class="s2">&quot;my-warehouse-connection-string&quot;</span><span class="p">,</span>
+        <span class="n">internal_api_admin_email</span><span class="o">=</span><span class="s2">&quot;my-secret-internal-api-admin-email&quot;</span><span class="p">,</span>
+        <span class="n">internal_api_admin_password</span><span class="o">=</span><span class="s2">&quot;my-secret-internal-api-admin-password&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<ul>
+<li>Required: The <code>api_client_id</code> and <code>api_client_secret</code> are used to connect to Benchling's SDK. For more information, see the <a href="https://docs.benchling.com/docs/getting-started-benchling-apps#calling-the-api-as-an-app">Benchling API documentation</a>.</li>
+<li>Required: The <code>internal_api_admin_email</code> and <code>internal_api_admin_password</code> are used to connect to Benchling's API for the migration service. This must be the email and password used to log in to an Admin account.</li>
+<li>Optional: The <code>warehouse_connection_string</code> is used to connect to Benchling's Postgres warehouse. This is optional, but recommended for querying the Benchling warehouse using SQLAlchemy.</li>
+</ul>
+<p>The <code>CURRENT_REVISION_ID</code> variable is used to store the current state of where your Benchling tenant lies on the revision timeline. The id is the <code>revision_id</code> of the revision file that has been applied to your Benchling tenant.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you have multiple Benchling tenants you'd like to synchronize, you can define multiple Benchling connections in the <code>env.py</code> file by creating multiple <code>BenchlingConnection</code> objects and respective <code>CURRENT_REVISION_ID</code> variables. Use the optional <code>current_revision_id_var_name</code> parameter to link the variable to the <code>BenchlingConnection</code> object.</p>
+</div>
+</li>
+<li>
+<p>If your Benchling tenant has pre-existing schemas, run <code>liminal generate-files &lt;benchling_tenant&gt; [&lt;write_path&gt;]</code> to populate the root directory with your schema files from the given Benchling tenant. Your file structure should now look like this:</p>
+<pre><code>pizzahouse/
+    liminal/
+        env.py
+        versions/
+            &lt;revision_id&gt;_initial_init_revision.py
+    dropdowns/
+        ...
+    entity_schemas/
+        ...
+</code></pre>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>It is recommended to generate files using your production Benchling tenant. These schemas will be used as the single source of truth for your production tenant as well as other tenants you may have.</p>
+</div>
+</li>
+<li>
+<p>Add your schema imports to the env.py file. For example:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">pizzahouse.dropdowns</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">pizzahouse.entity_schemas</span> <span class="kn">import</span> <span class="o">*</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is necessary for Liminal to recognize what schemas exist in your environment.</p>
+</div>
+</li>
+<li>
+<p><strong>Set up is complete!</strong> You're now ready to start using your schemas defined in code as the single source of truth for your Benchling tenant(s).</p>
+</li>
+</ol>
 
 
 
@@ -797,7 +1072,7 @@
 
 
 
-
+  
 
 
 
@@ -822,6 +1097,46 @@
       
         <footer class="md-footer">
   
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../installation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Installation">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Installation
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../first-migration/" class="md-footer__link md-footer__link--next" aria-label="Next: First migration">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                First migration
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
@@ -844,7 +1159,7 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "content.code.copy", "content.code.select", "search.suggest", "search.share", "search.highlight", "content.tabs.link", "toc.integrate", "header.autohide"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "content.code.copy", "content.code.select", "search.suggest", "search.share", "search.highlight", "content.tabs.link", "toc.integrate", "header.autohide", "navigation.footer"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.83f73b43.min.js"></script>

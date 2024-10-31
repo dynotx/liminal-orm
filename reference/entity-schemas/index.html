@@ -8,26 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://dynotx.github.io/liminal-orm/">
+        <link rel="canonical" href="https://dynotx.github.io/liminal-orm/reference/entity-schemas/">
       
       
+        <link rel="prev" href="../dropdowns/">
       
-        <link rel="next" href="getting-started/prerequisites/">
+      
+        <link rel="next" href="../validators/">
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.42">
     
     
       
-        <title>Liminal ORM</title>
+        <title>Entity schemas - Liminal ORM</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.0253249f.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.0253249f.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -46,7 +48,7 @@
       
     
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -82,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#liminal-orm" class="md-skip">
+        <a href="#entity-schema-class" class="md-skip">
           Skip to content
         </a>
       
@@ -98,9 +100,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Liminal ORM" class="md-header__button md-logo" aria-label="Liminal ORM" data-md-component="logo">
+    <a href="../.." title="Liminal ORM" class="md-header__button md-logo" aria-label="Liminal ORM" data-md-component="logo">
       
-  <img src="assets/logo.png" alt="logo">
+  <img src="../../assets/logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -117,7 +119,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              Entity schemas
             
           </span>
         </div>
@@ -223,11 +225,9 @@
         
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="." class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
         
   
     
@@ -246,7 +246,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="getting-started/prerequisites/" class="md-tabs__link">
+        <a href="../../getting-started/prerequisites/" class="md-tabs__link">
           
   
   Getting Started
@@ -260,11 +260,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="reference/benchling-connection/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../benchling-connection/" class="md-tabs__link">
           
   
   Reference
@@ -282,7 +284,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="case-studies/dynotx-recommended-sop/" class="md-tabs__link">
+        <a href="../../case-studies/dynotx-recommended-sop/" class="md-tabs__link">
           
   
   Case Studies
@@ -300,7 +302,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="contributing/" class="md-tabs__link">
+        <a href="../../contributing/" class="md-tabs__link">
           
   
   Contributing
@@ -318,7 +320,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="future-direction/" class="md-tabs__link">
+        <a href="../../future-direction/" class="md-tabs__link">
           
   
   Future Direction
@@ -359,9 +361,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Liminal ORM" class="md-nav__button md-logo" aria-label="Liminal ORM" data-md-component="logo">
+    <a href="../.." title="Liminal ORM" class="md-nav__button md-logo" aria-label="Liminal ORM" data-md-component="logo">
       
-  <img src="assets/logo.png" alt="logo">
+  <img src="../../assets/logo.png" alt="logo">
 
     </a>
     Liminal ORM
@@ -385,30 +387,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Home
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -417,62 +399,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      Overview
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mission" class="md-nav__link">
-    <span class="md-ellipsis">
-      Mission
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#direct-contact-information" class="md-nav__link">
-    <span class="md-ellipsis">
-      Direct contact information
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#footnotes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Footnotes
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -522,7 +448,7 @@
   
   
     <li class="md-nav__item">
-      <a href="getting-started/prerequisites/" class="md-nav__link">
+      <a href="../../getting-started/prerequisites/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -543,7 +469,7 @@
   
   
     <li class="md-nav__item">
-      <a href="getting-started/installation/" class="md-nav__link">
+      <a href="../../getting-started/installation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -564,7 +490,7 @@
   
   
     <li class="md-nav__item">
-      <a href="getting-started/setup/" class="md-nav__link">
+      <a href="../../getting-started/setup/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -585,7 +511,7 @@
   
   
     <li class="md-nav__item">
-      <a href="getting-started/first-migration/" class="md-nav__link">
+      <a href="../../getting-started/first-migration/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -606,7 +532,7 @@
   
   
     <li class="md-nav__item">
-      <a href="getting-started/downgrading/" class="md-nav__link">
+      <a href="../../getting-started/downgrading/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -627,7 +553,7 @@
   
   
     <li class="md-nav__item">
-      <a href="getting-started/tutorials/" class="md-nav__link">
+      <a href="../../getting-started/tutorials/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -652,23 +578,28 @@
       
   
   
+    
   
   
+  
     
     
     
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -679,7 +610,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Reference
@@ -693,7 +624,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/benchling-connection/" class="md-nav__link">
+      <a href="../benchling-connection/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -714,7 +645,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/benchling-session/" class="md-nav__link">
+      <a href="../benchling-session/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -735,7 +666,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/dropdowns/" class="md-nav__link">
+      <a href="../dropdowns/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -753,10 +684,28 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="reference/entity-schemas/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Entity schemas
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -765,6 +714,99 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#entity-schema-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Entity Schema: class
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#schema-properties-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Schema Properties: class
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Schema Properties: class">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#column-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Column: class
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Column: class">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validators-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validators: class
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -777,7 +819,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/validators/" class="md-nav__link">
+      <a href="../validators/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -798,7 +840,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/revision-file/" class="md-nav__link">
+      <a href="../revision-file/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -819,7 +861,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/operations/" class="md-nav__link">
+      <a href="../operations/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -885,7 +927,7 @@
   
   
     <li class="md-nav__item">
-      <a href="case-studies/dynotx-recommended-sop/" class="md-nav__link">
+      <a href="../../case-studies/dynotx-recommended-sop/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -951,7 +993,7 @@
   
   
     <li class="md-nav__item">
-      <a href="contributing/" class="md-nav__link">
+      <a href="../../contributing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1017,7 +1059,7 @@
   
   
     <li class="md-nav__item">
-      <a href="future-direction/" class="md-nav__link">
+      <a href="../../future-direction/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1056,41 +1098,141 @@
   
 
 
-<h1 id="liminal-orm">Liminal ORM</h1>
-<h2 id="overview">Overview</h2>
-<p><a href="https://pypi.org/project/liminal-orm/"><img alt="PyPI version" src="https://img.shields.io/pypi/v/liminal-orm.svg" /></a>
-<a href="https://github.com/dynotx/liminal-orm/blob/main/LICENSE.md"><img alt="License" src="https://img.shields.io/github/license/dynotx/liminal-orm" /></a>
-<a href="https://github.com/dynotx/liminal-orm/actions/workflows/liminal.yml"><img alt="CI" src="https://github.com/dynotx/liminal-orm/actions/workflows/liminal.yml/badge.svg" /></a>
-<a href="https://pepy.tech/project/liminal-orm"><img alt="Downloads" src="https://static.pepy.tech/personalized-badge/liminal-orm?period=total&amp;units=international_system&amp;left_color=grey&amp;right_color=blue&amp;left_text=Downloads" /></a></p>
-<p>Liminal ORM<sup>1</sup> is an open-source Python package that builds on <a href="https://www.benchling.com/">Benchling's</a> LIMS<sup>2</sup> platform and provides a simple framework to keep your upstream Benchling schemas and downstream dependencies in sync. Liminal provides an ORM framework using <a href="https://github.com/sqlalchemy/sqlalchemy">SQLAlchemy</a> along with a schema migration service inspired by <a href="https://alembic.sqlalchemy.org/en/latest/">Alembic</a>. This allows you to define your Benchling schemas in code and create a <em>single source of truth</em> that synchronizes with your upstream Benchling tenant(s) and downstream dependencies. Through one line CLI commands, Liminal enables a code-first approach for managing Benchling tenants and accessing Benchling data. With the schemas defined in code, you can also take advantage of the additional capabilities that the Liminal toolkit provides. This includes:</p>
-<ul>
-<li>The ability to run migrations to your Benchling tenant(s) through an easy to use CLI.</li>
-<li>One source of truth defined in code for your Benchling schema model that your many Benchling tenants can stay in sync with.</li>
-<li>Easy to implement validation rules to reflect business logic for all of your Benchling entities.</li>
-<li>Strongly typed queries for all your Benchling entities.</li>
-<li>CI/CD integration with GitHub Actions to ensure that your Benchling schemas and code are always in sync.</li>
-<li>And more based on community contributions/feedback :)</li>
-</ul>
-<p>Benchling is an industry standard cloud platform for life sciences R&amp;D. Liminal builds on top of Benchling's platform and assumes that you already have a Benchling tenant set up and have (or have access to) an admin user account. If not, learn more about getting started with Benchling <a href="https://www.benchling.com/explore-benchling">here</a>!</p>
-<p>If you are a Benchling user, try out Liminal by following the <a href="getting-started/prerequisites/">quickstart guide</a>! Reach out in the <a href="https://github.com/dynotx/liminal-orm/discussions">Discussions</a> forum with any questions or to simply introduce yourself! If there is something blocking you from using Liminal or you're having trouble setting Liminal up, please share in <a href="https://github.com/dynotx/liminal-orm/issues">Issues</a> or reach out directly (contact information below). You can expect responses within 48 hours :)</p>
-<p>Nirmit Damania is the creator and current maintainer of Liminal (I post Liminal updates to <a href="https://github.com/dynotx/liminal-orm/discussions">Discussions</a> and my <a href="https://www.linkedin.com/in/nirmit-damania/">LinkedIn</a>). Most importantly, <strong>you</strong> have the ability to influence the future of Liminal! Any feedback, positive or negative, is highly encouraged and will be used to steer the direction of Liminal. Refer to the <a href="https://github.com/dynotx/liminal-orm/blob/main/CONTRIBUTING.md">Contributing guide</a> to learn more about how you can contribute to Liminal.</p>
-<p>⭐️ Leave a star on the repo to spread the word!
-If you or your organization use Liminal, please consider adding yourself or your organization to the <a href="https://github.com/dynotx/liminal-orm/blob/main/USERS.md">Users</a> list.</p>
-<div style="text-align: center;">
-    <img src="./assets/liminal_simple_graph.png" width="600"/>
-</div>
+  <h1>Entity schemas</h1>
 
-<h2 id="mission">Mission</h2>
-<p>The democratization of software in Biotech is crucial. By building a community around complex, yet common, problems and creating open-source solutions, we can work together to tackle these challenges together and enable faster innovation in the industry. By breaking down the silos between private platforms, we can enable a more dynamic and open ecosystem. This was the motivation for Liminal's creation. Liminal's goal is to create an open-source software product that enables a standard, code-first approach to configuration and change management for LIMS systems. We started with Benchling, but the goal is to make Liminal the go-to solution for any LIMS system.</p>
-<h2 id="direct-contact-information">Direct contact information</h2>
+<h2 id="entity-schema-class">Entity Schema: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/base_model.py">class</a></h2>
+<p>Below is an example of a custom entity schema defined in code. The properties defined in the <code>SchemaProperties</code> object and for <code>Column</code> objects
+align with the properties shown on the Benchling website. This is how Liminal defines your Benchling entity schema in code. Any of these properties
+can be manipulated to change the definition of the entity schema. Any updates to the schema or the addition/archival of schemas are automatically
+detected by Liminal's migration service. Refer to the <a href="../../getting-started/first-migration/">First Migration</a> page to run your first migration.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">liminal.orm.schema_properties</span> <span class="kn">import</span> <span class="n">SchemaProperties</span>
+<span class="kn">from</span> <span class="nn">liminal.orm.column</span> <span class="kn">import</span> <span class="n">Column</span>
+<span class="kn">from</span> <span class="nn">liminal.validation</span> <span class="kn">import</span> <span class="n">BenchlingValidator</span>
+<span class="kn">from</span> <span class="nn">liminal.enums</span> <span class="kn">import</span> <span class="n">BenchlingEntityType</span><span class="p">,</span> <span class="n">BenchlingFieldType</span><span class="p">,</span> <span class="n">BenchlingNamingStrategy</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">Query</span><span class="p">,</span> <span class="n">Session</span>
+<span class="kn">from</span> <span class="nn">liminal.orm.mixins</span> <span class="kn">import</span> <span class="n">CustomEntityMixin</span>
+<span class="kn">from</span> <span class="nn">liminal.orm.base_model</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">Column</span> <span class="k">as</span> <span class="n">SqlColumn</span>
+<span class="kn">from</span> <span class="nn">pizzahouse.dropdowns</span> <span class="kn">import</span> <span class="n">Toppings</span>
+
+<span class="k">class</span> <span class="nc">Pizza</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">,</span> <span class="n">CustomEntityMixin</span><span class="p">):</span>
+    <span class="n">__schema_properties__</span> <span class="o">=</span> <span class="n">SchemaProperties</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Pizza&quot;</span><span class="p">,</span>
+        <span class="n">warehouse_name</span><span class="o">=</span><span class="s2">&quot;pizza&quot;</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;PI&quot;</span><span class="p">,</span>
+        <span class="n">entity_type</span><span class="o">=</span><span class="n">BenchlingEntityType</span><span class="o">.</span><span class="n">CUSTOM_ENTITY</span><span class="p">,</span>
+        <span class="n">naming_strategies</span><span class="o">=</span><span class="p">{</span>
+            <span class="n">BenchlingNamingStrategy</span><span class="o">.</span><span class="n">REPLACE_NAME_WITH_ID</span><span class="p">,</span>
+            <span class="n">BenchlingNamingStrategy</span><span class="o">.</span><span class="n">IDS_FROM_NAMES</span><span class="p">,</span>
+            <span class="n">BenchlingNamingStrategy</span><span class="o">.</span><span class="n">NEW_IDS</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="n">mixture_schema_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">dough</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;dough&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">BenchlingFieldType</span><span class="o">.</span><span class="n">TEXT</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">cook_temp</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cook_temp&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">BenchlingFieldType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">cook_time</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cook_time&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">BenchlingFieldType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">toppings</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;toppings&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">BenchlingFieldType</span><span class="o">.</span><span class="n">DROPDOWN</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dropdown</span><span class="o">=</span><span class="n">Toppings</span><span class="p">)</span>
+    <span class="n">customer_review</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;customer_review&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">BenchlingFieldType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dough</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">cook_temp</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">cook_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">customer_review</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dough</span> <span class="o">=</span> <span class="n">dough</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cook_temp</span> <span class="o">=</span> <span class="n">cook_temp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cook_time</span> <span class="o">=</span> <span class="n">cook_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">customer_review</span> <span class="o">=</span> <span class="n">customer_review</span>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">Session</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Query</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Pizza</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_validators</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BenchlingValidator</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+</code></pre></div>
+<h2 id="schema-properties-class">Schema Properties: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/schema_properties.py">class</a></h2>
+<h3 id="parameters">Parameters</h3>
+<p><strong>name: str</strong></p>
+<blockquote>
+<p>The name of the entity schema. Must be unique across all entity schemas.
+<strong>warehouse_name: str</strong></p>
+<p>The warehouse name of the entity schema. Must be unique across all entity schemas.</p>
+</blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The warehouse names are used as keys across liminal and are used as entity_link values in Columns.</p>
+</div>
+<p><strong>prefix: str</strong></p>
+<blockquote>
+<p>The prefix of the entity schema. Must be unique across all entity schemas.</p>
+</blockquote>
+<p><strong>entity_type: BenchlingEntityType</strong></p>
+<blockquote>
+<p>The type of entity schema. Type must be one of the values from the <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/enums/benchling_entity_type.py">BenchlingEntityType</a> enum.</p>
+</blockquote>
+<p><strong>naming_strategies: set[BenchlingNamingStrategy]</strong></p>
+<blockquote>
+<p>The naming strategies for the entity schema. Must be a set of values from the <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/enums/benchling_naming_strategy.py">BenchlingNamingStrategy</a> enum.</p>
+</blockquote>
+<p><strong>mixture_schema_config: MixtureSchemaConfig | None</strong></p>
+<blockquote>
+<p>The mixture schema configuration for the entity schema. Must be defined as a <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/base/properties/base_schema_properties.py">MixtureSchemaConfig</a> object.</p>
+</blockquote>
+<h2 id="column-class">Column: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/column.py">class</a></h2>
+<h3 id="parameters_1">Parameters</h3>
+<p><strong>name: str</strong></p>
+<blockquote>
+<p>The external facing name of the column.</p>
+</blockquote>
+<p><strong>type: BenchlingFieldType</strong></p>
+<blockquote>
+<p>The type of the field. Type must be one of the values from the <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/enums/benchling_field_type.py">BenchlingFieldType</a> enum.</p>
+</blockquote>
+<p><strong>required: bool</strong></p>
+<blockquote>
+<p>Whether the field is required.</p>
+</blockquote>
+<p><strong>is_multi: bool = False</strong></p>
+<blockquote>
+<p>Whether the field is a multi-value field. Defaults to False.</p>
+</blockquote>
+<p><strong>parent_link: bool = False</strong></p>
+<blockquote>
+<p>Whether the field is a parent link field. Defaults to False.</p>
+</blockquote>
+<p><strong>dropdown: Type[BaseDropdown] | None = None</strong></p>
+<blockquote>
+<p>The dropdown object for the field. The dropdown object must inherit from BaseDropdown and the type of the Column must be <code>BenchlingFieldType.DROPDOWN</code>. Defaults to None.</p>
+</blockquote>
+<p><strong>entity_link: str | None = None</strong></p>
+<blockquote>
+<p>The entity link for the field. The entity link must be the <code>warehouse_name</code> as a string of the entity schema that the field is linking to. The type of the Column must be <code>BenchlingFieldType.ENTITY_LINK</code> in order to be valid. Defaults to None.</p>
+</blockquote>
+<p><strong>tooltip: str | None = None</strong></p>
+<blockquote>
+<p>The tooltip for the field. Defaults to None.</p>
+</blockquote>
+<h2 id="notes">Notes</h2>
 <ul>
-<li>Email: <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#111;&#112;&#101;&#110;&#115;&#111;&#117;&#114;&#99;&#101;&#64;&#100;&#121;&#110;&#111;&#116;&#120;&#46;&#99;&#111;&#109;">&#111;&#112;&#101;&#110;&#115;&#111;&#117;&#114;&#99;&#101;&#64;&#100;&#121;&#110;&#111;&#116;&#120;&#46;&#99;&#111;&#109;</a></li>
-<li>LinkedIn: <a href="https://www.linkedin.com/in/nirmit-damania/">Nirmit Damania</a></li>
+<li>Note that the Entity Schema definition in Liminal does not cover 100% of the properties that can be set through the Benchling website. However, the goal is to have 100% parity! If you find any missing properties that are not covered in the definition or migration service, please open an issue on <a href="https://github.com/dynotx/liminal-orm/issues">Github</a>. In the meantime, you can manually set the properties through the Benchling website.</li>
 </ul>
-<h2 id="footnotes">Footnotes</h2>
-<p>ORM<sup>1</sup>: Object-Relational Mapper. An ORM is a piece of software designed to translate between the data representations used by databases and those used in object-oriented programming. In this case, Liminal provides an ORM layer built specifically for Benchling that allows for users to quickly and easily define Benchling entities in code. <a href="https://github.com/sqlalchemy/sqlalchemy">SQLAlchemy</a> is the underlying ORM that Liminal uses to interact with your Benchling tenant(s) and is an open-source software that is an industry standard software.</p>
-<p>LIMS<sup>2</sup>: Laboratory Information Management System. A LIMS is a piece of software that allows you to effectively manage samples and associated data. <a href="https://www.benchling.com/">Benchling</a> is an industry-leading LIMS software.</p>
-<p>CLI<sup>3</sup>: Command Line Interface. A CLI is a piece of software that allows you to interact with a software program via the command line. Liminal provides a CLI that allows you to interact with your Liminal environment. This project uses <a href="https://github.com/fastapi/typer">Typer</a> to construct the CLI</p>
+<h2 id="validators-class">Validators: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/validation/__init__.py">class</a></h2>
+<p>As seen in the example above, the <code>get_validators</code> method is used to define a list of validators for the entity schema. These validators run on entities of the schema that are queried from Benchling's Postgres database. For example:</p>
+<div class="highlight"><pre><span></span><code><span class="n">pizza_entity</span> <span class="o">=</span> <span class="n">Pizza</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">session</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+<span class="c1"># Validate a single entity from a query</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">CookTempValidator</span><span class="p">()</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">pizza_entity</span><span class="p">)</span>
+
+<span class="c1"># Validate all entities for a schema</span>
+<span class="n">reports</span> <span class="o">=</span> <span class="n">Pizza</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+</code></pre></div>
+<p>The list of validators within <code>get_validators</code> are used to run on all entities of the schema.</p>
+<p>The <code>BenchlingValidator</code> object is used to define the validator classes, that can be defined with custom logic to validate entities of a schema. Refer to the <a href="../validators/">Validators</a> page to learn more about how to define validators.</p>
 
 
 
@@ -1129,15 +1271,31 @@ If you or your organization use Liminal, please consider adding yourself or your
       
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
+          
+          <a href="../dropdowns/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Dropdowns">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Dropdowns
+              </div>
+            </div>
+          </a>
+        
         
           
-          <a href="getting-started/prerequisites/" class="md-footer__link md-footer__link--next" aria-label="Next: Prerequisites">
+          <a href="../validators/" class="md-footer__link md-footer__link--next" aria-label="Next: Validators">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Prerequisites
+                Validators
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1171,10 +1329,10 @@ If you or your organization use Liminal, please consider adding yourself or your
     </div>
     
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "content.code.copy", "content.code.select", "search.suggest", "search.share", "search.highlight", "content.tabs.link", "toc.integrate", "header.autohide", "navigation.footer"], "search": "assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "content.code.copy", "content.code.select", "search.suggest", "search.share", "search.highlight", "content.tabs.link", "toc.integrate", "header.autohide", "navigation.footer"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="assets/javascripts/bundle.83f73b43.min.js"></script>
+      <script src="../../assets/javascripts/bundle.83f73b43.min.js"></script>
       
     
   </body>

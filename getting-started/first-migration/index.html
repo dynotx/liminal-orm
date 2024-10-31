@@ -8,22 +8,28 @@
       
       
       
+        <link rel="canonical" href="https://dynotx.github.io/liminal-orm/getting-started/first-migration/">
       
       
+        <link rel="prev" href="../setup/">
       
-      <link rel="icon" href="/liminal-orm/assets/images/favicon.png">
+      
+        <link rel="next" href="../downgrading/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.42">
     
     
       
-        <title>Liminal ORM</title>
+        <title>First migration - Liminal ORM</title>
       
     
     
-      <link rel="stylesheet" href="/liminal-orm/assets/stylesheets/main.0253249f.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.0253249f.min.css">
       
         
-        <link rel="stylesheet" href="/liminal-orm/assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -42,7 +48,7 @@
       
     
     
-    <script>__md_scope=new URL("/liminal-orm/",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -77,6 +83,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#example-revision-file" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -89,9 +100,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/liminal-orm/." title="Liminal ORM" class="md-header__button md-logo" aria-label="Liminal ORM" data-md-component="logo">
+    <a href="../.." title="Liminal ORM" class="md-header__button md-logo" aria-label="Liminal ORM" data-md-component="logo">
       
-  <img src="/liminal-orm/assets/logo.png" alt="logo">
+  <img src="../../assets/logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -108,7 +119,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              First migration
             
           </span>
         </div>
@@ -216,7 +227,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/liminal-orm/." class="md-tabs__link">
+      <a href="../.." class="md-tabs__link">
         
   
     
@@ -231,11 +242,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="/liminal-orm/getting-started/prerequisites/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../prerequisites/" class="md-tabs__link">
           
   
   Getting Started
@@ -253,7 +266,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/liminal-orm/reference/benchling-connection/" class="md-tabs__link">
+        <a href="../../reference/benchling-connection/" class="md-tabs__link">
           
   
   Reference
@@ -271,7 +284,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/liminal-orm/case-studies/dynotx-recommended-sop/" class="md-tabs__link">
+        <a href="../../case-studies/dynotx-recommended-sop/" class="md-tabs__link">
           
   
   Case Studies
@@ -289,7 +302,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/liminal-orm/contributing/" class="md-tabs__link">
+        <a href="../../contributing/" class="md-tabs__link">
           
   
   Contributing
@@ -307,7 +320,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/liminal-orm/future-direction/" class="md-tabs__link">
+        <a href="../../future-direction/" class="md-tabs__link">
           
   
   Future Direction
@@ -348,9 +361,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/liminal-orm/." title="Liminal ORM" class="md-nav__button md-logo" aria-label="Liminal ORM" data-md-component="logo">
+    <a href="../.." title="Liminal ORM" class="md-nav__button md-logo" aria-label="Liminal ORM" data-md-component="logo">
       
-  <img src="/liminal-orm/assets/logo.png" alt="logo">
+  <img src="../../assets/logo.png" alt="logo">
 
     </a>
     Liminal ORM
@@ -377,7 +390,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/liminal-orm/." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -394,23 +407,28 @@
       
   
   
+    
   
   
+  
     
     
     
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -421,7 +439,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Getting Started
@@ -435,7 +453,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/liminal-orm/getting-started/prerequisites/" class="md-nav__link">
+      <a href="../prerequisites/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -456,7 +474,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/liminal-orm/getting-started/installation/" class="md-nav__link">
+      <a href="../installation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -477,7 +495,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/liminal-orm/getting-started/setup/" class="md-nav__link">
+      <a href="../setup/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -495,10 +513,28 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="/liminal-orm/getting-started/first-migration/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    First migration
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -507,6 +543,33 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#example-revision-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Revision File
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -519,7 +582,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/liminal-orm/getting-started/downgrading/" class="md-nav__link">
+      <a href="../downgrading/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -540,7 +603,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/liminal-orm/getting-started/tutorials/" class="md-nav__link">
+      <a href="../tutorials/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -606,7 +669,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/liminal-orm/reference/benchling-connection/" class="md-nav__link">
+      <a href="../../reference/benchling-connection/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -627,7 +690,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/liminal-orm/reference/benchling-session/" class="md-nav__link">
+      <a href="../../reference/benchling-session/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -648,7 +711,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/liminal-orm/reference/dropdowns/" class="md-nav__link">
+      <a href="../../reference/dropdowns/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -669,7 +732,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/liminal-orm/reference/entity-schemas/" class="md-nav__link">
+      <a href="../../reference/entity-schemas/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -690,7 +753,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/liminal-orm/reference/validators/" class="md-nav__link">
+      <a href="../../reference/validators/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -711,7 +774,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/liminal-orm/reference/revision-file/" class="md-nav__link">
+      <a href="../../reference/revision-file/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -732,7 +795,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/liminal-orm/reference/operations/" class="md-nav__link">
+      <a href="../../reference/operations/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -798,7 +861,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/liminal-orm/case-studies/dynotx-recommended-sop/" class="md-nav__link">
+      <a href="../../case-studies/dynotx-recommended-sop/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -864,7 +927,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/liminal-orm/contributing/" class="md-nav__link">
+      <a href="../../contributing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -930,7 +993,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/liminal-orm/future-direction/" class="md-nav__link">
+      <a href="../../future-direction/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -963,8 +1026,87 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+  
+  
+
+
+  <h1>First migration</h1>
+
+<ol>
+<li>
+<p>You have manipulated your schemas and are ready to run your first migration!</p>
+</li>
+<li>
+<p>In your CLI in Liminal's root directory (that contains the <code>liminal/</code> path), run the following command:</p>
+<div class="highlight"><pre><span></span><code>liminal<span class="w"> </span>upgrade<span class="w"> </span>&lt;benchling_tenant&gt;<span class="w"> </span>&lt;upgrade_descriptor&gt;
+</code></pre></div>
+<p>Example: <code>liminal upgrade prod "remove dough column from pizza schema"</code>.</p>
+<p>This will automatically generate a new revision file in the <code>versions/</code> directory. This revision file defines the set of steps (or "operations") that will be needed to make the targeted Benchling tenant up to date with the changes made in the schema model.</p>
+<div class="admonition question">
+<p class="admonition-title">If I have multiple Benchling tenants, do I have to run <code>autogenerate</code> for each tenant?</p>
+<p>No, Liminal only keeps a single thread of revision history so that each revision file has a linear link. In the case of multiple tenants that need to stay in sync together, we recommend pointing <code>autogenerate</code> at your production tenant, or the tenant that acts as the production environment. This will ensure there is a consistent history that your other tenants can follow. When ready, you can then apply the revision to all your tenants.</p>
+</div>
+</li>
+<li>
+<p>Review the generated revision file and set of operations to ensure that it is accurate.</p>
+<h3 id="example-revision-file">Example Revision File</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">liminal.external</span> <span class="k">as</span> <span class="nn">b</span>
+
+<span class="c1"># revision identifiers, used by Liminal.</span>
+<span class="n">revision</span> <span class="o">=</span> <span class="s2">&quot;c3a9cd009713&quot;</span>
+<span class="n">down_revision</span> <span class="o">=</span> <span class="s2">&quot;d28335bffaba&quot;</span>
+
+
+<span class="c1"># ### commands auto generated by Liminal - please review (and adjust if needed)! ###</span>
+<span class="k">def</span> <span class="nf">upgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">BaseOperation</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">ArchiveEntitySchemaField</span><span class="p">(</span><span class="s1">&#39;pizza&#39;</span><span class="p">,</span> <span class="s1">&#39;dough&#39;</span><span class="p">)]</span>
+
+<span class="c1"># ### commands auto generated by Liminal - please review (and adjust if needed)! ###</span>
+<span class="k">def</span> <span class="nf">downgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">BaseOperation</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">UnarchiveEntitySchemaField</span><span class="p">(</span><span class="s1">&#39;pizza&#39;</span><span class="p">,</span> <span class="s1">&#39;dough&#39;</span><span class="p">)]</span>
+</code></pre></div>
+<p>This looks correct! I wanted to archive the <code>dough</code> column from the <code>pizza</code> entity schema.</p>
+</li>
+<li>
+<p>Once you've reviewed the revision file and are ready to apply the changes, run the following command:</p>
+<div class="highlight"><pre><span></span><code>liminal<span class="w"> </span>upgrade<span class="w"> </span>&lt;benchling_tenant_name&gt;<span class="w"> </span>&lt;upgrade_descriptor&gt;
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">The upgrade descriptor</p>
+<p>The upgrade descriptor can be one of:</p>
+<ul>
+<li><code>head</code> to upgrade to the latest revision.</li>
+<li><code>revision_ID</code> to upgrade to a specific revision. Ex: <code>"c3a9cd009713"</code></li>
+<li><code>+&lt;n&gt;</code> to upgrade to the revision <code>n</code> revisions after the current revision. Ex: <code>"+1"</code> will upgrade to the revision after the current revision.</li>
+</ul>
+</div>
+<p>In this case, we run <code>liminal upgrade prod head</code> to upgrade to apply the revision to the production tenant.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you have multiple Benchling tenants, you can run <code>liminal upgrade</code> multiple times pointing to different tenants to upgrade them. It is recommended to run against your test tenant first to ensure the changes are applied as expected.</p>
+</div>
+</li>
+<li>
+<p>You should see output indicating that the revision was applied successfully. Check your Benchling tenant to ensure the changes were applied as expected!</p>
+</li>
+</ol>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+                
               </article>
             </div>
           
@@ -984,6 +1126,44 @@
       
         <footer class="md-footer">
   
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../setup/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Setup">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Setup
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../downgrading/" class="md-footer__link md-footer__link--next" aria-label="Next: Downgrading">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Downgrading
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
     
   
   <div class="md-footer-meta md-typeset">
@@ -1008,10 +1188,10 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "/liminal-orm/", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "content.code.copy", "content.code.select", "search.suggest", "search.share", "search.highlight", "content.tabs.link", "toc.integrate", "header.autohide", "navigation.footer"], "search": "/liminal-orm/assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "content.code.copy", "content.code.select", "search.suggest", "search.share", "search.highlight", "content.tabs.link", "toc.integrate", "header.autohide", "navigation.footer"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="/liminal-orm/assets/javascripts/bundle.83f73b43.min.js"></script>
+      <script src="../../assets/javascripts/bundle.83f73b43.min.js"></script>
       
     
   </body>
