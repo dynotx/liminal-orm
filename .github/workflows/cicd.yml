@@ -1,4 +1,4 @@
-name: liminal
+name: cicd
 
 on:
   workflow_dispatch:
