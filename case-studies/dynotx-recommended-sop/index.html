@@ -357,9 +357,7 @@
   
 
 
-  
-
-<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="Liminal ORM" class="md-nav__button md-logo" aria-label="Liminal ORM" data-md-component="logo">
       
@@ -885,6 +883,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#reverting-tenant-to-the-current-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reverting Tenant to the current state
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1045,6 +1052,72 @@
               </div>
             
             
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#dyno-therapeutics-benchling-change-management-sop" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dyno Therapeutics Benchling Change Management SOP
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dyno Therapeutics Benchling Change Management SOP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pre-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pre-work
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Migration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reverting-tenant-to-the-current-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reverting Tenant to the current state
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           
             <div class="md-content" data-md-component="content">
@@ -1060,24 +1133,16 @@
 
 <p>Below, you will find the SOP Dyno Therapeutics follows for using Liminal to manage their Benchling schemas. This SOP assumes that you have already set up Liminal.</p>
 <h2 id="dyno-therapeutics-benchling-change-management-sop">Dyno Therapeutics Benchling Change Management SOP</h2>
-<p>(since 07.24.2024)</p>
-<p>Dyno's Benchling tenants are set up as a Dev, Test, and Prod environments. All scientists and a select number of engineers have access to the PROD tenant, and all work is done in PROD. The Dev and Test tenants are used for development and testing of new features before merging into PROD. Liminal is used to keep the Test and Prod tenants in sync, while Dev is used for development/testing. Dyno uses a Slack channel for requesting changes to Benchling schemas. There is one Benchling Admin who is responsible for managing the Benchling environment.</p>
-<p>Let's say a change has to be made to the Benchling schema...</p>
+<p><em>(since 07.24.2024)</em></p>
+<p>Dyno's Benchling tenants are set up as a Dev, Test, and Prod environments. All scientists and a select number of engineers have access to the PROD tenant, and all work is done in PROD. The Dev and Test tenants are used for development and testing of new features before merging into PROD. Liminal is used to keep the Test and Prod tenants in sync, while Dev is used for development/testing. Dyno uses a ticketing system through a Slack channel for Benchling schema change requests. The Benchling Admin is responsible for managing the Benchling environment and implementing the requested changes.</p>
+<p>Let's say a change has to be made to a Benchling schema...</p>
 <h3 id="pre-work">Pre-work</h3>
 <ol>
 <li>
-<p>If the change is non-trivial, the Benchling Admin will modify the Liminal schemas in the Test tenant on the Benchling website. This allows for them to try changes and iterate in a safe environment, where they finally settle on the right schema change(s).</p>
+<p>If the change is non-trivial, the Benchling Admin will modify the Liminal schemas in the Dev tenant on the Benchling UI. This allows them to try changes and iterate in a safe environment until the final changes are settled.</p>
 </li>
 <li>
-<p>If they are confident that they know the exact changes needed to be made to the Liminal schemas in order to reflect their changes in TEST, they move onto the migration step, and only migrate the changes to PROD. However if they are not 100% confident, Liminal offers the ability to revert back to the original state automatically.</p>
-<p><strong>Reverting Test to the original state</strong></p>
-<p>a. Run <code>liminal autogenerate TEST 'description'</code>. This will generate a revision file, and create a list of operations to migrate TEST to be in sync with the schemas defined in code.</p>
-<p>b. Run <code>liminal upgrade TEST</code>. This will apply the operations to the TEST tenant.</p>
-<p>c. Delete the revision file created in step a.</p>
-<div class="admonition question">
-<p class="admonition-title">Why delete the revision file?</p>
-<p>Liminal only keeps of 1 linear history of changes. This "cleanup" migration is not part of the linear history, so it should be deleted.</p>
-</div>
+<p>Once they are confident in the exact changes needed to be made to the Liminal schemas, they move onto the migration step. As a safeguard, Liminal offers the ability to revert back to the original state automatically.</p>
 </li>
 </ol>
 <h3 id="migration">Migration</h3>
@@ -1093,7 +1158,7 @@
 </div>
 </li>
 <li>
-<p>Create a PR in GitHub with schema changes and revision filee.</p>
+<p>Create a PR in GitHub with schema changes and revision file.</p>
 </li>
 <li>
 <p>Run <code>liminal upgrade TEST</code>. Dyno keeps TEST in sync with PROD, for easy testing of new features. This runs the generated list of operations in the generated revision file against the TEST tenant.</p>
@@ -1111,6 +1176,23 @@
 <p>Merge the PR.</p>
 </li>
 </ol>
+<h3 id="reverting-tenant-to-the-current-state">Reverting Tenant to the current state</h3>
+<p>Let's say you are making some changes in the DEV tenant, but you need to revert back to the current state of your schemas defined in code. Liminal offers a way to quickly migrate the tenant back/forward to the current state.</p>
+<ol>
+<li>
+<p>Run <code>liminal autogenerate TEST 'description'</code>. This will generate a revision file, and create a list of operations to migrate TEST to be in sync with the schemas defined in code.</p>
+</li>
+<li>
+<p>Run <code>liminal upgrade TEST</code>. This will apply the operations to the TEST tenant.</p>
+</li>
+<li>
+<p>Delete the revision file created in step 1.</p>
+</li>
+</ol>
+<div class="admonition question">
+<p class="admonition-title">Why delete the revision file?</p>
+<p>Liminal only keeps of 1 linear history of changes. This "cleanup" migration is not part of the linear history, so it should be deleted.</p>
+</div>
 
 
 
@@ -1207,7 +1289,7 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "content.code.copy", "content.code.select", "search.suggest", "search.share", "search.highlight", "content.tabs.link", "toc.integrate", "header.autohide", "navigation.footer"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "content.code.copy", "content.code.select", "search.suggest", "search.share", "search.highlight", "content.tabs.link", "header.autohide", "navigation.footer"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.83f73b43.min.js"></script>
