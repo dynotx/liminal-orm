@@ -7,6 +7,7 @@ Thank you in advance for your contribution to Liminal! A contribution of any kin
 Everyone in the community has the ability to influence the roadmap of Liminal, no matter how big or small the contribution. Below are some ways you can contribute:
 
 - **Code Contribution**: Help us improve the codebase by fixing bugs, adding new features, or improving documentation.
+- **Documentation**: Help us improve the documentation by adding missing information, improving existing documentation, or raising an issue to update the documentation where needed.
 - **Raising an Issue**: Report bugs, suggest features, or provide feedback to help us improve.
 - **Spread the Word**: Leave a star on the repo in GitHub or spread the word with coworkers to help grow and cultivate the community.
 - **Add yourself as a User**: If your project or organization uses Liminal, add yourself to [USERS.md](https://github.com/dynotx/liminal-orm/blob/main/USERS.md). This is a great way to help us prioritize Liminal's roadmap, and get first dibs on new features ;).

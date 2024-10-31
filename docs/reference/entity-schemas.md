@@ -58,7 +58,7 @@ class Pizza(BaseModel, CustomEntityMixin):
         return []
 ```
 
-## Schema Properties ([class](https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/schema_properties.py))
+## Schema Properties: [class](https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/schema_properties.py)
 
 ### Parameters
 
@@ -87,7 +87,7 @@ class Pizza(BaseModel, CustomEntityMixin):
 
 > The mixture schema configuration for the entity schema. Must be defined as a [MixtureSchemaConfig](https://github.com/dynotx/liminal-orm/blob/main/liminal/base/properties/base_schema_properties.py) object.
 
-## Column ([class](https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/column.py))
+## Column: [class](https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/column.py)
 
 ### Parameters
 
@@ -127,7 +127,7 @@ class Pizza(BaseModel, CustomEntityMixin):
 
 - Note that the Entity Schema definition in Liminal does not cover 100% of the properties that can be set through the Benchling website. However, the goal is to have 100% parity! If you find any missing properties that are not covered in the definition or migration service, please open an issue on [Github](https://github.com/dynotx/liminal-orm/issues). In the meantime, you can manually set the properties through the Benchling website.
 
-## Validators ([class]<https://github.com/dynotx/liminal-orm/blob/main/liminal/validation/__init__.py>)
+## Validators: [class](https://github.com/dynotx/liminal-orm/blob/main/liminal/validation/__init__.py)
 
 As seen in the example above, the `get_validators` method is used to define a list of validators for the entity schema. These validators run on entities of the schema that are queried from Benchling's Postgres database. For example:
 
