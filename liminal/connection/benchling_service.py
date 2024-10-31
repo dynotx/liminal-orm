@@ -27,9 +27,9 @@ class BenchlingService(Benchling):
         The connection object that contains the credentials for the Benchling tenant.
     use_api: bool
         Whether to connect to the Benchling SDK. Requires api_client_id and api_client_secret from the connection object.
-    use_db: bool
+    use_db: bool = False
         Whether to connect to the Benchling Postgres database. Requires warehouse_connection_string from the connection object.
-    use_internal_api: bool
+    use_internal_api: bool = False
         Whether to connect to the Benchling internal API. Requires internal_api_admin_email and internal_api_admin_password from the connection object.
     """
 

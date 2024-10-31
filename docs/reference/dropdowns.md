@@ -1,4 +1,4 @@
-## Dropdown Schema ([class](https://github.com/dynotx/liminal-orm/blob/main/liminal/base/base_dropdown.py))
+## Dropdown Schema: [class](https://github.com/dynotx/liminal-orm/blob/main/liminal/base/base_dropdown.py)
 
 Below is an example of a dropdown schema defined in code. The `__benchling_name__` property is used to define the name of the dropdown in Benchling, while the `__allowed_values__` property is used to define the values of the dropdown.
 

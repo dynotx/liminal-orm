@@ -1,5 +1,5 @@
 
-## Entity Schema ([class](https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/base_model.py))
+## Entity Schema: [class](https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/base_model.py)
 
 Below is an example of a custom entity schema defined in code. The properties defined in the `SchemaProperties` object and for `Column` objects
 align with the properties shown on the Benchling website. This is how Liminal defines your Benchling entity schema in code. Any of these properties
@@ -129,4 +129,18 @@ class Pizza(BaseModel, CustomEntityMixin):
 
 ## Validators ([class]<https://github.com/dynotx/liminal-orm/blob/main/liminal/validation/__init__.py>)
 
-As seen in the example above, the `get_validators` method is used to define a list of validators for the entity schema. The `BenchlingValidator` object is used to define the validation objects for the entity schema, and run on entities of the schema. Refer to the [Validators](./validators.md) page to learn more about the different types of validators.
+As seen in the example above, the `get_validators` method is used to define a list of validators for the entity schema. These validators run on entities of the schema that are queried from Benchling's Postgres database. For example:
+
+```python
+pizza_entity = Pizza.query(session).first()
+
+# Validate a single entity from a query
+report = CookTempValidator().validate(pizza_entity)
+
+# Validate all entities for a schema
+reports = Pizza.validate(session)
+```
+
+The list of validators within `get_validators` are used to run on all entities of the schema.
+
+The `BenchlingValidator` object is used to define the validator classes, that can be defined with custom logic to validate entities of a schema. Refer to the [Validators](./validators.md) page to learn more about how to define validators.

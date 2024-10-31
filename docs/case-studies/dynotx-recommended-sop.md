@@ -3,7 +3,7 @@ Below, you will find the SOP Dyno Therapeutics follows for using Liminal to mana
 ## Dyno Therapeutics Benchling Change Management SOP
 (since 07.24.2024)
 
-Dyno's Benchling tenants are set up as a Dev, Test, and Prod environments. All scientists and a select number of engineers have access to the PROD tenant, and all work is done in PROD. The Dev and Test tenants are used for development and testing of new features before merging into PROD. Limianl is used to keep the Test and Prod tenants in sync, while Dev is used for development/testing. Dyno uses a Slack channel for requesting changes to Benchling schemas. There is one Benchling Admin who is responsible for managing the Benchling environment.
+Dyno's Benchling tenants are set up as a Dev, Test, and Prod environments. All scientists and a select number of engineers have access to the PROD tenant, and all work is done in PROD. The Dev and Test tenants are used for development and testing of new features before merging into PROD. Liminal is used to keep the Test and Prod tenants in sync, while Dev is used for development/testing. Dyno uses a Slack channel for requesting changes to Benchling schemas. There is one Benchling Admin who is responsible for managing the Benchling environment.
 
 Let's say a change has to be made to the Benchling schema...
 
