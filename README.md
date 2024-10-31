@@ -120,18 +120,22 @@ With your schemas defined in code, you can now take advantage of the additional 
 1. Entity validation: Easily create custom validation rules for your Benchling entities.
 
     ```python
-    from dyno.liminal.orm.base_model import BaseModel
-    from dyno.liminal.orm.mixins import CustomEntityMixin
+    from liminal.validation import BenchlingValidator, BenchlingValidatorReport, BenchlingReportLevel
+    from liminal.orm.base_model import BaseModel
 
-    class Pizza(BaseModel, CustomEntityMixin):
-        ...
+    class CookTempValidator(BenchlingValidator):
+        """Validates that a field value is a valid enum value for a Benchling entity"""
 
-        @validator(BenchlingReportLevel.HIGH)
-        def cook_temp_time(self):
-            if self.cook_time is not None and self.cook_temp is None:
-                raise ValueError("Cook temp is required if cook time is set")
-            if self.cook_time is None and self.cook_temp is not None:
-                raise ValueError("Cook time is required if cook temp is set")
+        def validate(self, entity: type[BaseModel]) -> BenchlingValidatorReport:
+            valid = True
+            message = None
+            if entity.cook_time is not None and entity.cook_temp is None:
+                valid = False
+                message = "Cook temp is required if cook time is set"
+            if entity.cook_time is None and entity.cook_temp is not None:
+                valid = False
+                message = "Cook time is required if cook temp is set"
+            return self.create_report(valid, BenchlingReportLevel.MED, entity, message)
     ```
 
 2. Strongly typed queries: Write type-safe queries using SQLAlchemy to access your Benchling entities.

@@ -11,13 +11,14 @@ class CookTempValidator(BenchlingValidator):
 
     def validate(self, entity: type[BaseModel]) -> BenchlingValidatorReport:
         valid = True
+        message = None
         if entity.cook_time is not None and entity.cook_temp is None:
             valid = False
-            return self.create_report(valid, BenchlingReportLevel.MED, entity, "Cook temp is required if cook time is set")
+            message = "Cook temp is required if cook time is set"
         if entity.cook_time is None and entity.cook_temp is not None:
             valid = False
-            return self.create_report(valid, BenchlingReportLevel.MED, entity, "Cook time is required if cook temp is set")
-        return self.create_report(valid, BenchlingReportLevel.MED, entity, None)
+            message = "Cook time is required if cook temp is set"
+        return self.create_report(valid, BenchlingReportLevel.MED, entity, message)
 ```
 
 A `validate(entity)` function is required to be defined in the BenchlingValidator subclass. This function should contain the logic to validate the entity. The function should return a `BenchlingValidatorReport` object, which can be easily created using the `create_report` method.
