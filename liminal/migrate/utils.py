@@ -15,8 +15,9 @@ def _check_env_file(env_file_path: Path) -> None:
 def read_local_env_file(
     env_file_path: Path, benchling_tenant: str
 ) -> tuple[str, BenchlingConnection]:
-    """Imports the env.py file from the current working directory and returns the CURRENT_REVISION_ID variable.
+    """Imports the env.py file from the current working directory and returns the CURRENT_REVISION_ID variable along with the BenchlingConnection object.
     The env.py file is expected to have the CURRENT_REVISION_ID variable set to the revision id you are currently on.
+    The BenchlingConnection object is expected to be defined and have connection information for the Benchling API client and internal API.
     """
     _check_env_file(env_file_path)
     module_path = Path.cwd() / env_file_path
@@ -26,22 +27,34 @@ def read_local_env_file(
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     for attr_name in dir(module):
-        attr = getattr(module, attr_name)
-        if isinstance(attr, BenchlingConnection) and (
-            benchling_tenant == attr.tenant_name
-            or benchling_tenant == attr.tenant_alias
-        ):
+        bc = getattr(module, attr_name)
+        if isinstance(bc, BenchlingConnection):
+            if not (
+                benchling_tenant == bc.tenant_name
+                or benchling_tenant == bc.tenant_alias
+            ):
+                raise Exception(
+                    f"tenant name {benchling_tenant} does not match tenant name {bc.tenant_name} or alias {bc.tenant_alias} in liminal/env.py."
+                )
+            if not bc.api_client_id or not bc.api_client_secret:
+                raise Exception(
+                    "api_client_id and api_client_secret must be provided in BenchlingConnection in liminal/env.py. This is necessary for the migration service."
+                )
+            if not bc.internal_api_admin_email or not bc.internal_api_admin_password:
+                raise Exception(
+                    "internal_api_admin_email and internal_api_admin_password must be provided in BenchlingConnection in liminal/env.py. This is necessary for the migration service."
+                )
             try:
                 current_revision_id: str = getattr(
-                    module, attr.current_revision_id_var_name
+                    module, bc.current_revision_id_var_name
                 )
-                return current_revision_id, attr
+                return current_revision_id, bc
             except Exception as e:
                 raise Exception(
-                    f"CURRENT_REVISION_ID variable not found in liminal/env.py. Given variable name: {attr.current_revision_id_var_name}"
+                    f"CURRENT_REVISION_ID variable not found in liminal/env.py. Given variable name: {bc.current_revision_id_var_name}"
                 ) from e
     raise Exception(
-        f"BenchlingConnection with tenant_name {benchling_tenant} not found in liminal/env.py. Please update the env.py file with the correctly defined BenchlingConnection."
+        "BenchlingConnection not found in liminal/env.py. Please update the env.py file with a correctly defined BenchlingConnection."
     )
 
 
