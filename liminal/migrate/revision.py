@@ -165,7 +165,7 @@ class Revision(BaseModel):
         Path
             The path to the revision file that was written.
         """
-        created_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+        created_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         upgrade_operation_strings = [
             o.revision_file_string() for o in self.upgrade_operations
         ]
