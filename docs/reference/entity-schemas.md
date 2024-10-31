@@ -1,12 +1,17 @@
 
 ## Entity Schema: [class](https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/base_model.py)
 
-Below is an example of a custom entity schema defined in code. The properties defined in the `SchemaProperties` object and for `Column` objects
+Below is an example of a custom entity schema defined in code. All Liminal entity schema classes inherit from Liminal's [BaseModel](https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/base_model.py) and uses [SQLAlchemy](https://www.sqlalchemy.org/) behind the scenes to create an ORM. Liminal provides base classes and clear abstractions to an easy and standardized way to define entity schemas in code. However, you are still able to use raw SQLAlchemy to interact with the schemas when necessary.
+
+The properties defined in the `SchemaProperties` object and for `Column` objects
 align with the properties shown on the Benchling website. This is how Liminal defines your Benchling entity schema in code. Any of these properties
-can be manipulated to change the definition of the entity schema. Any updates to the schema or the addition/archival of schemas are automatically
-detected by Liminal's migration service. Refer to the [First Migration](../getting-started/first-migration.md) page to run your first migration.
+can be manipulated to change the definition of the entity schema. Updates to the schema or the addition/archival of schemas are automatically
+detected by Liminal's migration service, which is run using the `liminal autogenerate` command. Refer to the [First Migration](../getting-started/first-migration.md) page to run your first migration.
+
+Below, we will go through the different components of defining an entity schema class.
 
 ```python
+from liminal.orm.relationship import single_relationship
 from liminal.orm.schema_properties import SchemaProperties
 from liminal.orm.column import Column
 from liminal.validation import BenchlingValidator
@@ -14,7 +19,6 @@ from liminal.enums import BenchlingEntityType, BenchlingFieldType, BenchlingNami
 from sqlalchemy.orm import Query, Session
 from liminal.orm.mixins import CustomEntityMixin
 from liminal.orm.base_model import BaseModel
-from sqlalchemy import Column as SqlColumn
 from pizzahouse.dropdowns import Toppings
 
 class Pizza(BaseModel, CustomEntityMixin):
@@ -31,11 +35,15 @@ class Pizza(BaseModel, CustomEntityMixin):
         mixture_schema_config=None,
     )
 
-    dough = Column(name="dough", type=BenchlingFieldType.TEXT, required=True)
+    dough = Column(name="dough", type=BenchlingFieldType.ENTITY_LINK, required=True, entity_link="dough")
     cook_temp = Column(name="cook_temp", type=BenchlingFieldType.INTEGER, required=False)
     cook_time = Column(name="cook_time", type=BenchlingFieldType.INTEGER, required=False)
     toppings = Column(name="toppings", type=BenchlingFieldType.DROPDOWN, required=False, dropdown=Toppings)
     customer_review = Column(name="customer_review", type=BenchlingFieldType.INTEGER, required=False)
+    slices = Column(name="slices", type=BenchlingFieldType.ENTITY_LINK, required=False, is_multi=True, entity_link="slice")
+
+    dough_entity = single_relationship("Dough", dough)
+    slice_entities = multi_relationship("Slice", "Pizza", "slices")
 
     def __init__(
         self,
@@ -57,6 +65,10 @@ class Pizza(BaseModel, CustomEntityMixin):
     def get_validators(self) -> list[BenchlingValidator]:
         return []
 ```
+
+## Mixins: [class](https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/mixins.py)
+
+All Liminal entity schema classes must inherit from one of the mixins in the [mixins](https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/mixins.py) module. The mixin provides the base columns for the specific entity schema type. For example, the `CustomEntityMixin` provides the base columns for a custom entity schema. To learn more, check out the SQLAlchemy documentation [here](https://docs.sqlalchemy.org/en/13/orm/extensions/declarative/mixins.html).
 
 ## Schema Properties: [class](https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/schema_properties.py)
 
@@ -123,9 +135,36 @@ class Pizza(BaseModel, CustomEntityMixin):
 
 > The tooltip for the field. Defaults to None.
 
-## Notes
+## Relationships: [module](https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/relationship.py)
 
-- Note that the Entity Schema definition in Liminal does not cover 100% of the properties that can be set through the Benchling website. However, the goal is to have 100% parity! If you find any missing properties that are not covered in the definition or migration service, please open an issue on [Github](https://github.com/dynotx/liminal-orm/issues). In the meantime, you can manually set the properties through the Benchling website.
+If there are columns that are entity links, that means the value of the column is the linked entity id or ids. You can easily define relationships using Liminal's wrapper functions around SQLAlchemy. The two relationships to define are `single_relationship` and `multi_relationship`, and examples are shown above.
+
+```python
+# single_relationship is used for a non-multi field where there is a one-to-one relationship from the current class to the target class.
+single_relationship(target_class_name: str, entity_link_field: Column, backref: str | None = None) -> RelationshipProperty:
+
+# multi_relationship is used for a multi field where there is a "one-to-many" relationship from the current class to the target class.
+# NOTE: This is not a normal one-to-many relationship. The multi field is represented as a list of entity ids.
+multi_relationship(target_class_name: str, current_class_name: str, entity_link_field_name: str) -> RelationshipProperty
+```
+
+!!! question "How do I access the joined entity or entities?"
+
+    ```python
+    connection = BenchlingConnection(...)
+    benchling_service = BenchlingService(connection, use_db=True)
+
+    with benchling_service as session:
+        pizza_entity = session.query(Pizza).first()
+
+        # NOTE: Accessing the relationship entities must be done within the session context.
+        dough = pizza_entity.dough_entity
+        slices = pizza_entity.slice_entities
+    ```
+
+## Custom Query
+
+The `query()` method must be implemented for the entity schema class to define a custom query. This is useful if you want to add additional filtering or joins to the query.
 
 ## Validators: [class](https://github.com/dynotx/liminal-orm/blob/main/liminal/validation/__init__.py)
 
@@ -144,3 +183,27 @@ reports = Pizza.validate(session)
 The list of validators within `get_validators` are used to run on all entities of the schema.
 
 The `BenchlingValidator` object is used to define the validator classes, that can be defined with custom logic to validate entities of a schema. Refer to the [Validators](./validators.md) page to learn more about how to define validators.
+
+## Additional Functionality
+
+Below is additional functionality that is provided by the Liminal BaseModel class.
+
+```python
+connection = BenchlingConnection(...)
+benchling_service = BenchlingService(connection, use_db=True)
+
+with benchling_service as session:
+
+    # Get all entities for a schema and return a dataframe
+    df = Pizza.df(session)
+
+    # Validate all entities for a schema and return a list of ValidatorReports
+    reports = Pizza.validate(session)
+
+    # Validate all entities for a schema and return a dataframe
+    validated_df = Pizza.validate_to_df(session)
+```
+
+## Notes
+
+- Note that the Entity Schema definition in Liminal does not cover 100% of the properties that can be set through the Benchling website. However, the goal is to have 100% parity! If you find any missing properties that are not covered in the definition or migration service, please open an issue on [Github](https://github.com/dynotx/liminal-orm/issues). In the meantime, you can manually set the properties through the Benchling website.
