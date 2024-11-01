@@ -1030,7 +1030,6 @@
         <span class="n">current_revision_id_var_name</span><span class="o">=</span><span class="s2">&quot;PROD_CURRENT_REVISION_ID&quot;</span><span class="p">,</span>
         <span class="n">api_client_id</span><span class="o">=</span><span class="s2">&quot;my-secret-api-client-id&quot;</span><span class="p">,</span>
         <span class="n">api_client_secret</span><span class="o">=</span><span class="s2">&quot;my-secret-api-client-secret&quot;</span><span class="p">,</span>
-        <span class="n">warehouse_connection_string</span><span class="o">=</span><span class="s2">&quot;my-warehouse-connection-string&quot;</span><span class="p">,</span>
         <span class="n">internal_api_admin_email</span><span class="o">=</span><span class="s2">&quot;my-secret-internal-api-admin-email&quot;</span><span class="p">,</span>
         <span class="n">internal_api_admin_password</span><span class="o">=</span><span class="s2">&quot;my-secret-internal-api-admin-password&quot;</span><span class="p">,</span>
 <span class="p">)</span>
@@ -1038,7 +1037,6 @@
 <ul>
 <li>Required: The <code>api_client_id</code> and <code>api_client_secret</code> are used to connect to Benchling's SDK. For more information, see the <a href="https://docs.benchling.com/docs/getting-started-benchling-apps#calling-the-api-as-an-app">Benchling API documentation</a>.</li>
 <li>Required: The <code>internal_api_admin_email</code> and <code>internal_api_admin_password</code> are used to connect to Benchling's API for the migration service. This must be the email and password used to log in to an Admin account.</li>
-<li>Optional: The <code>warehouse_connection_string</code> is used to connect to Benchling's Postgres warehouse. This is optional, but recommended for querying the Benchling warehouse using SQLAlchemy.</li>
 </ul>
 <p>The <code>CURRENT_REVISION_ID</code> variable is used to store the current state of where your Benchling tenant lies on the revision timeline. The id is the <code>revision_id</code> of the revision file that has been applied to your Benchling tenant.</p>
 <div class="admonition tip">
