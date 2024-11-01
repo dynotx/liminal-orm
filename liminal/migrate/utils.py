@@ -33,9 +33,7 @@ def read_local_env_file(
                 benchling_tenant == bc.tenant_name
                 or benchling_tenant == bc.tenant_alias
             ):
-                raise Exception(
-                    f"tenant name {benchling_tenant} does not match tenant name {bc.tenant_name} or alias {bc.tenant_alias} in liminal/env.py."
-                )
+                continue
             if not bc.api_client_id or not bc.api_client_secret:
                 raise Exception(
                     "api_client_id and api_client_secret must be provided in BenchlingConnection in liminal/env.py. This is necessary for the migration service."
@@ -54,7 +52,7 @@ def read_local_env_file(
                     f"CURRENT_REVISION_ID variable not found in liminal/env.py. Given variable name: {bc.current_revision_id_var_name}"
                 ) from e
     raise Exception(
-        "BenchlingConnection not found in liminal/env.py. Please update the env.py file with a correctly defined BenchlingConnection."
+        f"BenchlingConnection with tenant name or alias {benchling_tenant} not found in liminal/env.py. Please update the env.py file with a correctly defined BenchlingConnection."
     )
 
 
