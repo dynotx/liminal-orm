@@ -59,6 +59,7 @@ class CreateTagSchemaFieldModel(BaseModel):
     systemName: str
     name: str
     requiredLink: FieldRequiredLinkShortModel | None = None
+    tooltipText: str | None = None
 
     @classmethod
     def from_props(
@@ -121,6 +122,7 @@ class CreateTagSchemaFieldModel(BaseModel):
                 folderItemType=folder_item_type,
                 tagSchema=tagSchema,
             ),
+            tooltipText=new_props.tooltip,
         )
 
 
