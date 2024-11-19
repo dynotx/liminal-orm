@@ -24,6 +24,7 @@ sqlalchemy = "<2" # TODO: We need to assess this upgrade
 tenacity = ">=8,<10"
 typer = "^0.12.5"
 lxml = "^5.3.0"
+psycopg2-binary = "^2.9.10"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.5"
