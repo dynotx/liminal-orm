@@ -195,10 +195,10 @@ class UpdateEntitySchema(BaseOperation):
         return update_tag_schema(benchling_service, tag_schema.id, update.model_dump())
 
     def describe_operation(self) -> str:
-        return f"Updating properties for entity schema {self.wh_schema_name}: {repr(self.update_props)}."
+        return f"Updating properties for entity schema {self.wh_schema_name}: {str(self.update_props)}."
 
     def describe(self) -> str:
-        return f"Schema properties for {self.wh_schema_name} are different in code versus Benchling: {repr(self.update_props)}."
+        return f"Schema properties for {self.wh_schema_name} are different in code versus Benchling: {str(self.update_props)}."
 
     def _validate(self, benchling_service: BenchlingService) -> TagSchemaModel:
         all_schemas = TagSchemaModel.get_all_json(benchling_service)
@@ -485,11 +485,7 @@ class UpdateEntitySchemaField(BaseOperation):
         # Only if changing name of field
         if self.update_props.name:
             existing_new_field = next(
-                (
-                    f
-                    for f in tag_schema.allFields
-                    if f.systemName == self.update_props.name
-                ),
+                (f for f in tag_schema.allFields if f.name == self.update_props.name),
                 None,
             )
             if existing_new_field:
