@@ -97,3 +97,12 @@ class BaseSchemaProperties(BaseModel):
         if not isinstance(other, BaseSchemaProperties):
             return False
         return self.model_dump() == other.model_dump()
+
+    def __str__(self) -> str:
+        return ", ".join(
+            [f"{k}={v}" for k, v in self.model_dump(exclude_unset=True).items()]
+        )
+
+    def __repr__(self) -> str:
+        """Generates a string representation of the class so that it can be executed."""
+        return f"{self.__class__.__name__}({', '.join([f'{k}={v.__repr__()}' for k, v in self.model_dump(exclude_defaults=True).items()])})"
