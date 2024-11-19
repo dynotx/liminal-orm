@@ -7,7 +7,7 @@
 [![CI](https://github.com/dynotx/liminal-orm/actions/workflows/liminal.yml/badge.svg)](https://github.com/dynotx/liminal-orm/actions/workflows/liminal.yml)
 [![Downloads](https://static.pepy.tech/personalized-badge/liminal-orm?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads)](https://pepy.tech/project/liminal-orm)
 
-Liminal ORM<sup>1</sup> is an open-source Python package that builds on [Benchling's](https://www.benchling.com/) LIMS<sup>2</sup> platform and provides a simple, code-first approach for synchronizing and managing your Benchling schemas.
+Liminal ORM<sup>1</sup> is an open-source Python package that builds on [Benchling's](https://www.benchling.com/) LIMS<sup>2</sup> platform and provides a simple, code-first approach for synchronizing and managing your Benchling schemas. Join our [**Slack community here**](https://join.slack.com/t/liminalorm/shared_invite/zt-2ujrp07s3-bctook4e~cAjn1LgOLVY~Q)!
 
 Liminal provides an ORM framework using [SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) along with a schema migration service inspired by [Alembic](https://alembic.sqlalchemy.org/en/latest/). This allows you to define your Benchling schemas in code and create a *single source of truth* that synchronizes between your upstream Benchling tenant(s) and downstream dependencies. By creating a standard interface and through using one-line CLI<sup>3</sup> commands, Liminal enables a code-first approach for managing Benchling tenants and accessing Benchling data. With the schemas defined in code, you can also take advantage of the additional capabilities that the Liminal toolkit provides. This includes:
 
@@ -37,6 +37,7 @@ The democratization of software in Biotech is crucial. By building a community a
 
 ## Direct contact information
 
+- Liminal Community Slack group: [Join here](https://join.slack.com/t/liminalorm/shared_invite/zt-2ujrp07s3-bctook4e~cAjn1LgOLVY~Q)
 - Email: <opensource@dynotx.com>
 - LinkedIn: [Nirmit Damania](https://www.linkedin.com/in/nirmit-damania/)
 
