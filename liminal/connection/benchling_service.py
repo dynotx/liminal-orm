@@ -9,7 +9,12 @@ from bs4 import BeautifulSoup
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, configure_mappers
-from tenacity import retry, retry_if_exception_type, stop_after_attempt
+from tenacity import (
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_exponential,
+)
 
 from liminal.connection.benchling_connection import BenchlingConnection
 
@@ -144,6 +149,7 @@ class BenchlingService(Benchling):
     @retry(
         stop=stop_after_attempt(3),
         retry=retry_if_exception_type(ValueError),
+        wait=wait_exponential(multiplier=1, min=1, max=8),
         reraise=True,
     )
     def autogenerate_auth(
