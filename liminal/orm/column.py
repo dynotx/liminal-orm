@@ -82,7 +82,7 @@ class Column(SqlColumn):
         super().__init__(
             self.sqlalchemy_type,
             foreign_key,
-            nullable=not properties.required,
+            nullable=not required,
             info={"benchling_properties": properties},
             **kwargs,
         )
@@ -107,3 +107,7 @@ class Column(SqlColumn):
                 f"Could not set benchling properties for column {column.name}. Please check that the column has a valid benchling properties set."
             )
         return Column(**properties.model_dump())
+
+    def _constructor(self, *args: Any, **kwargs: Any) -> SqlColumn:
+        """Returns a new instance of the SqlAlchemy Column class."""
+        return SqlColumn(*args, **kwargs)
