@@ -106,14 +106,14 @@ def generate_all_entity_schema_files(
             ):
                 if not col.is_multi:
                     relationship_strings.append(
-                        f"""{tab}single_relationship("{wh_name_to_classname[col.entity_link]}", {col_name})"""
+                        f"""{tab}{col_name}_entity = single_relationship("{wh_name_to_classname[col.entity_link]}", {col_name})"""
                     )
                     import_strings.append(
                         "from liminal.orm.relationship import single_relationship"
                     )
                 else:
                     relationship_strings.append(
-                        f"""{tab}multi_relationship("{wh_name_to_classname[col.entity_link]}", "{classname}", "{col_name}")"""
+                        f"""{tab}{col_name}_entities = multi_relationship("{wh_name_to_classname[col.entity_link]}", "{classname}", "{col_name}")"""
                     )
                     import_strings.append(
                         "from liminal.orm.relationship import multi_relationship"
