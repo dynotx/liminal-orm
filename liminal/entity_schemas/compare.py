@@ -13,7 +13,9 @@ from liminal.entity_schemas.operations import (
     UpdateEntitySchema,
     UpdateEntitySchemaField,
 )
-from liminal.entity_schemas.utils import get_converted_tag_schemas
+from liminal.entity_schemas.utils import (
+    get_converted_tag_schemas,
+)
 from liminal.orm.base_model import BaseModel
 from liminal.orm.column import Column
 from liminal.utils import to_snake_case
@@ -71,6 +73,13 @@ def compare_entity_schemas(
             active_benchling_schema_fields = {
                 k: v for k, v in benchling_schema_fields.items() if v._archived is False
             }
+            # If warehouse access is not enabled, check that the warehouse names are not changing from what is defined in benchling.
+            if not benchling_service.connection.warehouse_access:
+                if model_wh_name != benchling_schema_props.warehouse_name:
+                    raise ValueError(
+                        f"Warehouse name is required to set a custom schema warehouse name. \
+                        Either set warehouse_access to True in BenchlingConnection or use the given Benchling schema warehouse name: {benchling_schema_props.warehouse_name}."
+                    )
             if model_wh_name in archived_benchling_schema_wh_names:
                 ops.append(
                     CompareOperation(
@@ -233,6 +242,15 @@ def compare_entity_schemas(
         # Benchling api does not allow for setting a custom warehouse_name,
         # so we need to run another UpdateEntitySchema to set the warehouse_name if it is different from the snakecase version of the model name.
         else:
+            # If warehouse access is not enabled, check that the warehouse names are not changing from what is expected of benchling.
+            if not benchling_service.connection.warehouse_access:
+                if model_wh_name != (
+                    expected_wh_name := to_snake_case(model.__schema_properties__.name)
+                ):
+                    raise ValueError(
+                        f"Warehouse name is required to set a custom schema warehouse name. \
+                        Either set warehouse_access to True in BenchlingConnection or use the given Benchling schema warehouse name: {expected_wh_name}."
+                    )
             model_props = {name: col.properties for name, col in model_columns.items()}
 
             ops.append(

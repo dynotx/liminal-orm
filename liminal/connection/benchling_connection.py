@@ -27,20 +27,26 @@ class BenchlingConnection(BaseModel):
         The email of the internal API admin.
     internal_api_admin_password: str | None = None
         The password of the internal API admin.
+    warehouse_access: bool = False
+        Whether your Benchling tenant has access to the warehouse. If warehouse_connection_string is provided, this will default to True.
+        warehouse_access is required to set a custom warehouse names on entity schemas and their fields.
     """
 
     tenant_name: str
     tenant_alias: str | None = None
     current_revision_id_var_name: str = ""
-    api_client_id: str | None = None
-    api_client_secret: str | None = None
+    api_client_id: str
+    api_client_secret: str
     warehouse_connection_string: str | None = None
     internal_api_admin_email: str | None = None
     internal_api_admin_password: str | None = None
+    warehouse_access: bool = False
 
     @model_validator(mode="before")
     @classmethod
     def set_current_revision_id_var_name(cls, values: dict) -> dict:
+        if values.get("warehouse_connection_string"):
+            values["warehouse_access"] = True
         if not values.get("current_revision_id_var_name"):
             tenant_alias = values.get("tenant_alias")
             tenant_name = values.get("tenant_name")

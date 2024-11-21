@@ -50,24 +50,17 @@ class BenchlingService(Benchling):
         self.use_api = use_api
         self.benchling_tenant = connection.tenant_name
         if use_api:
-            if connection.api_client_id and connection.api_client_secret:
-                retry_strategy = RetryStrategy(max_tries=10)
-                auth_method = ClientCredentialsOAuth2(
-                    client_id=connection.api_client_id,
-                    client_secret=connection.api_client_secret,
-                    token_url=f"https://{connection.tenant_name}.benchling.com/api/v2/token",
-                )
-                url = f"https://{connection.tenant_name}.benchling.com"
-                super().__init__(
-                    url=url, auth_method=auth_method, retry_strategy=retry_strategy
-                )
-                logger.info(
-                    f"Tenant {connection.tenant_name}: Connected to Benchling API."
-                )
-            else:
-                raise ValueError(
-                    "use_api is True but api_client_id and api_client_secret not provided in BenchlingConnection."
-                )
+            retry_strategy = RetryStrategy(max_tries=10)
+            auth_method = ClientCredentialsOAuth2(
+                client_id=connection.api_client_id,
+                client_secret=connection.api_client_secret,
+                token_url=f"https://{connection.tenant_name}.benchling.com/api/v2/token",
+            )
+            url = f"https://{connection.tenant_name}.benchling.com"
+            super().__init__(
+                url=url, auth_method=auth_method, retry_strategy=retry_strategy
+            )
+            logger.info(f"Tenant {connection.tenant_name}: Connected to Benchling API.")
         self.use_db = use_db
         if use_db:
             if connection.warehouse_connection_string:
