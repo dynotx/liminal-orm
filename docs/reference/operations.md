@@ -42,10 +42,8 @@ example_operation.validate()
 | UpdateEntitySchema             | Updates the properties of an existing entity schema.                        |
 | ArchiveEntitySchema            | Archives an existing entity schema.                                         |
 | UnarchiveEntitySchema          | Unarchives an archived entity schema.                                       |
-| UpdateEntitySchemaName         | Updates the warehouse name of an existing entity schema.                    |
 | CreateEntitySchemaField        | Creates a new field in an existing entity schema.                           |
 | UpdateEntitySchemaField        | Updates the properties of an existing field in an entity schema.            |
 | ArchiveEntitySchemaField       | Archives an existing field in an entity schema.                             |
 | UnarchiveEntitySchemaField     | Unarchives an archived field in an entity schema.                           |
-| UpdateEntitySchemaFieldName    | Updates the name of an existing field in an entity schema.                  |
 | ReorderEntitySchemaFields      | Reorders the fields in an existing entity schema.                           |

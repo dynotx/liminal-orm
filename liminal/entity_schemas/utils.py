@@ -76,6 +76,7 @@ def convert_tag_schema_field_to_field_properties(
 ) -> BaseFieldProperties:
     return BaseFieldProperties(
         name=field.name,
+        warehouse_name=field.systemName,
         type=convert_api_field_type_to_field_type(
             BenchlingAPIFieldType(field.fieldType),
             field.requiredLink.folderItemType if field.requiredLink else None,

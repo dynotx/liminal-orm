@@ -64,7 +64,6 @@ class CreateTagSchemaFieldModel(BaseModel):
     @classmethod
     def from_props(
         cls,
-        wh_field_name: str,
         new_props: BaseFieldProperties,
         benchling_service: BenchlingService | None = None,
     ) -> CreateTagSchemaFieldModel:
@@ -72,8 +71,6 @@ class CreateTagSchemaFieldModel(BaseModel):
 
         Parameters
         ----------
-        wh_field_name : str
-            The warehouse n ame of the field.
         new_props : BaseFieldProperties
             The field properties.
         benchling_service : BenchlingService | None
@@ -112,7 +109,7 @@ class CreateTagSchemaFieldModel(BaseModel):
             ).id
         return cls(
             name=new_props.name,
-            systemName=wh_field_name,
+            systemName=new_props.warehouse_name,
             isMulti=new_props.is_multi,
             isRequired=new_props.required,
             isParentLink=new_props.parent_link,
@@ -132,7 +129,7 @@ class TagSchemaFieldModel(BaseModel):
 
     id: int | None
     fieldType: BenchlingAPIFieldType
-    name: str | None
+    name: str
     apiId: str | None
     archiveRecord: dict[str, str] | None
     dbId: int | None
@@ -179,23 +176,12 @@ class TagSchemaFieldModel(BaseModel):
         """
         update_diff_names = list(update_diff.keys())
         update_props = BaseFieldProperties(**update_diff)
-        self.name = update_props.name if "name" in update_diff_names else self.name
-        self.isRequired = (
-            update_props.required
-            if "required" in update_diff_names
-            else self.isRequired
-        )
-        self.isMulti = (
-            update_props.is_multi if "is_multi" in update_diff_names else self.isMulti
-        )
-        self.isParentLink = (
-            update_props.parent_link
-            if "parent_link" in update_diff_names
-            else self.isParentLink
-        )
-        self.tooltipText = (
-            update_props.tooltip if "tooltip" in update_diff_names else self.tooltipText
-        )
+        self.name = update_props.name or self.name
+        self.systemName = update_props.warehouse_name or self.systemName
+        self.isRequired = update_props.required or self.isRequired
+        self.isMulti = update_props.is_multi or self.isMulti
+        self.isParentLink = update_props.parent_link or self.isParentLink
+        self.tooltipText = update_props.tooltip or self.tooltipText
         if "type" in update_diff_names and update_props.type:
             api_field_type, folder_item_type = convert_field_type_to_api_field_type(
                 update_props.type
