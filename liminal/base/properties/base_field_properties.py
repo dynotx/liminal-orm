@@ -18,6 +18,8 @@ class BaseFieldProperties(BaseModel):
     ----------
     name : str | None
         The external facing name of the field.
+    warehouse_name : str | None
+        The sql column name in the benchling warehouse.
     type : BenchlingFieldType | None
         The type of the field.
     required : bool | None
@@ -39,6 +41,7 @@ class BaseFieldProperties(BaseModel):
     """
 
     name: str | None = None
+    warehouse_name: str | None = None
     type: BenchlingFieldType | None = None
     required: bool | None = None
     is_multi: bool | None = None
@@ -52,6 +55,10 @@ class BaseFieldProperties(BaseModel):
 
     def set_archived(self, value: bool) -> BaseFieldProperties:
         self._archived = value
+        return self
+
+    def set_warehouse_name(self, wh_name: str) -> BaseFieldProperties:
+        self.warehouse_name = wh_name
         return self
 
     def validate_column(self, wh_name: str) -> bool:

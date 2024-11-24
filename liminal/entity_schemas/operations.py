@@ -31,7 +31,7 @@ class CreateEntitySchema(BaseOperation):
     def __init__(
         self,
         schema_properties: BaseSchemaProperties,
-        fields: dict[str, BaseFieldProperties],
+        fields: list[BaseFieldProperties],
     ) -> None:
         self.schema_properties = schema_properties
         self.fields = fields
@@ -64,7 +64,7 @@ class CreateEntitySchema(BaseOperation):
         )
 
     def describe_operation(self) -> str:
-        return f"{self._validated_schema_properties.name}: Creating new entity schema with fields: {','.join(self.fields.keys())}."
+        return f"{self._validated_schema_properties.name}: Creating new entity schema with fields: {','.join([f.warehouse_name for f in self.fields if f.warehouse_name is not None])}."
 
     def describe(self) -> str:
         return f"{self._validated_schema_properties.name}: Schema is defined in code but not in Benchling."
@@ -73,12 +73,6 @@ class CreateEntitySchema(BaseOperation):
         all_schemas = TagSchemaModel.get_all_json(benchling_service)
         if self._validated_schema_properties.name in [
             schema["name"] for schema in all_schemas
-        ]:
-            raise ValueError(
-                f"Entity schema name {self._validated_schema_properties.name} already exists in Benchling."
-            )
-        if self._validated_schema_properties.warehouse_name in [
-            schema["sqlIdentifier"] for schema in all_schemas
         ]:
             raise ValueError(
                 f"Entity schema name {self._validated_schema_properties.name} already exists in Benchling."
@@ -117,7 +111,7 @@ class CreateEntitySchema(BaseOperation):
         )
         if (
             self._validated_schema_properties != benchling_schema_props
-            or self.fields != benchling_fields_props
+            or self.fields != [f for _, f in benchling_fields_props.items()]
         ):
             raise ValueError(
                 f"Entity schema {self._validated_schema_properties.warehouse_name} is different in code versus Benchling. Cannot unarchive."
@@ -235,69 +229,30 @@ class UpdateEntitySchema(BaseOperation):
         return tag_schema
 
 
-class UpdateEntitySchemaName(BaseOperation):
-    order: ClassVar[int] = 100
-
-    def __init__(
-        self,
-        old_wh_schema_name: str,
-        new_wh_schema_name: str,
-    ) -> None:
-        self.old_wh_schema_name = old_wh_schema_name
-        self.new_wh_schema_name = new_wh_schema_name
-
-    def execute(self, benchling_service: BenchlingService) -> dict[str, Any]:
-        tag_schema = self._validate(benchling_service)
-        update = UpdateTagSchemaModel(sqlIdentifier=self.new_wh_schema_name)
-        return update_tag_schema(
-            benchling_service, tag_schema.id, update.model_dump(exclude_unset=True)
-        )
-
-    def _validate(self, benchling_service: BenchlingService) -> TagSchemaModel:
-        all_schemas = TagSchemaModel.get_all(benchling_service)
-        tag_schema = next(
-            (s for s in all_schemas if s.sqlIdentifier == self.old_wh_schema_name), None
-        )
-        if tag_schema is None:
-            raise ValueError(
-                f"Entity schema {self.old_wh_schema_name} does not exist in Benchling."
-            )
-        new_tag_schema = next(
-            (s for s in all_schemas if s.sqlIdentifier == self.new_wh_schema_name), None
-        )
-        if new_tag_schema is not None:
-            raise ValueError(
-                f"Entity schema warehouse name {self.new_wh_schema_name} already exists in Benchling."
-            )
-        return tag_schema
-
-    def describe_operation(self) -> str:
-        return f"{self.old_wh_schema_name}: Renaming entity schema warehouse name to {self.new_wh_schema_name}."
-
-    def describe(self) -> str:
-        return f"{self.old_wh_schema_name}: Entity schema in Benchling has a different warehouse name than in code."
-
-
 class CreateEntitySchemaField(BaseOperation):
     order: ClassVar[int] = 120
 
     def __init__(
         self,
         wh_schema_name: str,
-        wh_field_name: str,
         field_props: BaseFieldProperties,
         index: int,
     ) -> None:
         self.wh_schema_name = wh_schema_name
-        self.wh_field_name = wh_field_name
         self.field_props = field_props
         self.index = index
+
+        self._wh_field_name: str
+        if field_props.warehouse_name:
+            self._wh_field_name = field_props.warehouse_name
+        else:
+            raise ValueError("Field warehouse name is required.")
 
     def execute(self, benchling_service: BenchlingService) -> dict[str, Any]:
         try:
             field = TagSchemaModel.get_one(
                 benchling_service, self.wh_schema_name
-            ).get_field(self.wh_field_name)
+            ).get_field(self._wh_field_name)
         except ValueError:
             field = None
         if field is None:
@@ -305,35 +260,35 @@ class CreateEntitySchemaField(BaseOperation):
         else:
             if field.archiveRecord is None:
                 raise ValueError(
-                    f"Field {self.wh_field_name} is already active on entity schema {self.wh_schema_name}."
+                    f"Field {self._wh_field_name} is already active on entity schema {self.wh_schema_name}."
                 )
             dropdowns_map = get_benchling_dropdown_id_name_map(benchling_service)
             if self.field_props == convert_tag_schema_field_to_field_properties(
                 field, dropdowns_map
             ):
                 return UnarchiveEntitySchemaField(
-                    self.wh_schema_name, self.wh_field_name, self.index
+                    self.wh_schema_name, self._wh_field_name, self.index
                 ).execute(benchling_service)
             else:
                 raise ValueError(
-                    f"Field {self.wh_field_name} on entity schema {self.wh_schema_name} is different in code versus Benchling."
+                    f"Field {self._wh_field_name} on entity schema {self.wh_schema_name} is different in code versus Benchling."
                 )
 
     def _execute_create(self, benchling_service: BenchlingService) -> dict[str, Any]:
         tag_schema = TagSchemaModel.get_one(benchling_service, self.wh_schema_name)
         existing_new_field = next(
-            (f for f in tag_schema.allFields if f.systemName == self.wh_field_name),
+            (f for f in tag_schema.allFields if f.systemName == self._wh_field_name),
             None,
         )
         if existing_new_field:
             raise ValueError(
-                f"Field {self.wh_field_name} already exists on entity schema {self.wh_schema_name} and is {'archived' if existing_new_field.archiveRecord is not None else 'active'} in Benchling."
+                f"Field {self._wh_field_name} already exists on entity schema {self.wh_schema_name} and is {'archived' if existing_new_field.archiveRecord is not None else 'active'} in Benchling."
             )
         index_to_insert = (
             self.index if self.index is not None else len(tag_schema.allFields)
         )
         new_field = CreateTagSchemaFieldModel.from_props(
-            self.wh_field_name, self.field_props, benchling_service
+            self.field_props, benchling_service
         )
         fields_for_update = tag_schema.allFields
         fields_for_update.insert(index_to_insert, new_field)  # type: ignore
@@ -344,10 +299,10 @@ class CreateEntitySchemaField(BaseOperation):
         )
 
     def describe_operation(self) -> str:
-        return f"{self.wh_schema_name}: Creating entity schema field '{self.wh_field_name}' at index {self.index}."
+        return f"{self.wh_schema_name}: Creating entity schema field '{self._wh_field_name}' at index {self.index}."
 
     def describe(self) -> str:
-        return f"{self.wh_schema_name}: Entity schema field '{self.wh_field_name}' is not defined in Benchling but is defined in code."
+        return f"{self.wh_schema_name}: Entity schema field '{self._wh_field_name}' is not defined in Benchling but is defined in code."
 
 
 class ArchiveEntitySchemaField(BaseOperation):
@@ -492,46 +447,20 @@ class UpdateEntitySchemaField(BaseOperation):
                 raise ValueError(
                     f"New field name {self.update_props.name} already exists on entity schema {self.wh_schema_name} and is {'archived' if existing_new_field.archiveRecord is not None else 'active'} in Benchling."
                 )
-        return tag_schema
-
-
-class UpdateEntitySchemaFieldName(BaseOperation):
-    order: ClassVar[int] = 150
-
-    def __init__(
-        self,
-        wh_schema_name: str,
-        old_wh_field_name: str,
-        new_wh_field_name: str,
-    ) -> None:
-        self.wh_schema_name = wh_schema_name
-        self.old_wh_field_name = old_wh_field_name
-        self.new_wh_field_name = new_wh_field_name
-
-    def execute(self, benchling_service: BenchlingService) -> dict[str, Any]:
-        tag_schema = TagSchemaModel.get_one(benchling_service, self.wh_schema_name)
-        existing_new_field = next(
-            (f for f in tag_schema.allFields if f.systemName == self.new_wh_field_name),
-            None,
-        )
-        if existing_new_field is not None:
-            raise ValueError(
-                f"Field {self.new_wh_field_name} already exists on entity schema {self.wh_schema_name}."
+        if self.update_props.warehouse_name:
+            existing_new_field = next(
+                (
+                    f
+                    for f in tag_schema.allFields
+                    if f.systemName == self.update_props.warehouse_name
+                ),
+                None,
             )
-        updated_tag_schema = tag_schema.update_field_wh_name(
-            self.old_wh_field_name, self.new_wh_field_name
-        )
-        return update_tag_schema(
-            benchling_service,
-            tag_schema.id,
-            {"fields": [f.model_dump() for f in updated_tag_schema.allFields]},
-        )
-
-    def describe_operation(self) -> str:
-        return f"{self.wh_schema_name}: Renaming entity schema field from '{self.old_wh_field_name}' to '{self.new_wh_field_name}'."
-
-    def describe(self) -> str:
-        return f"{self.wh_schema_name}: Entity schema field '{self.old_wh_field_name}' in Benchling has wh_name '{self.new_wh_field_name}' in code."
+            if existing_new_field:
+                raise ValueError(
+                    f"New field warehouse name {self.update_props.warehouse_name} already exists on entity schema {self.wh_schema_name} and is {'archived' if existing_new_field.archiveRecord is not None else 'active'} in Benchling."
+                )
+        return tag_schema
 
 
 class ReorderEntitySchemaFields(BaseOperation):

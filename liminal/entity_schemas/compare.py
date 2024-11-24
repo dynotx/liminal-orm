@@ -43,7 +43,7 @@ def compare_entity_schemas(
     # If you don't filter, it will compare to all the schemas in benchling and think that they are missing from code and should be archived.
     models = BaseModel.get_all_subclasses(schema_names)
     archived_benchling_schema_wh_names = [
-        s[0].warehouse_name for s in benchling_schemas if s[0]._archived is True
+        s.warehouse_name for s, _ in benchling_schemas if s._archived is True
     ]
     # Running list of schema names from benchling. As each model is checked, remove the schema name from this list.
     # This is used at the end to check if there are any schemas left (schemas that exist in benchling but not in code) and archive them if they are.
@@ -63,7 +63,9 @@ def compare_entity_schemas(
             s.warehouse_name for s, _ in benchling_schemas
         ]:
             benchling_schema_props, benchling_schema_fields = next(
-                t for t in benchling_schemas if t[0].warehouse_name == model_wh_name
+                (s, lof)
+                for s, lof in benchling_schemas
+                if s.warehouse_name == model_wh_name
             )
             archived_benchling_schema_fields = {
                 k: v for k, v in benchling_schema_fields.items() if v._archived is True
@@ -193,12 +195,14 @@ def compare_entity_schemas(
                             )
                         )
                 else:
+                    new_field_props = model_columns[
+                        column_name
+                    ].properties.set_warehouse_name(column_name)
                     ops.append(
                         CompareOperation(
                             op=CreateEntitySchemaField(
                                 model_wh_name,
-                                column_name,
-                                field_props=model_columns[column_name].properties,
+                                field_props=new_field_props,
                                 index=list(model_columns.keys()).index(column_name),
                             ),
                             reverse_op=ArchiveEntitySchemaField(
@@ -233,8 +237,10 @@ def compare_entity_schemas(
         # Benchling api does not allow for setting a custom warehouse_name,
         # so we need to run another UpdateEntitySchema to set the warehouse_name if it is different from the snakecase version of the model name.
         else:
-            model_props = {name: col.properties for name, col in model_columns.items()}
-
+            model_props = [
+                col.properties.set_warehouse_name(wh_name)
+                for wh_name, col in model_columns.items()
+            ]
             ops.append(
                 CompareOperation(
                     op=CreateEntitySchema(

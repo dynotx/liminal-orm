@@ -46,9 +46,10 @@ class TestCompareEntitySchemas:
                 invalid_models["mock_entity_two_wh"][0].op.schema_properties.name
                 == "Mock Entity Two"
             )
-            assert list(invalid_models["mock_entity_two_wh"][0].op.fields.keys()) == [
-                "parent_link_field"
-            ]
+            assert [
+                f.warehouse_name
+                for f in invalid_models["mock_entity_two_wh"][0].op.fields
+            ] == ["parent_link_field"]
             assert isinstance(
                 invalid_models["mock_entity_two_wh"][1].op, UpdateEntitySchema
             )
@@ -152,8 +153,12 @@ class TestCompareEntitySchemas:
                 invalid_models["mock_entity"][0].op, CreateEntitySchemaField
             )
             assert (
-                invalid_models["mock_entity"][0].op.wh_field_name == "string_field_req"
+                invalid_models["mock_entity"][0].op.field_props.warehouse_name
+                == "string_field_req"
             )
+            mock_benchling_subclass[0].get_columns_dict()[
+                "string_field_req"
+            ].properties.warehouse_name = None
 
             # Test when the Benchling schema has an extra field compared to the table model
             extra_field = copy.deepcopy(mock_benchling_schema)
