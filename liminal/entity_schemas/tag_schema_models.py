@@ -64,7 +64,6 @@ class CreateTagSchemaFieldModel(BaseModel):
     @classmethod
     def from_props(
         cls,
-        wh_field_name: str,
         new_props: BaseFieldProperties,
         benchling_service: BenchlingService | None = None,
     ) -> CreateTagSchemaFieldModel:
@@ -112,7 +111,7 @@ class CreateTagSchemaFieldModel(BaseModel):
             ).id
         return cls(
             name=new_props.name,
-            systemName=wh_field_name,
+            systemName=new_props.warehouse_name,
             isMulti=new_props.is_multi,
             isRequired=new_props.required,
             isParentLink=new_props.parent_link,
@@ -180,6 +179,12 @@ class TagSchemaFieldModel(BaseModel):
         update_diff_names = list(update_diff.keys())
         update_props = BaseFieldProperties(**update_diff)
         self.name = update_props.name if "name" in update_diff_names else self.name
+        self.systemName = (
+            update_props.warehouse_name
+            if "warehouse_name" in update_diff_names
+            and update_props.warehouse_name is not None
+            else self.systemName
+        )
         self.isRequired = (
             update_props.required
             if "required" in update_diff_names

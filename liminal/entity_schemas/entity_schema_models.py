@@ -34,7 +34,6 @@ class CreateEntitySchemaFieldModel(BaseModel):
     @classmethod
     def from_benchling_props(
         cls,
-        wh_field_name: str,
         field_props: BaseFieldProperties,
         benchling_service: BenchlingService | None = None,
     ) -> CreateEntitySchemaFieldModel:
@@ -42,8 +41,6 @@ class CreateEntitySchemaFieldModel(BaseModel):
 
         Parameters
         ----------
-        wh_field_name : str
-            The warehouse name of the field.
         field_props : BaseFieldProperties
             The field properties.
         benchling_service : BenchlingService | None
@@ -79,7 +76,7 @@ class CreateEntitySchemaFieldModel(BaseModel):
             ).id
         return CreateEntitySchemaFieldModel(
             name=field_props.name,
-            systemName=wh_field_name,
+            systemName=field_props.warehouse_name,
             isMulti=field_props.is_multi,
             isRequired=field_props.required,
             isParentLink=field_props.parent_link,
@@ -107,7 +104,7 @@ class CreateEntitySchemaModel(BaseModel):
     def from_benchling_props(
         cls,
         benchling_props: SchemaProperties,
-        fields: dict[str, BaseFieldProperties],
+        fields: list[BaseFieldProperties],
         benchling_service: BenchlingService,
     ) -> CreateEntitySchemaModel:
         """Generates a CreateEntitySchemaModel from the given internal definition of benchling schema properties.
@@ -116,8 +113,8 @@ class CreateEntitySchemaModel(BaseModel):
         ----------
         benchling_props : Benchling SchemaProperties
             The schema properties.
-        fields : dict[str, Benchling FieldProperties]
-            Map of warehouse field names to field properties.
+        fields : list[Benchling FieldProperties]
+            List of field properties.
         benchling_service : BenchlingService | None
             The Benchling service instance used to fetch additional data if needed.
 
@@ -135,8 +132,8 @@ class CreateEntitySchemaModel(BaseModel):
             labelingStrategies=[s.value for s in benchling_props.naming_strategies],
             fields=[
                 CreateEntitySchemaFieldModel.from_benchling_props(
-                    field_name, field_props, benchling_service
+                    field_props, benchling_service
                 )
-                for field_name, field_props in fields.items()
+                for field_props in fields
             ],
         )

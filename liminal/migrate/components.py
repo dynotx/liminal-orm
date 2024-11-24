@@ -1,3 +1,5 @@
+import traceback
+
 from rich import print
 
 from liminal.base.base_operation import BaseOperation
@@ -73,7 +75,8 @@ def execute_operations(
         try:
             o.execute(benchling_service)
         except Exception as e:
-            print(f"[bold red]Error executing operation: {e}]")
+            traceback.print_exc()
+            print(f"[bold red]Error executing operation {o.__class__.__name__}: {e}]")
             return False
         index += 1
     return True

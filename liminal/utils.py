@@ -1,10 +1,17 @@
+import random
 import re
+import string
 from typing import Any
 
 import requests
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed
 
 from liminal.connection.benchling_service import BenchlingService
+
+
+def generate_random_id(length: int = 8) -> str:
+    """Generate a random ID with only lowercase letters."""
+    return "".join(random.choices(string.ascii_lowercase, k=length))
 
 
 def pascalize(input_string: str) -> str:

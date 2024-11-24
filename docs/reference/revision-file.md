@@ -26,3 +26,28 @@ def upgrade() -> list[b.BaseOperation]:
 def downgrade() -> list[b.BaseOperation]:
     return [b.UnarchiveEntitySchemaField('pizza', 'dough')]
 ```
+
+!!! warning
+    Generated revision files cannot detect changes to changes in warehouse names.
+    In order to resolve this, you must manually edit the revision file.
+
+    Updating Entity Schema warehouse name:
+    ```python
+    b.UpdateEntitySchema('old_warehouse_name', 
+        b.BaseSchemaProperties(warehouse_name='new_warehouse_name')
+    )
+    ```
+
+    Updating Entity Schema Field warehouse name:
+    ```python
+    b.UpdateEntitySchemaField('entity_schema_warehouse_name', 'field_warehouse_name', 
+    b.BaseFieldProperties(warehouse_name='new_warehouse_name')
+    )
+    ```
+
+    Updating Dropdown warehouse name:
+    ```python
+    b.UpdateDropdown('old_warehouse_name', 
+        b.BaseDropdownProperties(warehouse_name='new_warehouse_name')
+    )
+    ```

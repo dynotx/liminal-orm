@@ -22,8 +22,6 @@ from liminal.entity_schemas.operations import (
     UnarchiveEntitySchemaField,
     UpdateEntitySchema,
     UpdateEntitySchemaField,
-    UpdateEntitySchemaFieldName,
-    UpdateEntitySchemaName,
 )
 from liminal.enums import (
     BenchlingAPIFieldType,

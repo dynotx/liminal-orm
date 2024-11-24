@@ -1,5 +1,3 @@
-import uuid
-
 from liminal.base.base_operation import BaseOperation
 from liminal.base.properties.base_field_properties import BaseFieldProperties
 from liminal.base.properties.base_schema_properties import BaseSchemaProperties
@@ -14,7 +12,6 @@ from liminal.entity_schemas.operations import (
     UnarchiveEntitySchemaField,
     UpdateEntitySchema,
     UpdateEntitySchemaField,
-    UpdateEntitySchemaFieldName,
 )
 from liminal.enums import (
     BenchlingEntityType,
@@ -23,6 +20,7 @@ from liminal.enums import (
 )
 from liminal.migrate.components import execute_operations, execute_operations_dry_run
 from liminal.orm.schema_properties import SchemaProperties
+from liminal.utils import generate_random_id
 
 
 def mock_entity_schema_full_migration(
@@ -34,8 +32,9 @@ def mock_entity_schema_full_migration(
     If dry_run is set to False, the operations will be executed.
     If dry_run is set to True, the operations will be executed in dry run mode and only the description of the operations will be printed.
     """
-    random_id = f"{str(uuid.uuid4())[0:8]}_arch"
-    if len(test_model_wh_name) + len(random_id) > 32:
+    random_id = generate_random_id()
+    test_model_wh_name = f"{test_model_wh_name}_{random_id}"
+    if len(test_model_wh_name) > 32:
         raise ValueError(
             f"Test model warehouse name is too long. Must be less than {32 - len(random_id)} characters."
         )
@@ -49,37 +48,37 @@ def mock_entity_schema_full_migration(
     )
     create_entity_schema_op = CreateEntitySchema(
         schema_properties=schema_properties,
-        fields={
-            "test_column_1": BaseFieldProperties(
+        fields=[
+            BaseFieldProperties(
                 name="Test Column 1",
+                warehouse_name="test_column_1",
                 type=BenchlingFieldType.TEXT,
                 required=False,
                 is_multi=False,
                 parent_link=False,
             ),
-            "test_column_2": BaseFieldProperties(
+            BaseFieldProperties(
                 name="Test Column 2",
+                warehouse_name="test_column_2",
                 type=BenchlingFieldType.INTEGER,
                 required=False,
                 is_multi=False,
                 parent_link=False,
             ),
-            "test_column_4": BaseFieldProperties(
+            BaseFieldProperties(
                 name="Test Column 4",
-                type=BenchlingFieldType.ENTITY_LINK,
-                entity_link="ngs_sample",
+                warehouse_name="test_column_4",
+                type=BenchlingFieldType.CUSTOM_ENTITY_LINK,
                 required=False,
                 is_multi=False,
-                parent_link=True,
+                parent_link=False,
             ),
-        },
+        ],
     )
 
-    test_model_wh_name = f"{test_model_wh_name}_{random_id}"
     update_schema_properties = BaseSchemaProperties(
-        warehouse_name=test_model_wh_name,
-        name=test_model_wh_name,
-        prefix=test_model_wh_name,
+        name=f"{test_model_wh_name}_arch",
+        prefix=f"{test_model_wh_name}_arch",
         entity_type=BenchlingEntityType.AA_SEQUENCE,
         naming_strategies=[
             BenchlingNamingStrategy.IDS_FROM_NAMES,
@@ -92,24 +91,23 @@ def mock_entity_schema_full_migration(
 
     test_column_3_field_properties = BaseFieldProperties(
         name="Test Column 3 New",
+        warehouse_name="test_column_3",
         type=BenchlingFieldType.TEXT,
         required=False,
         is_multi=False,
         parent_link=False,
     )
     create_entity_schema_field_op = CreateEntitySchemaField(
-        test_model_wh_name, "test_column_3_new", test_column_3_field_properties, 2
+        test_model_wh_name, test_column_3_field_properties, 2
     )
 
     update_test_column_3_field_properties = BaseFieldProperties(
-        type=BenchlingFieldType.CUSTOM_ENTITY_LINK, is_multi=True
+        type=BenchlingFieldType.CUSTOM_ENTITY_LINK,
+        is_multi=True,
+        name="Test Column 3",
     )
     update_entity_schema_field_op = UpdateEntitySchemaField(
-        test_model_wh_name, "test_column_3_new", update_test_column_3_field_properties
-    )
-
-    update_entity_schema_field_name_op = UpdateEntitySchemaFieldName(
-        test_model_wh_name, "test_column_3_new", "test_column_3"
+        test_model_wh_name, "test_column_3", update_test_column_3_field_properties
     )
 
     archive_entity_schema_field_op = ArchiveEntitySchemaField(
@@ -134,7 +132,6 @@ def mock_entity_schema_full_migration(
         update_entity_schema_op,
         create_entity_schema_field_op,
         update_entity_schema_field_op,
-        update_entity_schema_field_name_op,
         archive_entity_schema_field_op,
         unarchive_entity_schema_field_op,
         reorder_entity_schema_field_op,
