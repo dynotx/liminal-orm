@@ -97,7 +97,10 @@ def generate_all_entity_schema_files(
                     f"""{tab}{col_name}: {convert_benchling_type_to_python_type(col.type).__name__},"""
                 )
 
-            if col.type == BenchlingFieldType.DATE:
+            if (
+                col.type == BenchlingFieldType.DATE
+                or col.type == BenchlingFieldType.DATETIME
+            ):
                 if not has_date:
                     import_strings.append("from datetime import datetime")
             if (
