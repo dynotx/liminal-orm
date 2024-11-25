@@ -7,6 +7,7 @@ class BenchlingAPIFieldType(StrEnum):
 
     BLOB_LINK = "ft_blob_link"
     DATE = "ft_date"
+    DATETIME = "ft_datetime"
     ENTRY_LINK = "ft_entry_link"
     FILE_LINK = "ft_file_link"
     FLOAT = "ft_float"

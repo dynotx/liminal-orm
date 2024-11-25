@@ -16,6 +16,7 @@ from liminal.enums import (
 def convert_benchling_type_to_python_type(benchling_type: BenchlingFieldType) -> type:
     benchling_to_python_type_map = {
         BenchlingFieldType.DATE: datetime,
+        BenchlingFieldType.DATETIME: datetime,
         BenchlingFieldType.DECIMAL: float,
         BenchlingFieldType.INTEGER: int,
         BenchlingFieldType.BLOB_LINK: dict[str, Any],
@@ -40,6 +41,7 @@ def convert_benchling_type_to_sql_alchemy_type(
 ) -> TypeEngine:
     benchling_to_sql_alchemy_type_map = {
         BenchlingFieldType.DATE: DateTime,
+        BenchlingFieldType.DATETIME: DateTime,
         BenchlingFieldType.DECIMAL: Float,
         BenchlingFieldType.INTEGER: Integer,
         BenchlingFieldType.BLOB_LINK: JSON,
@@ -66,6 +68,7 @@ def convert_field_type_to_api_field_type(
     conversion_map = {
         BenchlingFieldType.BLOB_LINK: (BenchlingAPIFieldType.BLOB_LINK, None),
         BenchlingFieldType.DATE: (BenchlingAPIFieldType.DATE, None),
+        BenchlingFieldType.DATETIME: (BenchlingAPIFieldType.DATETIME, None),
         BenchlingFieldType.ENTRY_LINK: (BenchlingAPIFieldType.ENTRY_LINK, None),
         BenchlingFieldType.AA_SEQUENCE_LINK: (
             BenchlingAPIFieldType.FILE_LINK,
@@ -104,6 +107,7 @@ def convert_api_field_type_to_field_type(
     conversion_map = {
         (BenchlingAPIFieldType.BLOB_LINK, None): BenchlingFieldType.BLOB_LINK,
         (BenchlingAPIFieldType.DATE, None): BenchlingFieldType.DATE,
+        (BenchlingAPIFieldType.DATETIME, None): BenchlingFieldType.DATETIME,
         (BenchlingAPIFieldType.ENTRY_LINK, None): BenchlingFieldType.ENTRY_LINK,
         (
             BenchlingAPIFieldType.FILE_LINK,

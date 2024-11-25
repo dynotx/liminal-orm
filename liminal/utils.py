@@ -46,9 +46,7 @@ def is_valid_prefix(prefix: str) -> bool:
     It must be contain only alphanumeric characters and underscores, be less than 33 characters, and end with an alphabetic character.
     """
     valid = (
-        all(c.isalnum() or c == "_" for c in prefix)
-        and prefix[-1].isalpha()
-        and len(prefix) <= 32
+        all(c.isalnum() or c == "_" or c == "-" for c in prefix) and len(prefix) <= 32
     )
     if not valid:
         raise ValueError(
