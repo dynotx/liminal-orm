@@ -72,9 +72,7 @@ class BaseModel(Generic[T], Base):
 
     @declared_attr
     def creator(cls) -> RelationshipProperty:
-        return relationship(
-            "User", foreign_keys=[cls.creator_id], uselist=False, lazy="joined"
-        )
+        return relationship("User", foreign_keys=[cls.creator_id])
 
     id = SqlColumn("id", String, nullable=True, primary_key=True)
     archived = SqlColumn("archived$", Boolean, nullable=True)
