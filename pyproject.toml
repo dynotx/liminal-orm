@@ -16,7 +16,8 @@ packages = [{include = "liminal"}]
 python = ">=3.9,<4"
 benchling-sdk = ">=1.8.0"
 bs4 = "^0.0.2"
-pandas = ">=1.5.3"
+numpy = "^1.23.5"
+pandas = "^1.5.3"
 pydantic = ">=2,<=2.7" # TODO: We need to assess this upgrade
 requests = "^2.32.3"
 rich = "^13.9.2"
@@ -34,7 +35,6 @@ pre-commit = "^4.0.1"
 pytest = "^8.3.3"
 ruff = "^0.6.9"
 sqlalchemy = "1.4.49"
-sqlalchemy-stubs = "^0.4"
 types-beautifulsoup4 = "^4.12.0.20240907"
 types-requests = "^2.32.0.20240914"
 
