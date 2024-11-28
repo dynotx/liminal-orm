@@ -18,6 +18,7 @@ class BenchlingFieldType(StrEnum):
     LONG_TEXT = "long_text"
     MIXTURE_LINK = "mixture_link"
     STORAGE_LINK = "storage_link"
+    PART_LINK = "part_link"
     TEXT = "text"
 
     @classmethod
