@@ -28,6 +28,7 @@ def convert_benchling_type_to_python_type(benchling_type: BenchlingFieldType) ->
         BenchlingFieldType.MIXTURE_LINK: str,
         BenchlingFieldType.LONG_TEXT: str,
         BenchlingFieldType.STORAGE_LINK: str,
+        BenchlingFieldType.PART_LINK: str,
         BenchlingFieldType.TEXT: str,
     }
     if benchling_type in benchling_to_python_type_map:
@@ -52,6 +53,7 @@ def convert_benchling_type_to_sql_alchemy_type(
         BenchlingFieldType.ENTRY_LINK: String,
         BenchlingFieldType.LONG_TEXT: String,
         BenchlingFieldType.STORAGE_LINK: String,
+        BenchlingFieldType.PART_LINK: String,
         BenchlingFieldType.MIXTURE_LINK: String,
         BenchlingFieldType.AA_SEQUENCE_LINK: String,
         BenchlingFieldType.TEXT: String,
@@ -92,6 +94,7 @@ def convert_field_type_to_api_field_type(
         BenchlingFieldType.LONG_TEXT: (BenchlingAPIFieldType.LONG_TEXT, None),
         BenchlingFieldType.DROPDOWN: (BenchlingAPIFieldType.SELECTOR, None),
         BenchlingFieldType.STORAGE_LINK: (BenchlingAPIFieldType.STORABLE_LINK, None),
+        BenchlingFieldType.PART_LINK: (BenchlingAPIFieldType.PART_LINK, None),
         BenchlingFieldType.TEXT: (BenchlingAPIFieldType.STRING, None),
     }
     if field_type in conversion_map:
@@ -131,6 +134,7 @@ def convert_api_field_type_to_field_type(
         (BenchlingAPIFieldType.LONG_TEXT, None): BenchlingFieldType.LONG_TEXT,
         (BenchlingAPIFieldType.SELECTOR, None): BenchlingFieldType.DROPDOWN,
         (BenchlingAPIFieldType.STORABLE_LINK, None): BenchlingFieldType.STORAGE_LINK,
+        (BenchlingAPIFieldType.PART_LINK, None): BenchlingFieldType.PART_LINK,
         (BenchlingAPIFieldType.STRING, None): BenchlingFieldType.TEXT,
     }
     if (field_type, folder_item_type) in conversion_map:
