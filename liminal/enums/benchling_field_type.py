@@ -10,6 +10,8 @@ class BenchlingFieldType(StrEnum):
     DATE = "date"
     DATETIME = "datetime"
     DNA_SEQUENCE_LINK = "dna_sequence_link"
+    PART_LINK = "part_link"
+    TRANSLATION_LINK = "translation_link"
     DROPDOWN = "dropdown"
     ENTITY_LINK = "entity_link"
     ENTRY_LINK = "entry_link"
@@ -18,7 +20,6 @@ class BenchlingFieldType(StrEnum):
     LONG_TEXT = "long_text"
     MIXTURE_LINK = "mixture_link"
     STORAGE_LINK = "storage_link"
-    PART_LINK = "part_link"
     TEXT = "text"
 
     @classmethod
