@@ -25,7 +25,7 @@ Everyone in the community has the ability to influence the roadmap of Liminal, n
 
 3. Install Poetry
 
-   Use the [Poetry Installation guide](https://python-poetry.org/docs/#installing-with-pipx)
+    Use the [Poetry Installation guide](https://python-poetry.org/docs/#installing-with-pipx)
 
 3. Install Liminal dependencies
 

@@ -8,7 +8,10 @@ class BenchlingFieldType(StrEnum):
     BLOB_LINK = "blob_link"
     CUSTOM_ENTITY_LINK = "custom_entity_link"
     DATE = "date"
+    DATETIME = "datetime"
     DNA_SEQUENCE_LINK = "dna_sequence_link"
+    PART_LINK = "part_link"
+    TRANSLATION_LINK = "translation_link"
     DROPDOWN = "dropdown"
     ENTITY_LINK = "entity_link"
     ENTRY_LINK = "entry_link"
@@ -27,4 +30,5 @@ class BenchlingFieldType(StrEnum):
             cls.DECIMAL,
             cls.INTEGER,
             cls.DATE,
+            cls.DATETIME,
         ]

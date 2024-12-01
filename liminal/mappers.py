@@ -16,6 +16,7 @@ from liminal.enums import (
 def convert_benchling_type_to_python_type(benchling_type: BenchlingFieldType) -> type:
     benchling_to_python_type_map = {
         BenchlingFieldType.DATE: datetime,
+        BenchlingFieldType.DATETIME: datetime,
         BenchlingFieldType.DECIMAL: float,
         BenchlingFieldType.INTEGER: int,
         BenchlingFieldType.BLOB_LINK: dict[str, Any],
@@ -27,6 +28,7 @@ def convert_benchling_type_to_python_type(benchling_type: BenchlingFieldType) ->
         BenchlingFieldType.MIXTURE_LINK: str,
         BenchlingFieldType.LONG_TEXT: str,
         BenchlingFieldType.STORAGE_LINK: str,
+        BenchlingFieldType.PART_LINK: str,
         BenchlingFieldType.TEXT: str,
     }
     if benchling_type in benchling_to_python_type_map:
@@ -40,6 +42,7 @@ def convert_benchling_type_to_sql_alchemy_type(
 ) -> TypeEngine:
     benchling_to_sql_alchemy_type_map = {
         BenchlingFieldType.DATE: DateTime,
+        BenchlingFieldType.DATETIME: DateTime,
         BenchlingFieldType.DECIMAL: Float,
         BenchlingFieldType.INTEGER: Integer,
         BenchlingFieldType.BLOB_LINK: JSON,
@@ -50,6 +53,7 @@ def convert_benchling_type_to_sql_alchemy_type(
         BenchlingFieldType.ENTRY_LINK: String,
         BenchlingFieldType.LONG_TEXT: String,
         BenchlingFieldType.STORAGE_LINK: String,
+        BenchlingFieldType.PART_LINK: String,
         BenchlingFieldType.MIXTURE_LINK: String,
         BenchlingFieldType.AA_SEQUENCE_LINK: String,
         BenchlingFieldType.TEXT: String,
@@ -66,6 +70,7 @@ def convert_field_type_to_api_field_type(
     conversion_map = {
         BenchlingFieldType.BLOB_LINK: (BenchlingAPIFieldType.BLOB_LINK, None),
         BenchlingFieldType.DATE: (BenchlingAPIFieldType.DATE, None),
+        BenchlingFieldType.DATETIME: (BenchlingAPIFieldType.DATETIME, None),
         BenchlingFieldType.ENTRY_LINK: (BenchlingAPIFieldType.ENTRY_LINK, None),
         BenchlingFieldType.AA_SEQUENCE_LINK: (
             BenchlingAPIFieldType.FILE_LINK,
@@ -81,6 +86,14 @@ def convert_field_type_to_api_field_type(
         ),
         BenchlingFieldType.DNA_SEQUENCE_LINK: (
             BenchlingAPIFieldType.FILE_LINK,
+            BenchlingFolderItemType.SEQUENCE,
+        ),
+        BenchlingFieldType.PART_LINK: (
+            BenchlingAPIFieldType.PART_LINK,
+            BenchlingFolderItemType.SEQUENCE,
+        ),
+        BenchlingFieldType.TRANSLATION_LINK: (
+            BenchlingAPIFieldType.TRANSLATION_LINK,
             BenchlingFolderItemType.SEQUENCE,
         ),
         BenchlingFieldType.ENTITY_LINK: (BenchlingAPIFieldType.FILE_LINK, None),
@@ -104,6 +117,7 @@ def convert_api_field_type_to_field_type(
     conversion_map = {
         (BenchlingAPIFieldType.BLOB_LINK, None): BenchlingFieldType.BLOB_LINK,
         (BenchlingAPIFieldType.DATE, None): BenchlingFieldType.DATE,
+        (BenchlingAPIFieldType.DATETIME, None): BenchlingFieldType.DATETIME,
         (BenchlingAPIFieldType.ENTRY_LINK, None): BenchlingFieldType.ENTRY_LINK,
         (
             BenchlingAPIFieldType.FILE_LINK,
@@ -121,6 +135,14 @@ def convert_api_field_type_to_field_type(
             BenchlingAPIFieldType.FILE_LINK,
             BenchlingFolderItemType.PROTEIN,
         ): BenchlingFieldType.AA_SEQUENCE_LINK,
+        (
+            BenchlingAPIFieldType.PART_LINK,
+            BenchlingFolderItemType.SEQUENCE,
+        ): BenchlingFieldType.PART_LINK,
+        (
+            BenchlingAPIFieldType.TRANSLATION_LINK,
+            BenchlingFolderItemType.SEQUENCE,
+        ): BenchlingFieldType.TRANSLATION_LINK,
         (BenchlingAPIFieldType.FILE_LINK, None): BenchlingFieldType.ENTITY_LINK,
         (BenchlingAPIFieldType.FLOAT, None): BenchlingFieldType.DECIMAL,
         (BenchlingAPIFieldType.INTEGER, None): BenchlingFieldType.INTEGER,
