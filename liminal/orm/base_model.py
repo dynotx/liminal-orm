@@ -204,9 +204,8 @@ class BaseModel(Generic[T], Base):
         return pd.read_sql(query.statement, session.connection())
 
     @classmethod
-    @abstractmethod
     def query(cls, session: Session) -> Query:
-        """Abstract method that all subclasses must implement. Each subclass will have a differently defined query
+        """Abstract method that users can override to define a specific query
         to retrieve entities from the database and cover any distinct relationships.
 
         Parameters
@@ -219,7 +218,7 @@ class BaseModel(Generic[T], Base):
         Query
             sqlalchemy query to retrieve entities from the database.
         """
-        raise NotImplementedError
+        return session.query(cls)
 
     @abstractmethod
     def get_validators(self) -> list[BenchlingValidator]:
