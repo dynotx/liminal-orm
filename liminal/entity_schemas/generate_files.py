@@ -143,11 +143,7 @@ def generate_all_entity_schema_files(
         relationship_string = "\n".join(relationship_strings)
         import_string = "\n".join(list(set(import_strings)))
         init_string = f"\n{tab}".join(init_strings) if len(columns) > 0 else ""
-        functions_string = f"""
-    @classmethod
-    def query(self, session: Session) -> Query:
-        return session.query({classname})
-
+        functions_string = """
     def get_validators(self) -> list[BenchlingValidator]:
         return []"""
 
