@@ -77,11 +77,18 @@ All Liminal entity schema classes must inherit from one of the mixins in the [mi
 **name: str**
 
 > The name of the entity schema. Must be unique across all entity schemas.
+
 **warehouse_name: str**
 
 > The warehouse name of the entity schema. Must be unique across all entity schemas.
+
 !!! note
     The warehouse names are used as keys across liminal and are used as entity_link values in Columns.
+
+!!! warning
+    If warehouse access is not enabled on your tenant, you will be unable to update the warehouse name.
+
+    Liminal assumes the Benchling generated warehouse name to be `to_snake_case(name)`.
 
 **prefix: str**
 
@@ -100,6 +107,11 @@ All Liminal entity schema classes must inherit from one of the mixins in the [mi
 > The mixture schema configuration for the entity schema. Must be defined as a [MixtureSchemaConfig](https://github.com/dynotx/liminal-orm/blob/main/liminal/base/properties/base_schema_properties.py) object.
 
 ## Column: [class](https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/column.py)
+
+!!! warning
+    If warehouse access is not enabled on your tenant, you will be unable to update the warehouse name for fields.
+
+    Liminal will enforce that the column variable name (which represents the warehouse name) matches the Benchling generated warehouse name, which Liminal assumes to be `to_snake_case(name)`.
 
 ### Parameters
 

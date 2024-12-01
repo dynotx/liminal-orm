@@ -85,11 +85,10 @@ class BaseFieldProperties(BaseModel):
                 f"Invalid warehouse name '{wh_name}'. It should only contain alphanumeric characters and underscores."
             )
         if not warehouse_access:
-            assert self.name is not None
             if wh_name != to_snake_case(self.name):
                 raise ValueError(
-                    f"Warehouse name is required to set a custom schema warehouse name. \
-                    Either set warehouse_access to True in BenchlingConnection or use the given Benchling schema warehouse name: {to_snake_case(self.name)}. \
+                    f"Warehouse access is required to set a custom field warehouse name. \
+                    Either set warehouse_access to True in BenchlingConnection or set the column variable name to the given Benchling field warehouse name: {to_snake_case(self.name)}. \
                     Reach out to Benchling support if you need help setting up warehouse access."
                 )
         return True

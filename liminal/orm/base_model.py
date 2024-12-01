@@ -136,7 +136,7 @@ class BaseModel(Generic[T], Base):
                 cls.__schema_properties__.name
             ):
                 raise ValueError(
-                    f"Warehouse name is required to set a custom schema warehouse name. \
+                    f"Warehouse access is required to set a custom schema warehouse name. \
                     Either set warehouse_access to True in BenchlingConnection or use the given Benchling schema warehouse name: {to_snake_case(cls.__schema_properties__.name)}. \
                     Reach out to Benchling support if you need help setting up warehouse access."
                 )

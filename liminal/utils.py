@@ -21,7 +21,9 @@ def pascalize(input_string: str) -> str:
     )
 
 
-def to_snake_case(input_string: str) -> str:
+def to_snake_case(input_string: str | None) -> str:
+    if input_string is None:
+        return ""
     return "_".join(
         re.sub(r"[\[\]{}():]", "", word).lower()
         for word in re.split(r"[ /_\-]", input_string)
