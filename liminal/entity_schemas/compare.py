@@ -59,7 +59,9 @@ def compare_entity_schemas(
             exclude_base_columns=True
         )
         # Validate the entity_link and dropdown_link reference an entity_schema or dropdown that exists in code.
-        model.validate_model()
+        model.validate_model(
+            warehouse_access=benchling_service.connection.warehouse_access
+        )
         # if the model table_name is found in the benchling schemas, check for changes...
         if (model_wh_name := model.__schema_properties__.warehouse_name) in [
             s.warehouse_name for s, _ in benchling_schemas
@@ -75,13 +77,6 @@ def compare_entity_schemas(
             active_benchling_schema_fields = {
                 k: v for k, v in benchling_schema_fields.items() if v._archived is False
             }
-            # If warehouse access is not enabled, check that the warehouse names are not changing from what is defined in benchling.
-            if not benchling_service.connection.warehouse_access:
-                if model_wh_name != benchling_schema_props.warehouse_name:
-                    raise ValueError(
-                        f"Warehouse name is required to set a custom schema warehouse name. \
-                        Either set warehouse_access to True in BenchlingConnection or use the given Benchling schema warehouse name: {benchling_schema_props.warehouse_name}."
-                    )
             if model_wh_name in archived_benchling_schema_wh_names:
                 ops.append(
                     CompareOperation(
