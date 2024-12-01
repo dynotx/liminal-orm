@@ -88,13 +88,20 @@ def convert_field_type_to_api_field_type(
             BenchlingAPIFieldType.FILE_LINK,
             BenchlingFolderItemType.SEQUENCE,
         ),
+        BenchlingFieldType.PART_LINK: (
+            BenchlingAPIFieldType.PART_LINK,
+            BenchlingFolderItemType.SEQUENCE,
+        ),
+        BenchlingFieldType.TRANSLATION_LINK: (
+            BenchlingAPIFieldType.TRANSLATION_LINK,
+            BenchlingFolderItemType.SEQUENCE,
+        ),
         BenchlingFieldType.ENTITY_LINK: (BenchlingAPIFieldType.FILE_LINK, None),
         BenchlingFieldType.DECIMAL: (BenchlingAPIFieldType.FLOAT, None),
         BenchlingFieldType.INTEGER: (BenchlingAPIFieldType.INTEGER, None),
         BenchlingFieldType.LONG_TEXT: (BenchlingAPIFieldType.LONG_TEXT, None),
         BenchlingFieldType.DROPDOWN: (BenchlingAPIFieldType.SELECTOR, None),
         BenchlingFieldType.STORAGE_LINK: (BenchlingAPIFieldType.STORABLE_LINK, None),
-        BenchlingFieldType.PART_LINK: (BenchlingAPIFieldType.PART_LINK, None),
         BenchlingFieldType.TEXT: (BenchlingAPIFieldType.STRING, None),
     }
     if field_type in conversion_map:
@@ -128,13 +135,20 @@ def convert_api_field_type_to_field_type(
             BenchlingAPIFieldType.FILE_LINK,
             BenchlingFolderItemType.PROTEIN,
         ): BenchlingFieldType.AA_SEQUENCE_LINK,
+        (
+            BenchlingAPIFieldType.PART_LINK,
+            BenchlingFolderItemType.SEQUENCE,
+        ): BenchlingFieldType.PART_LINK,
+        (
+            BenchlingAPIFieldType.TRANSLATION_LINK,
+            BenchlingFolderItemType.SEQUENCE,
+        ): BenchlingFieldType.TRANSLATION_LINK,
         (BenchlingAPIFieldType.FILE_LINK, None): BenchlingFieldType.ENTITY_LINK,
         (BenchlingAPIFieldType.FLOAT, None): BenchlingFieldType.DECIMAL,
         (BenchlingAPIFieldType.INTEGER, None): BenchlingFieldType.INTEGER,
         (BenchlingAPIFieldType.LONG_TEXT, None): BenchlingFieldType.LONG_TEXT,
         (BenchlingAPIFieldType.SELECTOR, None): BenchlingFieldType.DROPDOWN,
         (BenchlingAPIFieldType.STORABLE_LINK, None): BenchlingFieldType.STORAGE_LINK,
-        (BenchlingAPIFieldType.PART_LINK, None): BenchlingFieldType.PART_LINK,
         (BenchlingAPIFieldType.STRING, None): BenchlingFieldType.TEXT,
     }
     if (field_type, folder_item_type) in conversion_map:
