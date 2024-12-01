@@ -246,15 +246,6 @@ def compare_entity_schemas(
         # Benchling api does not allow for setting a custom warehouse_name,
         # so we need to run another UpdateEntitySchema to set the warehouse_name if it is different from the snakecase version of the model name.
         else:
-            # If warehouse access is not enabled, check that the warehouse names are not changing from what is expected of benchling.
-            if not benchling_service.connection.warehouse_access:
-                if model_wh_name != (
-                    expected_wh_name := to_snake_case(model.__schema_properties__.name)
-                ):
-                    raise ValueError(
-                        f"Warehouse name is required to set a custom schema warehouse name. \
-                        Either set warehouse_access to True in BenchlingConnection or use the given Benchling schema warehouse name: {expected_wh_name}."
-                    )
             model_props = [
                 col.properties.set_warehouse_name(wh_name)
                 for wh_name, col in model_columns.items()
