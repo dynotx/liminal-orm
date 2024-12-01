@@ -59,7 +59,7 @@ def convert_benchling_type_to_sql_alchemy_type(
         BenchlingFieldType.TEXT: String,
     }
     if benchling_type in benchling_to_sql_alchemy_type_map:
-        return benchling_to_sql_alchemy_type_map[benchling_type]  # type: ignore
+        return benchling_to_sql_alchemy_type_map[benchling_type]
     else:
         raise ValueError(f"Benchling field type '{benchling_type}' is not supported.")
 
