@@ -57,7 +57,8 @@ class Column(SqlColumn):
             dropdown_link=dropdown.__benchling_name__ if dropdown else None,
             entity_link=entity_link,
             tooltip=tooltip,
-        ).set_archived(_archived)
+            _archived=_archived,
+        )
         self.properties = properties
 
         nested_sql_type = convert_benchling_type_to_sql_alchemy_type(type)

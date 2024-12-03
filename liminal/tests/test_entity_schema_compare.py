@@ -168,7 +168,8 @@ class TestCompareEntitySchemas:
                 required=False,
                 is_multi=False,
                 dropdown_link=None,
-            ).set_archived(False)
+                _archived=False,
+            )
 
             mock_get_benchling_entity_schemas.return_value = extra_field
             invalid_models = compare_entity_schemas(mock_benchling_sdk)

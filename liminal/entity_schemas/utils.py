@@ -63,7 +63,8 @@ def convert_tag_schema_to_internal_schema(
                 BenchlingNamingStrategy(strategy)
                 for strategy in tag_schema.labelingStrategies
             ),
-        ).set_archived(tag_schema.archiveRecord is not None),
+            _archived=tag_schema.archiveRecord is not None,
+        ),
         {
             f.systemName: convert_tag_schema_field_to_field_properties(f, dropdowns_map)
             for f in all_fields
@@ -90,7 +91,8 @@ def convert_tag_schema_field_to_field_properties(
         if field.requiredLink and field.requiredLink.tagSchema
         else None,
         tooltip=field.tooltipText,
-    ).set_archived(field.archiveRecord is not None)
+        _archived=field.archiveRecord is not None,
+    )
 
 
 def get_benchling_entity_schemas(

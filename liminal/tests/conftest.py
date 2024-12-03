@@ -136,7 +136,8 @@ def mock_benchling_schema(
             parent_link=False,
             entity_link=None,
             tooltip=None,
-        ).set_archived(False),
+            _archived=False,
+        ),
         "string_field_req": Props(
             name="String Field Required",
             type=Type.TEXT,
@@ -146,7 +147,8 @@ def mock_benchling_schema(
             dropdown_link=None,
             entity_link=None,
             tooltip=None,
-        ).set_archived(False),
+            _archived=False,
+        ),
         "string_field_not_req": Props(
             name="String Field Not Required",
             type=Type.TEXT,
@@ -156,7 +158,8 @@ def mock_benchling_schema(
             dropdown_link=None,
             entity_link=None,
             tooltip=None,
-        ).set_archived(False),
+            _archived=False,
+        ),
         "string_field_tooltip": Props(
             name="String Field Not Required",
             type=Type.TEXT,
@@ -166,7 +169,8 @@ def mock_benchling_schema(
             dropdown_link=None,
             entity_link=None,
             tooltip="test tooltip",
-        ).set_archived(False),
+            _archived=False,
+        ),
         "float_field": Props(
             name="Float Field",
             type=Type.DECIMAL,
@@ -176,7 +180,8 @@ def mock_benchling_schema(
             dropdown_link=None,
             entity_link=None,
             tooltip=None,
-        ).set_archived(False),
+            _archived=False,
+        ),
         "integer_field": Props(
             name="Integer Field",
             type=Type.INTEGER,
@@ -186,7 +191,8 @@ def mock_benchling_schema(
             dropdown_link=None,
             entity_link=None,
             tooltip=None,
-        ).set_archived(False),
+            _archived=False,
+        ),
         "datetime_field": Props(
             name="Datetime Field",
             type=Type.DATE,
@@ -196,7 +202,8 @@ def mock_benchling_schema(
             dropdown_link=None,
             entity_link=None,
             tooltip=None,
-        ).set_archived(False),
+            _archived=False,
+        ),
         "list_dropdown_field": Props(
             name="List Dropdown Field",
             type=Type.DROPDOWN,
@@ -206,7 +213,8 @@ def mock_benchling_schema(
             parent_link=False,
             entity_link=None,
             tooltip=None,
-        ).set_archived(False),
+            _archived=False,
+        ),
     }
     return [(schema_props, fields)]
 
@@ -229,32 +237,51 @@ def mock_benchling_schema_one(
             required=False,
             is_multi=False,
             dropdown_link=mock_benchling_dropdown.__benchling_name__,
-        ).set_archived(False),
+            _archived=False,
+        ),
         "string_field_req": Props(
-            name="String Field Required", type=Type.TEXT, required=True, is_multi=False
-        ).set_archived(False),
+            name="String Field Required",
+            type=Type.TEXT,
+            required=True,
+            is_multi=False,
+            _archived=False,
+        ),
         "string_field_not_req": Props(
             name="String Field Not Required",
             type=Type.TEXT,
             required=False,
             is_multi=False,
-        ).set_archived(False),
+            _archived=False,
+        ),
         "float_field": Props(
-            name="Float Field", type=Type.DECIMAL, required=False, is_multi=False
-        ).set_archived(False),
+            name="Float Field",
+            type=Type.DECIMAL,
+            required=False,
+            is_multi=False,
+            _archived=False,
+        ),
         "integer_field": Props(
-            name="Integer Field", type=Type.INTEGER, required=False, is_multi=False
-        ).set_archived(False),
+            name="Integer Field",
+            type=Type.INTEGER,
+            required=False,
+            is_multi=False,
+            _archived=False,
+        ),
         "datetime_field": Props(
-            name="Datetime Field", type=Type.DATE, required=False, is_multi=False
-        ).set_archived(False),
+            name="Datetime Field",
+            type=Type.DATE,
+            required=False,
+            is_multi=False,
+            _archived=False,
+        ),
         "list_dropdown_field": Props(
             name="List Dropdown Field",
             type=Type.DROPDOWN,
             required=False,
             is_multi=True,
             dropdown_link=mock_benchling_dropdown.__benchling_name__,
-        ).set_archived(False),
+            _archived=False,
+        ),
     }
     return [(schema_props, fields)]
 
@@ -267,7 +294,8 @@ def mock_benchling_schema_archived() -> list[tuple[SchemaProperties, dict[str, P
         prefix="MockEntitySmall",
         entity_type=BenchlingEntityType.CUSTOM_ENTITY,
         naming_strategies=[BenchlingNamingStrategy.NEW_IDS],
-    ).set_archived(True)
+        _archived=True,
+    )
     fields = {
         "string_field_req": Props(
             name="String Field Required",
@@ -278,14 +306,16 @@ def mock_benchling_schema_archived() -> list[tuple[SchemaProperties, dict[str, P
             tooltip=None,
             dropdown_link=None,
             entity_link=None,
-        ).set_archived(False),
+            _archived=False,
+        ),
         "string_field_req_2": Props(
             name="String Field Required 2",
             type=Type.TEXT,
             required=True,
             parent_link=False,
             is_multi=False,
-        ).set_archived(False),
+            _archived=False,
+        ),
     }
     return [(schema_props, fields)]
 
