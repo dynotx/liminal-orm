@@ -12,3 +12,4 @@ class BenchlingEntityType(StrEnum):
     AA_SEQUENCE = "aa_sequence"
     ENTRY = "entry"
     MIXTURE = "mixture"
+    MOLECULE = "molecule"

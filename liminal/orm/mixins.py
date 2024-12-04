@@ -87,3 +87,12 @@ class MixtureMixin:
     project_id = SqlColumn("project_id$", String, nullable=True)
     type = SqlColumn("type$", String, nullable=True)
     validation_status = SqlColumn("validation_status$", String, nullable=True)
+
+
+class MoleculeMixin:
+    canonical_smiles = SqlColumn("canonical_smiles$", String, nullable=True)
+    file_registry_id = SqlColumn("file_registry_id$", String, nullable=True)
+    is_registered = SqlColumn("is_registered$", Boolean, nullable=True)
+    project_id = SqlColumn("project_id$", String, nullable=True)
+    type = SqlColumn("type$", String, nullable=True)
+    validation_status = SqlColumn("validation_status$", String, nullable=True)

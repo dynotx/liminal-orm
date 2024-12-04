@@ -4,7 +4,7 @@ import logging
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, Generic, Type, TypeVar  # noqa: UP035
 
-import pandas as pd  # type: ignore
+import pandas as pd
 from sqlalchemy import DATETIME, Boolean, ForeignKey, String
 from sqlalchemy import Column as SqlColumn
 from sqlalchemy.orm import Query, RelationshipProperty, Session, relationship

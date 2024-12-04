@@ -7,3 +7,4 @@ class BenchlingFolderItemType(StrEnum):
     SEQUENCE = "sequence"
     ENTRY = "entry"
     MIXTURE = "mixture"
+    MOLECULE = "molecule"

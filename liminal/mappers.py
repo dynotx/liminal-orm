@@ -168,6 +168,7 @@ def convert_api_entity_type_to_entity_type(
         ): BenchlingEntityType.CUSTOM_ENTITY,
         (BenchlingFolderItemType.ENTRY, None): BenchlingEntityType.ENTRY,
         (BenchlingFolderItemType.MIXTURE, None): BenchlingEntityType.MIXTURE,
+        (BenchlingFolderItemType.MOLECULE, None): BenchlingEntityType.MOLECULE,
         (BenchlingFolderItemType.PROTEIN, None): BenchlingEntityType.AA_SEQUENCE,
         (
             BenchlingFolderItemType.SEQUENCE,
@@ -204,6 +205,7 @@ def convert_entity_type_to_api_entity_type(
         ),
         BenchlingEntityType.ENTRY: (BenchlingFolderItemType.ENTRY, None),
         BenchlingEntityType.MIXTURE: (BenchlingFolderItemType.MIXTURE, None),
+        BenchlingEntityType.MOLECULE: (BenchlingFolderItemType.MOLECULE, None),
         BenchlingEntityType.AA_SEQUENCE: (BenchlingFolderItemType.PROTEIN, None),
         BenchlingEntityType.DNA_SEQUENCE: (
             BenchlingFolderItemType.SEQUENCE,
