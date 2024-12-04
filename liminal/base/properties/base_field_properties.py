@@ -7,7 +7,7 @@ from pydantic import BaseModel, ConfigDict, PrivateAttr
 from liminal.base.base_dropdown import BaseDropdown
 from liminal.enums import BenchlingFieldType
 from liminal.orm.base_model import BaseModel as BenchlingBaseModel
-from liminal.utils import is_valid_wh_name, to_snake_case
+from liminal.utils import is_valid_wh_name
 
 
 class BaseFieldProperties(BaseModel):
@@ -61,7 +61,7 @@ class BaseFieldProperties(BaseModel):
         self.warehouse_name = wh_name
         return self
 
-    def validate_column(self, wh_name: str, warehouse_access: bool = False) -> bool:
+    def validate_column(self, wh_name: str) -> bool:
         """If the Field Properties are meant to represent a column in Benchling,
         this will validate the properties and ensure that the entity_link and dropdowns are valid names that exist in our code.
         """
@@ -84,13 +84,6 @@ class BaseFieldProperties(BaseModel):
             raise ValueError(
                 f"Invalid warehouse name '{wh_name}'. It should only contain alphanumeric characters and underscores."
             )
-        if not warehouse_access:
-            if wh_name != to_snake_case(self.name):
-                raise ValueError(
-                    f"Warehouse access is required to set a custom field warehouse name. \
-                    Either set warehouse_access to True in BenchlingConnection or set the column variable name to the given Benchling field warehouse name: {to_snake_case(self.name)}. \
-                    Reach out to Benchling support if you need help setting up warehouse access."
-                )
         return True
 
     def merge(self, new_props: BaseFieldProperties) -> dict[str, Any]:

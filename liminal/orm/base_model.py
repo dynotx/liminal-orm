@@ -14,7 +14,6 @@ from liminal.base.base_validation_filters import BaseValidatorFilters
 from liminal.orm.base import Base
 from liminal.orm.schema_properties import SchemaProperties
 from liminal.orm.user import User
-from liminal.utils import to_snake_case
 from liminal.validation import (
     BenchlingValidator,
     BenchlingValidatorReport,
@@ -127,22 +126,13 @@ class BaseModel(Generic[T], Base):
         return {c.name: c for c in columns}
 
     @classmethod
-    def validate_model(cls, warehouse_access: bool = False) -> bool:
+    def validate_model(cls) -> bool:
         model_columns = cls.get_columns_dict(exclude_base_columns=True)
         properties = {n: c.properties for n, c in model_columns.items()}
         errors = []
-        if not warehouse_access:
-            if cls.__schema_properties__.warehouse_name != to_snake_case(
-                cls.__schema_properties__.name
-            ):
-                raise ValueError(
-                    f"Warehouse access is required to set a custom schema warehouse name. \
-                    Either set warehouse_access to True in BenchlingConnection or use the given Benchling schema warehouse name: {to_snake_case(cls.__schema_properties__.name)}. \
-                    Reach out to Benchling support if you need help setting up warehouse access."
-                )
         for wh_name, field in properties.items():
             try:
-                field.validate_column(wh_name, warehouse_access)
+                field.validate_column(wh_name)
             except ValueError as e:
                 errors.append(str(e))
         if errors:
