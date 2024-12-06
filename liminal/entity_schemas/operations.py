@@ -23,6 +23,7 @@ from liminal.entity_schemas.utils import (
 )
 from liminal.enums.benchling_naming_strategy import BenchlingNamingStrategy
 from liminal.orm.schema_properties import SchemaProperties
+from liminal.utils import to_snake_case
 
 
 class CreateEntitySchema(BaseOperation):
@@ -68,6 +69,18 @@ class CreateEntitySchema(BaseOperation):
 
     def describe(self) -> str:
         return f"{self._validated_schema_properties.name}: Schema is defined in code but not in Benchling."
+
+    def validate(self, benchling_service: BenchlingService) -> None:
+        if (
+            not benchling_service.connection.warehouse_access
+            and self._validated_schema_properties.warehouse_name
+            != to_snake_case(self._validated_schema_properties.name)
+        ):
+            raise ValueError(
+                f"Warehouse access is required to set a custom field warehouse name. \
+                Either set warehouse_access to True in BenchlingConnection or set the schema warehouse_name to the given Benchling warehouse name: {to_snake_case(self._validated_schema_properties.name)}. \
+                Reach out to Benchling support if you need help setting up warehouse access."
+            )
 
     def _validate_create(self, benchling_service: BenchlingService) -> None:
         all_schemas = TagSchemaModel.get_all_json(benchling_service)
@@ -194,6 +207,17 @@ class UpdateEntitySchema(BaseOperation):
     def describe(self) -> str:
         return f"Schema properties for {self.wh_schema_name} are different in code versus Benchling: {str(self.update_props)}."
 
+    def validate(self, benchling_service: BenchlingService) -> None:
+        if (
+            benchling_service.connection.warehouse_access
+            and self.update_props.warehouse_name is not None
+        ):
+            raise ValueError(
+                "Warehouse access is required to change the schema warehouse name. \
+                Either set warehouse_access to True in BenchlingConnection or do not change the warehouse name. \
+                Reach out to Benchling support if you need help setting up warehouse access."
+            )
+
     def _validate(self, benchling_service: BenchlingService) -> TagSchemaModel:
         all_schemas = TagSchemaModel.get_all_json(benchling_service)
         tag_schema = TagSchemaModel.get_one(
@@ -303,6 +327,17 @@ class CreateEntitySchemaField(BaseOperation):
 
     def describe(self) -> str:
         return f"{self.wh_schema_name}: Entity schema field '{self._wh_field_name}' is not defined in Benchling but is defined in code."
+
+    def validate(self, benchling_service: BenchlingService) -> None:
+        if (
+            not benchling_service.connection.warehouse_access
+            and self.field_props.warehouse_name != to_snake_case(self.field_props.name)
+        ):
+            raise ValueError(
+                f"Warehouse access is required to set a custom field warehouse name. \
+                Either set warehouse_access to True in BenchlingConnection or set the column variable name to the given Benchling field warehouse name: {to_snake_case(self.field_props.name)}. \
+                Reach out to Benchling support if you need help setting up warehouse access."
+            )
 
 
 class ArchiveEntitySchemaField(BaseOperation):
@@ -434,6 +469,17 @@ class UpdateEntitySchemaField(BaseOperation):
 
     def describe(self) -> str:
         return f"{self.wh_schema_name}: Entity schema field '{self.wh_field_name}' in Benchling is different than in code: {str(self.update_props)}."
+
+    def validate(self, benchling_service: BenchlingService) -> None:
+        if (
+            not benchling_service.connection.warehouse_access
+            and self.update_props.warehouse_name is not None
+        ):
+            raise ValueError(
+                "Warehouse access is required to change the field warehouse name. \
+                Either set warehouse_access to True in BenchlingConnection or do not change the warehouse name. \
+                Reach out to Benchling support if you need help setting up warehouse access."
+            )
 
     def _validate(self, benchling_service: BenchlingService) -> TagSchemaModel:
         tag_schema = TagSchemaModel.get_one(benchling_service, self.wh_schema_name)

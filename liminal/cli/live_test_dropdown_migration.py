@@ -69,7 +69,7 @@ def mock_dropdown_full_migration(
         unarchive_dropdown_op,
         rearchive_dropdown_op,
     ]
-    execute_operations_dry_run(ops) if dry_run else execute_operations(
+    execute_operations_dry_run(
         benchling_service, ops
-    )
+    ) if dry_run else execute_operations(benchling_service, ops)
     print("Dry run migration complete!") if dry_run else print("Migration complete!")

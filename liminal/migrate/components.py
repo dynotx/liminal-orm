@@ -66,7 +66,7 @@ def execute_operations(
 ) -> bool:
     """This runs the given operations. It validates the operations and then executes them."""
     for o in operations:
-        o.validate()
+        o.validate(benchling_service)
 
     print("[bold]Executing operations...")
     index = 1
@@ -82,11 +82,13 @@ def execute_operations(
     return True
 
 
-def execute_operations_dry_run(operations: list[BaseOperation]) -> None:
+def execute_operations_dry_run(
+    benchling_service: BenchlingService, operations: list[BaseOperation]
+) -> None:
     """This runs the given operations in dry run mode. It only prints a description of the operations and validates them."""
     print("[bold]Executing dry run of operations...")
     index = 1
     for o in operations:
         print(f"{index}. {o.describe()}")
-        o.validate()
+        o.validate(benchling_service)
         index += 1

@@ -34,7 +34,7 @@ class BaseOperation(ABC):
         self.args = args
         self.kwargs = kwargs
 
-    def validate(self) -> None:
+    def validate(self, benchling_service: BenchlingService) -> None:
         """Validate the operation before running it. This is not called at runtime,
         but is used to validate operations before a migration is run."""
         pass

@@ -87,7 +87,7 @@ class ArchiveDropdown(BaseOperation):
             raise ValueError(f"Dropdown {self.dropdown_name} is already archived.")
         return archive_dropdown(benchling_service, dropdown.id)
 
-    def validate(self) -> None:
+    def validate(self, benchling_service: BenchlingService) -> None:
         if schemas_with_dropdown := get_schemas_with_dropdown(self.dropdown_name):
             raise ValueError(
                 f"Dropdown {self.dropdown_name} is used in schemas {schemas_with_dropdown}. Cannot archive a dropdown that is in use in non-archived fields."
