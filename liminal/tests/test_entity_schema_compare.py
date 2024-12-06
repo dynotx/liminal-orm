@@ -156,7 +156,7 @@ class TestCompareEntitySchemas:
                 invalid_models["mock_entity"][0].op.field_props.warehouse_name
                 == "string_field_req"
             )
-            mock_benchling_subclass[0].get_columns_dict()[
+            mock_benchling_subclass[0].get_columns_dict(exclude_base_columns=True)[
                 "string_field_req"
             ].properties.warehouse_name = None
 
@@ -168,7 +168,8 @@ class TestCompareEntitySchemas:
                 required=False,
                 is_multi=False,
                 dropdown_link=None,
-            ).set_archived(False)
+                _archived=False,
+            )
 
             mock_get_benchling_entity_schemas.return_value = extra_field
             invalid_models = compare_entity_schemas(mock_benchling_sdk)

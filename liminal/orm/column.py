@@ -44,6 +44,7 @@ class Column(SqlColumn):
         tooltip: str | None = None,
         dropdown: Type[BaseDropdown] | None = None,  # noqa: UP006
         entity_link: str | None = None,
+        _archived: bool = False,
         **kwargs: Any,
     ):
         """Initializes a Benchling Column object. Validates the type BenchlingFieldType maps to a valid sqlalchemy type.
@@ -57,6 +58,7 @@ class Column(SqlColumn):
             dropdown_link=dropdown.__benchling_name__ if dropdown else None,
             entity_link=entity_link,
             tooltip=tooltip,
+            _archived=_archived,
         )
         self.properties = properties
 

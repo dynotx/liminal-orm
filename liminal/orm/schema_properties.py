@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from pydantic import PrivateAttr, model_validator
+from typing import Any
+
+from pydantic import model_validator
 
 from liminal.base.properties.base_schema_properties import (
     BaseSchemaProperties,
@@ -22,7 +24,11 @@ class SchemaProperties(BaseSchemaProperties):
     entity_type: BenchlingEntityType
     naming_strategies: set[BenchlingNamingStrategy]
     mixture_schema_config: MixtureSchemaConfig | None = None
-    _archived: bool | None = PrivateAttr(default=None)
+    _archived: bool = False
+
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        self._archived = data.get("_archived", False)
 
     @model_validator(mode="after")
     def validate_mixture_schema_config(self) -> SchemaProperties:

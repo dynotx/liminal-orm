@@ -53,6 +53,10 @@ class BaseFieldProperties(BaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        self._archived = data.get("_archived", None)
+
     def set_archived(self, value: bool) -> BaseFieldProperties:
         self._archived = value
         return self

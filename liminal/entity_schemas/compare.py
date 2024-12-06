@@ -41,7 +41,11 @@ def compare_entity_schemas(
     )
     # If models are provided, filter the schemas from benchling so that only the models passed in are compared.
     # If you don't filter, it will compare to all the schemas in benchling and think that they are missing from code and should be archived.
-    models = BaseModel.get_all_subclasses(schema_names)
+    models = [
+        m
+        for m in BaseModel.get_all_subclasses(schema_names)
+        if not m.__schema_properties__._archived
+    ]
     archived_benchling_schema_wh_names = [
         s.warehouse_name for s, _ in benchling_schemas if s._archived is True
     ]

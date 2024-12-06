@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, PrivateAttr, model_validator
+from pydantic import BaseModel, ConfigDict, model_validator
 
 from liminal.enums import BenchlingEntityType, BenchlingNamingStrategy
 
@@ -69,7 +69,11 @@ class BaseSchemaProperties(BaseModel):
     entity_type: BenchlingEntityType | None = None
     naming_strategies: set[BenchlingNamingStrategy] | None = None
     mixture_schema_config: MixtureSchemaConfig | None = None
-    _archived: bool | None = PrivateAttr(default=None)
+    _archived: bool | None = None
+
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        self._archived = data.get("_archived", None)
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 

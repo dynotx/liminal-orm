@@ -107,7 +107,9 @@ class BaseModel(Generic[T], Base):
         return list(models.values())
 
     @classmethod
-    def get_columns_dict(cls, exclude_base_columns: bool = False) -> dict[str, Column]:
+    def get_columns_dict(
+        cls, exclude_base_columns: bool = False, exclude_archived: bool = True
+    ) -> dict[str, Column]:
         """Returns a dictionary of all benchling columns in the class. Benchling Column saves an instance of itself to the sqlalchemy Column info property.
         This function retrieves the info property and returns a dictionary of the columns.
         """
@@ -123,6 +125,8 @@ class BaseModel(Generic[T], Base):
                 )
             fields_to_exclude.append("creator_id$")
         columns = [c for c in cls.__table__.columns if c.name not in fields_to_exclude]
+        if exclude_archived:
+            columns = [c for c in columns if not c.properties._archived]
         return {c.name: c for c in columns}
 
     @classmethod
