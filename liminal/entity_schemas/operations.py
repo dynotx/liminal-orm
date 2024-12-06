@@ -23,6 +23,7 @@ from liminal.entity_schemas.utils import (
 )
 from liminal.enums.benchling_naming_strategy import BenchlingNamingStrategy
 from liminal.orm.schema_properties import SchemaProperties
+from liminal.utils import to_snake_case
 
 
 class CreateEntitySchema(BaseOperation):
@@ -95,6 +96,16 @@ class CreateEntitySchema(BaseOperation):
         ):
             raise ValueError(
                 "Invalid naming strategies for schema. Cannot create entity schema using template-based naming strategies."
+            )
+        if (
+            not benchling_service.connection.warehouse_access
+            and self._validated_schema_properties.warehouse_name
+            != to_snake_case(self._validated_schema_properties.name)
+        ):
+            raise ValueError(
+                f"Warehouse access is required to set a custom field warehouse name. \
+                Either set warehouse_access to True in BenchlingConnection or set the schema warehouse_name to the given Benchling warehouse name: {to_snake_case(self._validated_schema_properties.name)}. \
+                Reach out to Benchling support if you need help setting up warehouse access."
             )
         return None
 
@@ -226,6 +237,15 @@ class UpdateEntitySchema(BaseOperation):
             raise ValueError(
                 "Invalid naming strategies for schema. The name template must be set on the schema through the UI when using template-based naming strategies."
             )
+        if (
+            benchling_service.connection.warehouse_access
+            and self.update_props.warehouse_name is not None
+        ):
+            raise ValueError(
+                "Warehouse access is required to change the schema warehouse name. \
+                Either set warehouse_access to True in BenchlingConnection or do not change the warehouse name. \
+                Reach out to Benchling support if you need help setting up warehouse access."
+            )
         return tag_schema
 
 
@@ -303,6 +323,17 @@ class CreateEntitySchemaField(BaseOperation):
 
     def describe(self) -> str:
         return f"{self.wh_schema_name}: Entity schema field '{self._wh_field_name}' is not defined in Benchling but is defined in code."
+
+    def _validate(self, benchling_service: BenchlingService) -> None:
+        if (
+            not benchling_service.connection.warehouse_access
+            and self.field_props.warehouse_name != to_snake_case(self.field_props.name)
+        ):
+            raise ValueError(
+                f"Warehouse access is required to set a custom field warehouse name. \
+                Either set warehouse_access to True in BenchlingConnection or set the column variable name to the given Benchling field warehouse name: {to_snake_case(self.field_props.name)}. \
+                Reach out to Benchling support if you need help setting up warehouse access."
+            )
 
 
 class ArchiveEntitySchemaField(BaseOperation):
@@ -459,6 +490,15 @@ class UpdateEntitySchemaField(BaseOperation):
             if existing_new_field:
                 raise ValueError(
                     f"New field warehouse name {self.update_props.warehouse_name} already exists on entity schema {self.wh_schema_name} and is {'archived' if existing_new_field.archiveRecord is not None else 'active'} in Benchling."
+                )
+            if (
+                not benchling_service.connection.warehouse_access
+                and self.update_props.warehouse_name is not None
+            ):
+                raise ValueError(
+                    "Warehouse access is required to change the field warehouse name. \
+                    Either set warehouse_access to True in BenchlingConnection or do not change the warehouse name. \
+                    Reach out to Benchling support if you need help setting up warehouse access."
                 )
         return tag_schema
 
