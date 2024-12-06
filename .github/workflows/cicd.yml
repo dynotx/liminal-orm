@@ -3,6 +3,7 @@ name: cicd
 on:
   workflow_dispatch:
   push:
+  pull_request:
 defaults:
   run:
     shell: bash
