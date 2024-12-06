@@ -70,6 +70,18 @@ class CreateEntitySchema(BaseOperation):
     def describe(self) -> str:
         return f"{self._validated_schema_properties.name}: Schema is defined in code but not in Benchling."
 
+    def validate(self, benchling_service: BenchlingService) -> None:
+        if (
+            not benchling_service.connection.warehouse_access
+            and self._validated_schema_properties.warehouse_name
+            != to_snake_case(self._validated_schema_properties.name)
+        ):
+            raise ValueError(
+                f"Warehouse access is required to set a custom field warehouse name. \
+                Either set warehouse_access to True in BenchlingConnection or set the schema warehouse_name to the given Benchling warehouse name: {to_snake_case(self._validated_schema_properties.name)}. \
+                Reach out to Benchling support if you need help setting up warehouse access."
+            )
+
     def _validate_create(self, benchling_service: BenchlingService) -> None:
         all_schemas = TagSchemaModel.get_all_json(benchling_service)
         if self._validated_schema_properties.name in [
@@ -96,16 +108,6 @@ class CreateEntitySchema(BaseOperation):
         ):
             raise ValueError(
                 "Invalid naming strategies for schema. Cannot create entity schema using template-based naming strategies."
-            )
-        if (
-            not benchling_service.connection.warehouse_access
-            and self._validated_schema_properties.warehouse_name
-            != to_snake_case(self._validated_schema_properties.name)
-        ):
-            raise ValueError(
-                f"Warehouse access is required to set a custom field warehouse name. \
-                Either set warehouse_access to True in BenchlingConnection or set the schema warehouse_name to the given Benchling warehouse name: {to_snake_case(self._validated_schema_properties.name)}. \
-                Reach out to Benchling support if you need help setting up warehouse access."
             )
         return None
 
@@ -205,6 +207,17 @@ class UpdateEntitySchema(BaseOperation):
     def describe(self) -> str:
         return f"Schema properties for {self.wh_schema_name} are different in code versus Benchling: {str(self.update_props)}."
 
+    def validate(self, benchling_service: BenchlingService) -> None:
+        if (
+            benchling_service.connection.warehouse_access
+            and self.update_props.warehouse_name is not None
+        ):
+            raise ValueError(
+                "Warehouse access is required to change the schema warehouse name. \
+                Either set warehouse_access to True in BenchlingConnection or do not change the warehouse name. \
+                Reach out to Benchling support if you need help setting up warehouse access."
+            )
+
     def _validate(self, benchling_service: BenchlingService) -> TagSchemaModel:
         all_schemas = TagSchemaModel.get_all_json(benchling_service)
         tag_schema = TagSchemaModel.get_one(
@@ -236,15 +249,6 @@ class UpdateEntitySchema(BaseOperation):
         ):
             raise ValueError(
                 "Invalid naming strategies for schema. The name template must be set on the schema through the UI when using template-based naming strategies."
-            )
-        if (
-            benchling_service.connection.warehouse_access
-            and self.update_props.warehouse_name is not None
-        ):
-            raise ValueError(
-                "Warehouse access is required to change the schema warehouse name. \
-                Either set warehouse_access to True in BenchlingConnection or do not change the warehouse name. \
-                Reach out to Benchling support if you need help setting up warehouse access."
             )
         return tag_schema
 
@@ -324,7 +328,7 @@ class CreateEntitySchemaField(BaseOperation):
     def describe(self) -> str:
         return f"{self.wh_schema_name}: Entity schema field '{self._wh_field_name}' is not defined in Benchling but is defined in code."
 
-    def _validate(self, benchling_service: BenchlingService) -> None:
+    def validate(self, benchling_service: BenchlingService) -> None:
         if (
             not benchling_service.connection.warehouse_access
             and self.field_props.warehouse_name != to_snake_case(self.field_props.name)
@@ -466,6 +470,17 @@ class UpdateEntitySchemaField(BaseOperation):
     def describe(self) -> str:
         return f"{self.wh_schema_name}: Entity schema field '{self.wh_field_name}' in Benchling is different than in code: {str(self.update_props)}."
 
+    def validate(self, benchling_service: BenchlingService) -> None:
+        if (
+            not benchling_service.connection.warehouse_access
+            and self.update_props.warehouse_name is not None
+        ):
+            raise ValueError(
+                "Warehouse access is required to change the field warehouse name. \
+                Either set warehouse_access to True in BenchlingConnection or do not change the warehouse name. \
+                Reach out to Benchling support if you need help setting up warehouse access."
+            )
+
     def _validate(self, benchling_service: BenchlingService) -> TagSchemaModel:
         tag_schema = TagSchemaModel.get_one(benchling_service, self.wh_schema_name)
         # Only if changing name of field
@@ -490,15 +505,6 @@ class UpdateEntitySchemaField(BaseOperation):
             if existing_new_field:
                 raise ValueError(
                     f"New field warehouse name {self.update_props.warehouse_name} already exists on entity schema {self.wh_schema_name} and is {'archived' if existing_new_field.archiveRecord is not None else 'active'} in Benchling."
-                )
-            if (
-                not benchling_service.connection.warehouse_access
-                and self.update_props.warehouse_name is not None
-            ):
-                raise ValueError(
-                    "Warehouse access is required to change the field warehouse name. \
-                    Either set warehouse_access to True in BenchlingConnection or do not change the warehouse name. \
-                    Reach out to Benchling support if you need help setting up warehouse access."
                 )
         return tag_schema
 
