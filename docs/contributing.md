@@ -2,30 +2,25 @@
 
 Thank you in advance for your contribution to Liminal! A contribution of any kind has an impact on the community. Remember to star the repo on GitHub and share Liminal with your colleagues to grow our community!
 
-Feel free to reach out directly or on GitHub for any questions at all!
-
 ## Ways to Contribute
 
 Everyone in the community has the ability to influence the roadmap of Liminal, no matter how big or small the contribution. Below are some ways you can contribute:
 
 - **Code Contribution**: Help us improve the codebase by fixing bugs, adding new features, or improving documentation.
+- **Documentation**: Help us improve the documentation by adding missing information, improving existing documentation, or raising an issue to update the documentation where needed.
 - **Raising an Issue**: Report bugs, suggest features, or provide feedback to help us improve.
 - **Spread the Word**: Leave a star on the repo in GitHub or spread the word with coworkers to help grow and cultivate the community.
 - **Add yourself as a User**: If your project or organization uses Liminal, add yourself to [USERS.md](https://github.com/dynotx/liminal-orm/blob/main/USERS.md). This is a great way to help us prioritize Liminal's roadmap, and get first dibs on new features ;).
 
 ## Setup
 
-1. Clone the repo
+If you are interested in contributing to Liminal, please follow the steps below to setup the Liminal repository locally.
 
-    `git clone https://github.com/dynotx/liminal-orm.git`
+1. Fork the Liminal repository and sync to upstream. Instructions here: [Fork a repo](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo)
 
-2. cd into the repo
+2. Install Poetry
 
-    `cd liminal-orm`
-
-3. Install Poetry
-
-    Use the [Poetry Installation guide](https://python-poetry.org/docs/#installing-with-pipx)
+   Use the [Poetry Installation guide](https://python-poetry.org/docs/#installing-with-pipx)
 
 3. Install Liminal dependencies
 
@@ -47,4 +42,4 @@ If making changes to the documentation (which is created using [`MKDocs-material
 
 ## Making a Pull Request
 
-Contributions to the codebase must be made by submitting a [Pull Request](https://github.com/dynotx/liminal-orm/pulls) to the `main` branch
+Contributions to the codebase must be made by submitting a [Pull Request](https://github.com/dynotx/liminal-orm/pulls)

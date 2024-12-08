@@ -14,15 +14,11 @@ Everyone in the community has the ability to influence the roadmap of Liminal, n
 
 ## Setup
 
-1. Clone the repo
+If you are interested in contributing to Liminal, please follow the steps below to setup the Liminal repository locally.
 
-    `git clone https://github.com/dynotx/liminal-orm.git`
+1. Fork the Liminal repository and sync to upstream. Instructions here: [Fork a repo](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo)
 
-2. cd into the repo
-
-    `cd liminal-orm`
-
-3. Install Poetry
+2. Install Poetry
 
    Use the [Poetry Installation guide](https://python-poetry.org/docs/#installing-with-pipx)
 
@@ -46,4 +42,4 @@ If making changes to the documentation (which is created using [`MKDocs-material
 
 ## Making a Pull Request
 
-Contributions to the codebase must be made by submitting a [Pull Request](https://github.com/dynotx/liminal-orm/pulls) to the `main` branch
+Contributions to the codebase must be made by submitting a [Pull Request](https://github.com/dynotx/liminal-orm/pulls)
