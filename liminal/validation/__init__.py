@@ -1,13 +1,15 @@
-from abc import ABC, abstractmethod
+import inspect
 from datetime import datetime
-from typing import TYPE_CHECKING, Any
+from functools import wraps
+from typing import TYPE_CHECKING, Callable
 
 from pydantic import BaseModel, ConfigDict
 
-from liminal.enums import BenchlingReportLevel
+from liminal.utils import pascalize
+from liminal.validation.validation_severity import ValidationSeverity
 
 if TYPE_CHECKING:
-    from liminal.orm.base_model import BaseModel as BaseModelBenchling
+    from liminal.orm.base_model import BaseModel as BenchlingBaseModel
 
 
 class BenchlingValidatorReport(BaseModel):
@@ -20,7 +22,7 @@ class BenchlingValidatorReport(BaseModel):
         Indicates whether the validation passed or failed.
     model : str
         The name of the model being validated. (eg: NGSSample)
-    level : BenchlingReportLevel
+    level : ValidationSeverity
         The severity level of the validation report.
     validator_name : str | None
         The name of the validator that generated this report. (eg: BioContextValidator)
@@ -44,7 +46,7 @@ class BenchlingValidatorReport(BaseModel):
 
     valid: bool
     model: str
-    level: BenchlingReportLevel
+    level: ValidationSeverity
     validator_name: str | None = None
     entity_id: str | None = None
     registry_id: str | None = None
@@ -57,89 +59,35 @@ class BenchlingValidatorReport(BaseModel):
 
     model_config = ConfigDict(extra="allow")
 
-
-class BenchlingValidator(ABC):
-    """Base class for benchling validators."""
-
-    def __str__(self) -> str:
-        return self.__class__.__name__ + "()"
-
-    def _prefix(self) -> str:
-        """Creates a prefix for the formatted error message which includes the class name and any instance variables.
-        Ex: "BenchlingValidator(field_name=sample_code, field_value=123):"
-        """
-        prefix = f"{self.__class__.__name__}"
-        if vars(self):
-            prefix += "("
-            for key, val in vars(self).items():
-                prefix += f"{key}={self.truncate_msg(val, max_len=50)}, "
-            prefix = prefix[:-2] + "):"
-        else:
-            prefix += ":"
-        return prefix
-
-    @abstractmethod
-    def validate(self, entity: type["BaseModelBenchling"]) -> BenchlingValidatorReport:
-        """Abstract method that all validator subclass must implement. Each subclass will have a differently defined validation
-        function that runs on the given benchling entity.
+    @classmethod
+    def create_validation_report(
+        cls,
+        valid: bool,
+        level: ValidationSeverity,
+        entity: type["BenchlingBaseModel"],
+        validator_name: str,
+        message: str | None = None,
+    ) -> "BenchlingValidatorReport":
+        """Creates a BenchlingValidatorReport with the given parameters.
 
         Parameters
         ----------
-        entity : type["BaseModelBenchling"]
-            The Benchling entity to validate.
-
-        Returns
-        -------
-        BenchlingValidatorReport
-            A report indicating whether the validation passed or failed, and any additional metadata.
+        valid: bool
+            Indicates whether the validation passed or failed.
+        level: ValidationSeverity
+            The severity level of the validation report.
+        entity: type[BenchlingBaseModel]
+            The entity being validated.
+        validator_name: str
+            The name of the validator that generated this report.
+        message: str | None
+            A message describing the result of the validation.
         """
-        raise NotImplementedError
-
-    def __getattribute__(self, name: str) -> Any:
-        attr = super().__getattribute__(name)
-        if name == "validate":
-            # Wrap the validate method in a try-except block to catch any unexpected errors that occur during validation.
-            # If an unexpected error occurs, return a BenchlingValidatorReport with the unexpected error message.
-            def try_except_wrapped_func(
-                *args: Any, **kwargs: dict
-            ) -> BenchlingValidatorReport:
-                try:
-                    return attr(*args, **kwargs)
-                except Exception as e:
-                    entity: type[BaseModelBenchling] = args[0]
-                    return BenchlingValidatorReport(
-                        valid=False,
-                        model=entity.__class__.__name__,
-                        validator_name=self.__class__.__name__,
-                        level=BenchlingReportLevel.UNEXPECTED,
-                        entity_id=entity.id,
-                        registry_id=entity.file_registry_id,
-                        entity_name=entity.name,
-                        web_url=entity.url if entity.url else None,
-                        creator_name=entity.creator.name if entity.creator else None,
-                        creator_email=entity.creator.email if entity.creator else None,
-                        updated_date=entity.modified_at,
-                        message=f"Unexpected exception: {e}",
-                    )
-
-            return try_except_wrapped_func
-        return attr
-
-    @classmethod
-    def create_report(
-        cls,
-        valid: bool,
-        level: BenchlingReportLevel,
-        entity: type["BaseModelBenchling"],
-        message: str | None = None,
-        **kwargs: Any,
-    ) -> BenchlingValidatorReport:
-        """Creates a BenchlingValidatorReport with the given parameters."""
-        return BenchlingValidatorReport(
+        return cls(
             valid=valid,
             level=level,
             model=entity.__class__.__name__,
-            validator_name=cls.__name__,
+            validator_name=validator_name,
             entity_id=entity.id,
             registry_id=entity.file_registry_id,
             entity_name=entity.name,
@@ -148,31 +96,64 @@ class BenchlingValidator(ABC):
             creator_email=entity.creator.email if entity.creator else None,
             updated_date=entity.modified_at,
             message=message,
-            **kwargs,
         )
 
-    def format_err(self, *msgs: str | None) -> str:
-        """Creates a formatted error message from the given messages. The first message is prefixed with the class name and any instance variables.
-        Ex: "BenchlingValidator(field_name=sample_code, field_value=123): The field value is invalid | The field value is too long"
-        """
-        ret_val = ""
-        for ind, msg in enumerate(msgs):
-            if ind == 0:
-                if (msg is None) or (msg == ""):
-                    continue
-                elif not msg.startswith(self._prefix()):
-                    ret_val += f"{self._prefix()} {msg}"
-                else:
-                    ret_val += f"{msg}"
-            elif ((msgs[0] is None) or (msgs[0] == "")) and (ind == 1):
-                ret_val += f"{self._prefix()} {msg}"
-            else:
-                ret_val += f" | {msg}"
-        return ret_val
 
-    def truncate_msg(self, msg: Any, max_len: int = 150) -> str:
-        """Shortens the given message to the given max length. If the message is longer than the max length, it is truncated and an ellipsis is added to the end."""
-        msg = str(msg)
-        if len(msg) > max_len:
-            return f"{msg[:max_len]}..."
-        return msg
+def liminal_validator(
+    validator_level: ValidationSeverity = ValidationSeverity.LOW,
+    validator_name: str | None = None,
+) -> Callable:
+    """A decorator that validates a function that takes a Benchling entity as an argument and returns None.
+
+    Parameters:
+        validator_level: ValidationSeverity
+            The level of the validator.
+        validator_name: str | None
+            The name of the validator. Defaults to the pascalized name of the function.
+    """
+
+    def decorator(func: Callable[[type["BenchlingBaseModel"]], None]) -> Callable:
+        """Decorator that validates a function that takes a Benchling entity as an argument and returns None."""
+        sig = inspect.signature(func)
+        params = list(sig.parameters.values())
+        if not params or params[0].name != "self" or len(params) > 1:
+            raise TypeError(
+                "Validator must defined in a schema class, where the only argument to this validator must be 'self'."
+            )
+
+        if params[0].name != "self":
+            raise TypeError(
+                "The only argument to this validator must be a Benchling entity."
+            )
+
+        if sig.return_annotation is not None:
+            raise TypeError("The return type must be None.")
+
+        nonlocal validator_name
+        if validator_name is None:
+            validator_name = pascalize(func.__name__)
+
+        @wraps(func)
+        def wrapper(self: type["BenchlingBaseModel"]) -> BenchlingValidatorReport:
+            """Wrapper that runs the validator function and returns a BenchlingValidatorReport."""
+            try:
+                func(self)
+            except Exception as e:
+                return BenchlingValidatorReport.create_validation_report(
+                    valid=False,
+                    level=validator_level,
+                    entity=self,
+                    validator_name=validator_name,
+                    message=str(e),
+                )
+            return BenchlingValidatorReport.create_validation_report(
+                valid=True,
+                level=validator_level,
+                entity=self,
+                validator_name=validator_name,
+            )
+
+        setattr(wrapper, "_is_liminal_validator", True)
+        return wrapper
+
+    return decorator

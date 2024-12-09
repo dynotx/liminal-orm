@@ -178,44 +178,6 @@ multi_relationship(target_class_name: str, current_class_name: str, entity_link_
 
 The `query()` method must be implemented for the entity schema class to define a custom query. This is useful if you want to add additional filtering or joins to the query.
 
-## Validators: [class](https://github.com/dynotx/liminal-orm/blob/main/liminal/validation/__init__.py)
-
-As seen in the example above, the `get_validators` method is used to define a list of validators for the entity schema. These validators run on entities of the schema that are queried from Benchling's Postgres database. For example:
-
-```python
-pizza_entity = Pizza.query(session).first()
-
-# Validate a single entity from a query
-report = CookTempValidator().validate(pizza_entity)
-
-# Validate all entities for a schema
-reports = Pizza.validate(session)
-```
-
-The list of validators within `get_validators` are used to run on all entities of the schema.
-
-The `BenchlingValidator` object is used to define the validator classes, that can be defined with custom logic to validate entities of a schema. Refer to the [Validators](./validators.md) page to learn more about how to define validators.
-
-## Additional Functionality
-
-Below is additional functionality that is provided by the Liminal BaseModel class.
-
-```python
-connection = BenchlingConnection(...)
-benchling_service = BenchlingService(connection, use_db=True)
-
-with benchling_service as session:
-
-    # Get all entities for a schema and return a dataframe
-    df = Pizza.df(session)
-
-    # Validate all entities for a schema and return a list of ValidatorReports
-    reports = Pizza.validate(session)
-
-    # Validate all entities for a schema and return a dataframe
-    validated_df = Pizza.validate_to_df(session)
-```
-
 ## Notes
 
 - Note that the Entity Schema definition in Liminal does not cover 100% of the properties that can be set through the Benchling website. However, the goal is to have 100% parity! If you find any missing properties that are not covered in the definition or migration service, please open an issue on [Github](https://github.com/dynotx/liminal-orm/issues). In the meantime, you can manually set the properties through the Benchling website.
