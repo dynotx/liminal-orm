@@ -5,13 +5,13 @@ Please check the [Issues](https://github.com/dynotx/liminal-orm/issues) page for
 This roadmap is based on community feedback. If there is a feature or something blocking you from using Liminal, please reach out to me and it will help me prioritize the Liminal roadmap!
 
 - Achieve 100% parity with Entity Schemas (Current: ~80%)
-  - Name template
-  - Inventory settings
+    - Name template
+    - Inventory settings
 - Expand coverage to all Benchling schema types
-  - Container schema
-  - Box schema
-  - Plate schema
-  - Location schema
+    - Container schema
+    - Box schema
+    - Plate schema
+    - Location schema
 - Liminal automatically generates user-friendly validation reports
 - Make validators on entity schemas labeled as decorators
 

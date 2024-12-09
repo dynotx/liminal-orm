@@ -23,9 +23,11 @@ nav:
       - contributing.md
   - Future Direction:
       - future-direction.md
+  - Release Notes:
+      - release-notes.md
 theme:
   name: material
-  # custom_dir: 'docs/theme'
+  custom_dir: 'docs/theme'
   logo: assets/logo.png
   palette:
     - media: "(prefers-color-scheme: dark)"
