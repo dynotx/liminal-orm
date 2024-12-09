@@ -91,6 +91,31 @@
     </div>
     <div data-md-component="announce">
       
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+            
+  <!-- the following line is displayed in the announcement bar -->
+<!-- keep length under 164 characters (less HTML tags) to fit on 1280px desktop window -->
+New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes/#v110">release notes</a> for more details.
+
+<button class="md-banner__button md-icon" aria-label="Don't show this again" id="close-banner">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z">
+        </path>
+    </svg>
+</button>
+
+<script>
+    document.getElementById('close-banner').addEventListener('click', function () {
+        this.parentElement.style.display = 'none';
+    });
+</script>
+
+          </div>
+          
+        </aside>
+      
     </div>
     
     
@@ -324,6 +349,24 @@
           
   
   Future Direction
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../release-notes/" class="md-tabs__link">
+          
+  
+  Release Notes
 
         </a>
       </li>
@@ -1043,6 +1086,72 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Release Notes
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Release Notes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../release-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Release notes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1117,6 +1226,7 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
+  
                   
 
   
@@ -1125,24 +1235,20 @@
 
 <h1 id="contributing-to-liminal-orm">Contributing to Liminal ORM</h1>
 <p>Thank you in advance for your contribution to Liminal! A contribution of any kind has an impact on the community. Remember to star the repo on GitHub and share Liminal with your colleagues to grow our community!</p>
-<p>Feel free to reach out directly or on GitHub for any questions at all!</p>
 <h2 id="ways-to-contribute">Ways to Contribute</h2>
 <p>Everyone in the community has the ability to influence the roadmap of Liminal, no matter how big or small the contribution. Below are some ways you can contribute:</p>
 <ul>
 <li><strong>Code Contribution</strong>: Help us improve the codebase by fixing bugs, adding new features, or improving documentation.</li>
+<li><strong>Documentation</strong>: Help us improve the documentation by adding missing information, improving existing documentation, or raising an issue to update the documentation where needed.</li>
 <li><strong>Raising an Issue</strong>: Report bugs, suggest features, or provide feedback to help us improve.</li>
 <li><strong>Spread the Word</strong>: Leave a star on the repo in GitHub or spread the word with coworkers to help grow and cultivate the community.</li>
 <li><strong>Add yourself as a User</strong>: If your project or organization uses Liminal, add yourself to <a href="https://github.com/dynotx/liminal-orm/blob/main/USERS.md">USERS.md</a>. This is a great way to help us prioritize Liminal's roadmap, and get first dibs on new features ;).</li>
 </ul>
 <h2 id="setup">Setup</h2>
+<p>If you are interested in contributing to Liminal, please follow the steps below to setup the Liminal repository locally.</p>
 <ol>
 <li>
-<p>Clone the repo</p>
-<p><code>git clone https://github.com/dynotx/liminal-orm.git</code></p>
-</li>
-<li>
-<p>cd into the repo</p>
-<p><code>cd liminal-orm</code></p>
+<p>Fork the Liminal repository and sync to upstream. Instructions here: <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo">Fork a repo</a></p>
 </li>
 <li>
 <p>Install Poetry</p>
@@ -1167,7 +1273,7 @@
 <p>Please include tests when adding new functionality. Liminal uses <a href="https://docs.pytest.org/en/stable/"><code>pytest</code></a> for testing. Run this using <code>pytest liminal/</code> to run all tests. All tests must pass in order to merge in a Pull Request.</p>
 <p>If making changes to the documentation (which is created using <a href="https://squidfunk.github.io/mkdocs-material/"><code>MKDocs-material</code></a>). Host and get a live preview of website using <code>mkdocs serve</code>.</p>
 <h2 id="making-a-pull-request">Making a Pull Request</h2>
-<p>Contributions to the codebase must be made by submitting a <a href="https://github.com/dynotx/liminal-orm/pulls">Pull Request</a> to the <code>main</code> branch</p>
+<p>Contributions to the codebase must be made by submitting a <a href="https://github.com/dynotx/liminal-orm/pulls">Pull Request</a></p>
 
 
 
@@ -1183,6 +1289,9 @@
 
 
                 
+  <script src="/flarelytics/client.js"></script>
+  
+
               </article>
             </div>
           

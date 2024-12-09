@@ -91,6 +91,31 @@
     </div>
     <div data-md-component="announce">
       
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+            
+  <!-- the following line is displayed in the announcement bar -->
+<!-- keep length under 164 characters (less HTML tags) to fit on 1280px desktop window -->
+New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes/#v110">release notes</a> for more details.
+
+<button class="md-banner__button md-icon" aria-label="Don't show this again" id="close-banner">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z">
+        </path>
+    </svg>
+</button>
+
+<script>
+    document.getElementById('close-banner').addEventListener('click', function () {
+        this.parentElement.style.display = 'none';
+    });
+</script>
+
+          </div>
+          
+        </aside>
+      
     </div>
     
     
@@ -324,6 +349,24 @@
           
   
   Future Direction
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../release-notes/" class="md-tabs__link">
+          
+  
+  Release Notes
 
         </a>
       </li>
@@ -1114,6 +1157,72 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Release Notes
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Release Notes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Release notes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1261,6 +1370,7 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
+  
                   
 
   
@@ -1336,13 +1446,20 @@ detected by Liminal's migration service, which is run using the <code>liminal au
 <h3 id="parameters">Parameters</h3>
 <p><strong>name: str</strong></p>
 <blockquote>
-<p>The name of the entity schema. Must be unique across all entity schemas.
-<strong>warehouse_name: str</strong></p>
+<p>The name of the entity schema. Must be unique across all entity schemas.</p>
+</blockquote>
+<p><strong>warehouse_name: str</strong></p>
+<blockquote>
 <p>The warehouse name of the entity schema. Must be unique across all entity schemas.</p>
 </blockquote>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The warehouse names are used as keys across liminal and are used as entity_link values in Columns.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If warehouse access is not enabled on your tenant, you will be unable to update the warehouse name.</p>
+<p>Liminal assumes the Benchling generated warehouse name to be <code>to_snake_case(name)</code>.</p>
 </div>
 <p><strong>prefix: str</strong></p>
 <blockquote>
@@ -1361,6 +1478,11 @@ detected by Liminal's migration service, which is run using the <code>liminal au
 <p>The mixture schema configuration for the entity schema. Must be defined as a <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/base/properties/base_schema_properties.py">MixtureSchemaConfig</a> object.</p>
 </blockquote>
 <h2 id="column-class">Column: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/column.py">class</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If warehouse access is not enabled on your tenant, you will be unable to update the warehouse name for fields.</p>
+<p>Liminal will enforce that the column variable name (which represents the warehouse name) matches the Benchling generated warehouse name, which Liminal assumes to be <code>to_snake_case(name)</code>.</p>
+</div>
 <h3 id="parameters_1">Parameters</h3>
 <p><strong>name: str</strong></p>
 <blockquote>
@@ -1465,6 +1587,9 @@ detected by Liminal's migration service, which is run using the <code>liminal au
 
 
                 
+  <script src="/flarelytics/client.js"></script>
+  
+
               </article>
             </div>
           
