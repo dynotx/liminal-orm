@@ -215,6 +215,24 @@ def mock_benchling_schema(
             tooltip=None,
             _archived=False,
         ),
+        "archived_field": Props(
+            name="Archived Field",
+            type=Type.TEXT,
+            required=False,
+            is_multi=False,
+            _archived=True,
+        ),
+        "wh_name_field_different": Props(
+            name="Different Wh Name Field",
+            type=Type.TEXT,
+            required=False,
+            is_multi=False,
+            parent_link=False,
+            dropdown_link=None,
+            entity_link=None,
+            tooltip=None,
+            _archived=False,
+        ),
     }
     return [(schema_props, fields)]
 
@@ -368,6 +386,20 @@ def mock_benchling_subclass(mock_benchling_dropdown) -> list[type[BaseModel]]:  
             required=False,
             is_multi=True,
             dropdown=mock_benchling_dropdown,
+        )
+        archived_field: SqlColumn = Column(
+            name="Archived Field",
+            type=Type.TEXT,
+            required=False,
+            is_multi=False,
+            _archived=True,
+        )
+        different_wh_name_field: SqlColumn = Column(
+            name="Different Wh Name Field",
+            type=Type.TEXT,
+            required=False,
+            is_multi=False,
+            _warehouse_name="wh_name_field_different",
         )
 
         def __init__(

@@ -330,3 +330,14 @@ class TestCompareEntitySchemas:
             assert isinstance(
                 invalid_models["mock_entity"][0].op, ReorderEntitySchemaFields
             )
+
+            # Test when the Benchling schema archived field becomes unarchived
+            benchling_rearchived_field = copy.deepcopy(mock_benchling_schema)
+            benchling_rearchived_field[0][1]["archived_field"].set_archived(False)
+            mock_get_benchling_entity_schemas.return_value = benchling_rearchived_field
+            invalid_models = compare_entity_schemas(mock_benchling_sdk)
+            assert len(invalid_models["mock_entity"]) == 1
+            assert isinstance(
+                invalid_models["mock_entity"][0].op, ArchiveEntitySchemaField
+            )
+            assert invalid_models["mock_entity"][0].op.wh_field_name == "archived_field"

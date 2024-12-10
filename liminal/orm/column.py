@@ -26,12 +26,16 @@ class Column(SqlColumn):
         Whether the field is a multi-value field.
     parent_link : bool = False
         Whether the entity link field is a parent of the entity schema.
+    tooltip : str | None = None
+        The tooltip text for the field.
     dropdown : Type[BaseDropdown] | None = None
         The dropdown for the field.
     entity_link : str | None = None
         The warehouse name of the entity the field links to.
-    tooltip : str | None = None
-        The tooltip text for the field.
+    _warehouse_name : str | None = None
+        The warehouse name of the column. Necessary when the variable name is not the same as the warehouse name.
+    _archived : bool = False
+        Whether the field is archived.
     """
 
     def __init__(
@@ -44,6 +48,7 @@ class Column(SqlColumn):
         tooltip: str | None = None,
         dropdown: Type[BaseDropdown] | None = None,  # noqa: UP006
         entity_link: str | None = None,
+        _warehouse_name: str | None = None,
         _archived: bool = False,
         **kwargs: Any,
     ):
@@ -82,6 +87,8 @@ class Column(SqlColumn):
         foreign_key = None
         if type == BenchlingFieldType.ENTITY_LINK and entity_link:
             foreign_key = ForeignKey(f"{entity_link}$raw.id")
+        if _warehouse_name:
+            kwargs["name"] = _warehouse_name
         super().__init__(
             self.sqlalchemy_type,
             foreign_key,

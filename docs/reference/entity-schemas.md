@@ -106,6 +106,13 @@ All Liminal entity schema classes must inherit from one of the mixins in the [mi
 
 > The mixture schema configuration for the entity schema. Must be defined as a [MixtureSchemaConfig](https://github.com/dynotx/liminal-orm/blob/main/liminal/base/properties/base_schema_properties.py) object.
 
+**_archived: bool | None = None**
+
+> Private attribute used to set the archived status of the schema.
+
+!!! tip
+    When schemas (and fields) are archived, they still existing the Benchling warehouse. Using _archived is useful when you need to access archived data.
+
 ## Column: [class](https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/column.py)
 
 !!! warning
@@ -135,6 +142,10 @@ All Liminal entity schema classes must inherit from one of the mixins in the [mi
 
 > Whether the field is a parent link field. Defaults to False.
 
+**tooltip: str | None = None**
+
+> The tooltip for the field. Defaults to None.
+
 **dropdown: Type[BaseDropdown] | None = None**
 
 > The dropdown object for the field. The dropdown object must inherit from BaseDropdown and the type of the Column must be `BenchlingFieldType.DROPDOWN`. Defaults to None.
@@ -143,9 +154,13 @@ All Liminal entity schema classes must inherit from one of the mixins in the [mi
 
 > The entity link for the field. The entity link must be the `warehouse_name` as a string of the entity schema that the field is linking to. The type of the Column must be `BenchlingFieldType.ENTITY_LINK` in order to be valid. Defaults to None.
 
-**tooltip: str | None = None**
+**_archived: bool = False**
 
-> The tooltip for the field. Defaults to None.
+> Private attribute used to set the archived status of the column.  Useful when you need to access archived data and want to define archived fields.
+
+**_warehouse_name: str | None = None**
+
+> Private attribute used to set the warehouse name of the column. This is useful when the variable name is not the same as the warehouse name.
 
 ## Relationships: [module](https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/relationship.py)
 
