@@ -19,7 +19,7 @@
 
 3. Review the generated revision file and set of operations to ensure that it is accurate.
 
-    ### Example Revision File
+   ### Example Revision File
 
     ```python
     import liminal.external as b
@@ -59,3 +59,7 @@
         If you have multiple Benchling tenants, you can run `liminal upgrade` multiple times pointing to different tenants to upgrade them. It is recommended to run against your test tenant first to ensure the changes are applied as expected.
 
 5. You should see output indicating that the revision was applied successfully. Check your Benchling tenant to ensure the changes were applied as expected!
+
+!!! warning
+    If the migration fails mid way through, do not attempt to run the full upgrade again. This will re-run the same operations that were already run which is unsafe. Instead, you can comment out the operations
+    that have already been run in the `upgrade()` function and run `liminal upgrade` again. This will ensure that only the operations that have not yet been run get applied. Alternatively, you can comment out the out the unrun operations in the `downgrade()` function and run `liminal downgrade` to revert the changes so that you can try again. (More information on downgrades on the next page!)

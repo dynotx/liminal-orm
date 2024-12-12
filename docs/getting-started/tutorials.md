@@ -1,1 +1,1 @@
-🚧 Video tutorial coming soon! Come back 11.8.2024 🚧
+🚧 Video tutorial coming soon! 🚧
