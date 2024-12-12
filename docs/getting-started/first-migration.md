@@ -62,4 +62,4 @@
 
 !!! warning
     If the migration fails mid way through, do not attempt to run the full upgrade again. This will re-run the same operations that were already run which is unsafe. Instead, you can comment out the operations
-    that have already been run in the `upgrade()` function and run `liminal upgrade` again. This will ensure that only the operations that have not yet been run get applied. Alternatively, you can comment out the out the unrun operations in the `downgrade()` function and run `liminal downgrade` to revert the changes so that you can try again. (More information on downgrades on the next page!)
+    that have already been run in the `upgrade()` function and run `liminal upgrade` again. This will ensure that only the operations that have not yet been run get applied. Alternatively, you can comment out the mirrored operations not run yet in the `downgrade()` function and run `liminal downgrade` to revert the changes so that you can try again. (More information on downgrades on the next page!)
