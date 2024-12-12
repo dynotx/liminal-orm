@@ -74,7 +74,6 @@ def generate_all_entity_schema_files(
         columns = {key: columns[key] for key in columns}
         import_strings = [
             "from sqlalchemy import Column as SqlColumn",
-            "from sqlalchemy.orm import Query, Session",
             "from liminal.orm.column import Column",
             "from liminal.orm.base_model import BaseModel",
             "from liminal.orm.schema_properties import SchemaProperties",

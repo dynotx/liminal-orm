@@ -439,7 +439,7 @@ class UnarchiveEntitySchemaField(BaseOperation):
 
 
 class UpdateEntitySchemaField(BaseOperation):
-    order: ClassVar[int] = 14
+    order: ClassVar[int] = 140
 
     def __init__(
         self,
