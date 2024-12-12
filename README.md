@@ -52,22 +52,19 @@ With your schemas defined in code, you can now take advantage of the additional 
 1. Entity validation: Easily create custom validation rules for your Benchling entities.
 
     ```python
-    from liminal.validation import BenchlingValidator, BenchlingValidatorReport, BenchlingReportLevel
-    from liminal.orm.base_model import BaseModel
+    from liminal.validation import ValidationSeverity, liminal_validator
 
-    class CookTempValidator(BenchlingValidator):
-        """Validates that a field value is a valid enum value for a Benchling entity"""
+    class Pizza(BaseModel, CustomEntityMixin):
+        ...
 
-        def validate(self, entity: type[BaseModel]) -> BenchlingValidatorReport:
-            valid = True
-            message = None
-            if entity.cook_time is not None and entity.cook_temp is None:
-                valid = False
-                message = "Cook temp is required if cook time is set"
-            if entity.cook_time is None and entity.cook_temp is not None:
-                valid = False
-                message = "Cook time is required if cook temp is set"
-            return self.create_report(valid, BenchlingReportLevel.MED, entity, message)
+        @liminal_validator(ValidationSeverity.MEDIUM)
+        def cook_time_and_temp_validator(self) -> None:
+            if self.cook_time is not None and self.cook_temp is None:
+                raise ValueError("Cook temp is required if cook time is set")
+            if self.cook_time is None and self.cook_temp is not None:
+                raise ValueError("Cook time is required if cook temp is set")
+
+    validation_reports = Pizza.validate(session)
     ```
 
 2. Strongly typed queries: Write type-safe queries using SQLAlchemy to access your Benchling entities.
@@ -75,7 +72,6 @@ With your schemas defined in code, you can now take advantage of the additional 
     ```python
     with BenchlingSession(benchling_connection, with_db=True) as session:
         pizza = session.query(Pizza).filter(Pizza.name == "Margherita").first()
-        print(pizza)
     ```
 
 3. CI/CD integration: Use Liminal to automatically generate and apply your revision files to your Benchling tenant(s) as part of your CI/CD pipeline.

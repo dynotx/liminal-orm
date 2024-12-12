@@ -14,7 +14,7 @@ nav:
       - reference/benchling-session.md
       - reference/dropdowns.md
       - reference/entity-schemas.md
-      - reference/validators.md
+      - reference/validation.md
       - reference/revision-file.md
       - reference/operations.md
   - Case Studies:
