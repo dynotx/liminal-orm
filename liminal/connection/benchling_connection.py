@@ -30,6 +30,8 @@ class BenchlingConnection(BaseModel):
     warehouse_access: bool = False
         Whether your Benchling tenant has access to the warehouse. If warehouse_connection_string is provided, this will default to True.
         warehouse_access is required to set a custom warehouse names on entity schemas and their fields.
+    fieldsets: bool = False
+        Whether your Benchling tenant has access to fieldsets.
     """
 
     tenant_name: str
@@ -41,6 +43,7 @@ class BenchlingConnection(BaseModel):
     internal_api_admin_email: str | None = None
     internal_api_admin_password: str | None = None
     warehouse_access: bool = False
+    fieldsets: bool = False
 
     @model_validator(mode="before")
     @classmethod

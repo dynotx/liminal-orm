@@ -96,9 +96,11 @@ class CreateEntitySchema(BaseOperation):
             raise ValueError(
                 f"Entity schema warehouse name {self._validated_schema_properties.warehouse_name} already exists in Benchling."
             )
-        if self._validated_schema_properties.prefix in [
-            schema["prefix"] for schema in all_schemas
-        ]:
+        if (
+            not benchling_service.connection.fieldsets
+            and self._validated_schema_properties.prefix
+            in [schema["prefix"] for schema in all_schemas]
+        ):
             raise ValueError(
                 f"Entity schema prefix {self._validated_schema_properties.prefix} already exists in Benchling."
             )
@@ -235,9 +237,11 @@ class UpdateEntitySchema(BaseOperation):
             raise ValueError(
                 f"Entity schema warehouse name {self.update_props.warehouse_name} already exists in Benchling."
             )
-        if self.update_props.prefix and self.update_props.prefix in [
-            schema["prefix"] for schema in all_schemas
-        ]:
+        if (
+            not benchling_service.connection.fieldsets
+            and self.update_props.prefix
+            and self.update_props.prefix in [schema["prefix"] for schema in all_schemas]
+        ):
             raise ValueError(
                 f"Entity schema prefix {self.update_props.prefix} already exists in Benchling."
             )
