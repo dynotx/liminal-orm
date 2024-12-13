@@ -12,8 +12,8 @@ from sqlalchemy.orm.decl_api import declared_attr
 
 from liminal.base.base_validation_filters import BaseValidatorFilters
 from liminal.orm.base import Base
+from liminal.orm.base_tables import User
 from liminal.orm.schema_properties import SchemaProperties
-from liminal.orm.user import User
 from liminal.validation import (
     BenchlingValidator,
     BenchlingValidatorReport,
