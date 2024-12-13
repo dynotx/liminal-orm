@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column
+from sqlalchemy import Column, ForeignKey
 from sqlalchemy.types import DATETIME, Boolean, String
 
 from liminal.orm.base import Base
@@ -13,16 +13,16 @@ class RegistryEntity(Base):
     id = Column("id", String, nullable=True, primary_key=True)
     archived = Column("archived$", Boolean, nullable=True)
     archive_purpose = Column("archive_purpose$", String, nullable=True)
-    created_at = Column("created_at$", DATETIME, nullable=True)
-    creator_id = Column("creator_id", String, nullable=True)
+    created_at = Column("created_at", DATETIME, nullable=True)
+    creator_id = Column("creator_id", String, ForeignKey("user$raw.id"), nullable=True)
     file_registry_id = Column("file_registry_id", String, nullable=True)
-    folder_id = Column("folder_id$", String, nullable=True)
-    modified_at = Column("modified_at$", DATETIME, nullable=True)
-    name = Column("name$", String, nullable=True)
+    folder_id = Column("folder_id", String, nullable=True)
+    modified_at = Column("modified_at", DATETIME, nullable=True)
+    name = Column("name", String, nullable=True)
     project_id = Column("project_id", String, nullable=True)
-    schema_id = Column("schema_id$", String, nullable=True)
+    schema_id = Column("schema_id", String, nullable=True)
     source_id = Column("source_id", String, nullable=True)
-    url = Column("url$", String, nullable=True)
+    url = Column("url", String, nullable=True)
     validation_status = Column("validation_status", String, nullable=True)
 
     creator = single_relationship("User", creator_id)
