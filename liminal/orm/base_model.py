@@ -55,8 +55,8 @@ class BaseModel(Generic[T], Base):
                 f"Schema name '{cls.__schema_properties__.name}' is already used by another subclass."
             )
         if cls.__schema_properties__.prefix.lower() in cls._existing_schema_prefixes:
-            raise ValueError(
-                f"Schema prefix '{cls.__schema_properties__.prefix}' is already used by another subclass."
+            logger.warning(
+                f"Schema prefix '{cls.__schema_properties__.prefix}' is already used by another subclass. Please ensure fieldsets=True in BenchlingConnection you are updating/creating this schema."
             )
 
         cls._existing_schema_warehouse_names.add(warehouse_name)
