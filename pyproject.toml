@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "liminal-orm"
-version = "1.1.3"
+version = "1.1.4"
 description = "An ORM and toolkit that builds on top of Benchling's platform to keep your schemas and downstream code dependencies in sync."
 authors = ["DynoTx Open Source <opensource@dynotx.com>"]
 readme = "README.md"
