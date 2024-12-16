@@ -44,6 +44,11 @@ def convert_tag_schema_to_internal_schema(
     all_fields = tag_schema.allFields
     if not include_archived_fields:
         all_fields = [f for f in all_fields if not f.archiveRecord]
+    constraint_fields: set[str] | None = None
+    if tag_schema.constraint:
+        constraint_fields = set([f.systemName for f in tag_schema.constraint.fields])
+        if tag_schema.constraint.uniqueResidues:
+            constraint_fields.add("bases")
     return (
         SchemaProperties(
             name=tag_schema.name,
@@ -63,6 +68,7 @@ def convert_tag_schema_to_internal_schema(
                 BenchlingNamingStrategy(strategy)
                 for strategy in tag_schema.labelingStrategies
             ),
+            constraint_fields=constraint_fields,
             _archived=tag_schema.archiveRecord is not None,
         ),
         {

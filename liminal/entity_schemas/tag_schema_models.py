@@ -32,6 +32,31 @@ class FieldRequiredLinkShortModel(BaseModel):
     storableSchema: dict[str, Any] | None = None
 
 
+class TagSchemaConstraint(BaseModel):
+    """
+    A class to define a constraint on an entity schema.
+    """
+
+    areUniqueResiduesCaseSensitive: bool | None = None
+    fields: list[TagSchemaFieldModel] | None = None
+    uniqueCanonicalSmilers: bool | None = None
+    uniqueResidues: bool | None = None
+
+    @classmethod
+    def from_constraint_fields(
+        cls, constraint_fields: list[TagSchemaFieldModel], bases: bool
+    ) -> TagSchemaConstraint:
+        """
+        Generates a Constraint object from a set of constraint fields to create a constraint on a schema.
+        """
+        return cls(
+            fields=constraint_fields,
+            uniqueResidues=bases,
+            uniqueCanonicalSmilers=False,
+            areUniqueResiduesCaseSensitive=False,
+        )
+
+
 class UpdateTagSchemaModel(BaseModel):
     """A pydantic model to define the input for the internal tag schema update endpoint."""
 
@@ -46,6 +71,7 @@ class UpdateTagSchemaModel(BaseModel):
     sequenceType: BenchlingSequenceType | None = None
     shouldCreateAsOligo: bool | None = None
     showResidues: bool | None = None
+    constraint: TagSchemaConstraint | None = None
 
 
 class CreateTagSchemaFieldModel(BaseModel):
@@ -243,7 +269,7 @@ class TagSchemaModel(BaseModel):
     authParentOption: str | None
     batchSchemaId: str | None
     childEntitySchemaSummaries: list[Any] | None
-    constraint: Any | None
+    constraint: TagSchemaConstraint | None
     containableType: str | None
     fields: list[TagSchemaFieldModel]
     folderItemType: BenchlingFolderItemType
@@ -347,6 +373,23 @@ class TagSchemaModel(BaseModel):
             self.labelingStrategies = [o.value for o in update_props.naming_strategies]
         if "mixture_schema_config" in update_diff_names:
             self.mixtureSchemaConfig = update_props.mixture_schema_config
+
+        if "constraint_fields" in update_diff_names:
+            if update_props.constraint_fields:
+                has_bases = False
+                if "bases" in update_props.constraint_fields:
+                    has_bases = True
+                    update_props.constraint_fields.discard("bases")
+                constraint_fields = [
+                    f
+                    for f in self.fields
+                    if f.systemName in update_props.constraint_fields
+                ]
+                self.constraint = TagSchemaConstraint.from_constraint_fields(
+                    constraint_fields, has_bases
+                )
+            else:
+                self.constraint = None
 
         self.prefix = (
             update_props.prefix if "prefix" in update_diff_names else self.prefix

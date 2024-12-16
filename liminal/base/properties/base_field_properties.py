@@ -122,4 +122,4 @@ class BaseFieldProperties(BaseModel):
 
     def __repr__(self) -> str:
         """Generates a string representation of the class so that it can be executed."""
-        return f"{self.__class__.__name__}({', '.join([f'{k}={v.__repr__()}' for k, v in self.model_dump(exclude_defaults=True).items()])})"
+        return f"{self.__class__.__name__}({', '.join([f'{k}={v.__repr__()}' for k, v in self.model_dump(exclude_unset=True).items()])})"
