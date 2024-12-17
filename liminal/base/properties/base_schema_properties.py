@@ -59,6 +59,10 @@ class BaseSchemaProperties(BaseModel):
         The entity type of the schema.
     mixture_schema_config : MixtureSchemaConfig | None
         The mixture schema config of the schema.
+    use_registry_id_as_label : bool | None = None
+        If the schema will display the Registry ID as the main label for items
+    include_registry_id_in_chips : bool | None = None
+        If the registry ID is included in the chip for an item
     _archived : bool | None
         Whether the schema is archived in Benchling.
     """
@@ -69,6 +73,8 @@ class BaseSchemaProperties(BaseModel):
     entity_type: BenchlingEntityType | None = None
     naming_strategies: set[BenchlingNamingStrategy] | None = None
     mixture_schema_config: MixtureSchemaConfig | None = None
+    use_registry_id_as_label: bool | None = None
+    include_registry_id_in_chips: bool | None = None
     _archived: bool | None = None
 
     def __init__(self, **data: Any):
@@ -109,4 +115,4 @@ class BaseSchemaProperties(BaseModel):
 
     def __repr__(self) -> str:
         """Generates a string representation of the class so that it can be executed."""
-        return f"{self.__class__.__name__}({', '.join([f'{k}={v.__repr__()}' for k, v in self.model_dump(exclude_defaults=True).items()])})"
+        return f"{self.__class__.__name__}({', '.join([f'{k}={v.__repr__()}' for k, v in self.model_dump(exclude_unset=True).items()])})"

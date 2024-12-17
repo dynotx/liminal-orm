@@ -125,6 +125,8 @@ def mock_benchling_schema(
         prefix="MockEntity",
         entity_type=BenchlingEntityType.CUSTOM_ENTITY,
         naming_strategies=[BenchlingNamingStrategy.NEW_IDS],
+        use_registry_id_as_label=True,
+        include_registry_id_in_chips=False,
     )
     fields = {
         "enum_field": Props(
@@ -347,6 +349,8 @@ def mock_benchling_subclass(mock_benchling_dropdown) -> list[type[BaseModel]]:  
             prefix="MockEntity",
             entity_type=BenchlingEntityType.CUSTOM_ENTITY,
             naming_strategies=[BenchlingNamingStrategy.NEW_IDS],
+            use_registry_id_as_label=True,
+            include_registry_id_in_chips=False,
         )
         enum_field: SqlColumn = Column(
             name="Enum Field",

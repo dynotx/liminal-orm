@@ -98,6 +98,8 @@ class CreateEntitySchemaModel(BaseModel):
     registryId: str
     type: BenchlingEntityType
     mixtureSchemaConfig: MixtureSchemaConfig | None = None
+    includeRegistryIdInChips: bool | None = None
+    useOrganizationCollectionAliasForDisplayLabel: bool | None = None
     labelingStrategies: list[str] | None = None
 
     @classmethod
@@ -129,6 +131,8 @@ class CreateEntitySchemaModel(BaseModel):
             registryId=benchling_service.registry_id,
             type=benchling_props.entity_type,
             mixtureSchemaConfig=benchling_props.mixture_schema_config,
+            includeRegistryIdInChips=benchling_props.include_registry_id_in_chips,
+            useOrganizationCollectionAliasForDisplayLabel=benchling_props.use_registry_id_as_label,
             labelingStrategies=[s.value for s in benchling_props.naming_strategies],
             fields=[
                 CreateEntitySchemaFieldModel.from_benchling_props(

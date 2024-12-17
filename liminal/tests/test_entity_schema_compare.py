@@ -341,3 +341,16 @@ class TestCompareEntitySchemas:
                 invalid_models["mock_entity"][0].op, ArchiveEntitySchemaField
             )
             assert invalid_models["mock_entity"][0].op.wh_field_name == "archived_field"
+
+            # Test when the Benchling schema has different display naming fields
+            benchling_mismatch_display_fields = copy.deepcopy(mock_benchling_schema)
+            benchling_mismatch_display_fields[0][0].use_registry_id_as_label = False
+            mock_get_benchling_entity_schemas.return_value = (
+                benchling_mismatch_display_fields
+            )
+            invalid_models = compare_entity_schemas(mock_benchling_sdk)
+            assert len(invalid_models["mock_entity"]) == 1
+            assert isinstance(invalid_models["mock_entity"][0].op, UpdateEntitySchema)
+            assert invalid_models["mock_entity"][
+                0
+            ].op.update_props.use_registry_id_as_label
