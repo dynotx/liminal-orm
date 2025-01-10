@@ -422,7 +422,7 @@ def mock_benchling_subclass(mock_benchling_dropdown) -> list[type[BaseModel]]:  
             self.datetime_field = datetime_field
             self.list_dropdown_field = list_dropdown_field
 
-    return [MockEntity]  # type: ignore[type-abstract]
+    return [MockEntity]
 
 
 @pytest.fixture
@@ -439,7 +439,7 @@ def mock_benchling_subclass_small() -> list[type[BaseModel]]:
             name="String Field Required", type=Type.TEXT, required=True, is_multi=False
         )
 
-    return [MockEntitySmall]  # type: ignore[type-abstract]
+    return [MockEntitySmall]
 
 
 @pytest.fixture
@@ -532,4 +532,4 @@ def mock_benchling_subclasses(mock_benchling_dropdown) -> list[type[BaseModel]]:
             self.datetime_field = datetime_field
             self.list_dropdown_field = list_dropdown_field
 
-    return [MockEntityOne, MockEntityTwo]  # type: ignore[type-abstract]
+    return [MockEntityOne, MockEntityTwo]
