@@ -57,6 +57,8 @@ class BaseSchemaProperties(BaseModel):
         The prefix to use for the schema.
     entity_type : BenchlingEntityType | None
         The entity type of the schema.
+    naming_strategies : set[BenchlingNamingStrategy] | None
+        The naming strategies of the schema.
     mixture_schema_config : MixtureSchemaConfig | None
         The mixture schema config of the schema.
     constraint_fields : set[str] | None
