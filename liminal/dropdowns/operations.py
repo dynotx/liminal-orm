@@ -76,7 +76,7 @@ class CreateDropdown(BaseOperation):
 
 
 class ArchiveDropdown(BaseOperation):
-    order: ClassVar[int] = 190
+    order: ClassVar[int] = 170
 
     def __init__(self, dropdown_name: str) -> None:
         self.dropdown_name = dropdown_name

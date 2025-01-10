@@ -135,7 +135,7 @@ class CreateEntitySchema(BaseOperation):
 
 
 class ArchiveEntitySchema(BaseOperation):
-    order: ClassVar[int] = 180
+    order: ClassVar[int] = 160
 
     def __init__(self, wh_schema_name: str) -> None:
         self.wh_schema_name = wh_schema_name
@@ -160,7 +160,7 @@ class ArchiveEntitySchema(BaseOperation):
 
 
 class UnarchiveEntitySchema(BaseOperation):
-    order: ClassVar[int] = 110
+    order: ClassVar[int] = 100
 
     def __init__(self, wh_schema_name: str) -> None:
         self.wh_schema_name = wh_schema_name
@@ -258,7 +258,7 @@ class UpdateEntitySchema(BaseOperation):
 
 
 class CreateEntitySchemaField(BaseOperation):
-    order: ClassVar[int] = 120
+    order: ClassVar[int] = 110
 
     def __init__(
         self,
@@ -345,7 +345,7 @@ class CreateEntitySchemaField(BaseOperation):
 
 
 class ArchiveEntitySchemaField(BaseOperation):
-    order: ClassVar[int] = 160
+    order: ClassVar[int] = 140
 
     def __init__(
         self, wh_schema_name: str, wh_field_name: str, index: int | None = None
@@ -396,7 +396,7 @@ class ArchiveEntitySchemaField(BaseOperation):
 
 
 class UnarchiveEntitySchemaField(BaseOperation):
-    order: ClassVar[int] = 130
+    order: ClassVar[int] = 120
 
     def __init__(
         self, wh_schema_name: str, wh_field_name: str, index: int | None = None
@@ -443,7 +443,7 @@ class UnarchiveEntitySchemaField(BaseOperation):
 
 
 class UpdateEntitySchemaField(BaseOperation):
-    order: ClassVar[int] = 140
+    order: ClassVar[int] = 130
 
     def __init__(
         self,
@@ -514,7 +514,7 @@ class UpdateEntitySchemaField(BaseOperation):
 
 
 class ReorderEntitySchemaFields(BaseOperation):
-    order: ClassVar[int] = 170
+    order: ClassVar[int] = 150
 
     def __init__(self, wh_schema_name: str, new_order: list[str]) -> None:
         self.wh_schema_name = wh_schema_name
