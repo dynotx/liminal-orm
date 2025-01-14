@@ -1,0 +1,11 @@
+from liminal.base.str_enum import StrEnum
+
+
+class NameTemplatePartType(StrEnum):
+    SEPARATOR = "SEPARATOR"
+    TEXT = "TEXT"
+    CREATION_YEAR = "CREATED_AT_YEAR"
+    CREATION_DATE = "CREATED_AT_DATE"
+    FIELD = "FIELD"
+    REGISTRY_IDENTIFIER_NUMBER = "REGISTRY_IDENTIFIER_NUMBER"
+    PROJECT = "PROJECT"

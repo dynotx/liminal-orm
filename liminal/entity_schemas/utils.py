@@ -9,6 +9,7 @@ from liminal.mappers import (
     convert_api_entity_type_to_entity_type,
     convert_api_field_type_to_field_type,
 )
+from liminal.orm.name_template import NameTemplate
 from liminal.orm.schema_properties import MixtureSchemaConfig, SchemaProperties
 
 
@@ -16,7 +17,7 @@ def get_converted_tag_schemas(
     benchling_service: BenchlingService,
     include_archived: bool = False,
     wh_schema_names: set[str] | None = None,
-) -> list[tuple[SchemaProperties, dict[str, BaseFieldProperties]]]:
+) -> list[tuple[SchemaProperties, NameTemplate, dict[str, BaseFieldProperties]]]:
     """This functions gets all Tag schemas from Benchling and converts them to our internal representation of a schema and its fields.
     It parses the Tag Schema and creates SchemaProperties and a list of FieldProperties for each field in the schema.
     If include_archived is True, it will include archived schemas and archived fields.
@@ -40,7 +41,7 @@ def convert_tag_schema_to_internal_schema(
     tag_schema: TagSchemaModel,
     dropdowns_map: dict[str, str],
     include_archived_fields: bool = False,
-) -> tuple[SchemaProperties, dict[str, BaseFieldProperties]]:
+) -> tuple[SchemaProperties, NameTemplate, dict[str, BaseFieldProperties]]:
     all_fields = tag_schema.allFields
     if not include_archived_fields:
         all_fields = [f for f in all_fields if not f.archiveRecord]
@@ -72,6 +73,10 @@ def convert_tag_schema_to_internal_schema(
             _archived=tag_schema.archiveRecord is not None,
             use_registry_id_as_label=tag_schema.useOrganizationCollectionAliasForDisplayLabel,
             include_registry_id_in_chips=tag_schema.includeRegistryIdInChips,
+        ),
+        NameTemplate(
+            parts=tag_schema.get_internal_name_template_parts(),
+            order_name_parts_by_sequence=tag_schema.shouldOrderNamePartsBySequence,
         ),
         {
             f.systemName: convert_tag_schema_field_to_field_properties(f, dropdowns_map)

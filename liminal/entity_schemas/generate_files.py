@@ -7,6 +7,7 @@ from liminal.dropdowns.utils import get_benchling_dropdowns_dict
 from liminal.entity_schemas.utils import get_converted_tag_schemas
 from liminal.enums import BenchlingEntityType, BenchlingFieldType
 from liminal.mappers import convert_benchling_type_to_python_type
+from liminal.orm.name_template import NameTemplate
 from liminal.utils import pascalize, to_snake_case
 
 
@@ -62,13 +63,13 @@ def generate_all_entity_schema_files(
         for dropdown_name in benchling_dropdowns.keys()
     }
     wh_name_to_classname: dict[str, str] = {
-        sp.warehouse_name: pascalize(sp.name) for sp, _ in models
+        sp.warehouse_name: pascalize(sp.name) for sp, _, _ in models
     }
 
-    for schema_properties, columns in models:
+    for schema_properties, name_template, columns in models:
         classname = pascalize(schema_properties.name)
 
-    for schema_properties, columns in models:
+    for schema_properties, name_template, columns in models:
         classname = pascalize(schema_properties.name)
         filename = to_snake_case(schema_properties.name) + ".py"
         columns = {key: columns[key] for key in columns}
@@ -132,6 +133,12 @@ def generate_all_entity_schema_files(
             init_strings.append(f"{tab}self.{col_name} = {col_name}")
         if len(dropdowns) > 0:
             import_strings.append(f"from ...dropdowns import {', '.join(dropdowns)}")
+        if name_template != NameTemplate():
+            import_strings.append("from liminal.orm.name_template import NameTemplate")
+            parts_imports = [
+                f"from liminal.base.name_template_parts import {', '.join([part.__class__.__name__ for part in name_template.parts])}"
+            ]
+            import_strings.extend(parts_imports)
         for col_name, col in columns.items():
             if col.dropdown_link:
                 init_strings.append(
@@ -153,6 +160,7 @@ def generate_all_entity_schema_files(
 
 class {classname}(BaseModel, {get_entity_mixin(schema_properties.entity_type)}):
     __schema_properties__ = {schema_properties.__repr__()}
+    {f"__name_template__ = {name_template.__repr__()}" if name_template != NameTemplate() else ""}
 
 {columns_string}
 

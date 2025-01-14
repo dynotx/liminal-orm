@@ -5,6 +5,9 @@ from typing import Any
 import requests
 from pydantic import BaseModel
 
+from liminal.base.name_template_parts import (
+    NameTemplatePart,
+)
 from liminal.base.properties.base_field_properties import BaseFieldProperties
 from liminal.base.properties.base_schema_properties import BaseSchemaProperties
 from liminal.connection import BenchlingService
@@ -15,10 +18,12 @@ from liminal.enums import (
     BenchlingFolderItemType,
     BenchlingSequenceType,
 )
+from liminal.enums.name_template_part_type import NameTemplatePartType
 from liminal.mappers import (
     convert_entity_type_to_api_entity_type,
     convert_field_type_to_api_field_type,
 )
+from liminal.orm.name_template import NameTemplate
 from liminal.orm.schema_properties import MixtureSchemaConfig
 
 
@@ -30,6 +35,43 @@ class FieldRequiredLinkShortModel(BaseModel):
     schemaInterface: Any | None = None
     tagSchema: dict[str, Any] | None = None
     storableSchema: dict[str, Any] | None = None
+
+
+class NameTemplatePartModel(BaseModel):
+    """A pydantic model to define a part of a name template."""
+
+    type: NameTemplatePartType
+    fieldId: str | None = None
+    text: str | None = None
+    datetimeFormat: str | None = None
+
+    @classmethod
+    def from_name_template_part(
+        cls, part: NameTemplatePart, fields: list[TagSchemaFieldModel] | None = None
+    ) -> NameTemplatePartModel:
+        data = part.model_dump()
+        field_id = None
+        if wh_field_name := data.get("wh_field_name"):
+            field = next((f for f in fields if f.systemName == wh_field_name), None)
+            if field is None:
+                raise ValueError(f"Field {wh_field_name} not found in fields")
+            field_id = field.id
+        return cls(
+            type=part.component_type,
+            fieldId=field_id,
+            text=data.get("value"),
+        )
+
+    def to_name_template_part(
+        self, fields: list[TagSchemaFieldModel] | None = None
+    ) -> NameTemplatePart:
+        part_cls = NameTemplatePart.resolve_type(self.type)
+        if self.fieldId:
+            field = next((f for f in fields if f.id == self.fieldId), None)
+            if field is None:
+                raise ValueError(f"Field {self.fieldId} not found in fields")
+            return part_cls(wh_field_name=field.systemName, value=self.text)
+        return part_cls(value=self.text)
 
 
 class TagSchemaConstraint(BaseModel):
@@ -284,7 +326,7 @@ class TagSchemaModel(BaseModel):
     mixtureSchemaConfig: MixtureSchemaConfig | None
     name: str | None
     nameTemplateFields: list[str] | None
-    nameTemplateParts: list[Any] | None
+    nameTemplateParts: list[NameTemplatePartModel] | None
     permissions: dict[str, bool] | None
     prefix: str | None
     registryId: str | None
@@ -361,6 +403,11 @@ class TagSchemaModel(BaseModel):
                 return field
         raise ValueError(f"Field '{wh_field_name}' not found in schema")
 
+    def get_internal_name_template_parts(self) -> list[NameTemplatePart]:
+        return [
+            part.to_name_template_part(self.fields) for part in self.nameTemplateParts
+        ]
+
     def update_schema_props(self, update_diff: dict[str, Any]) -> TagSchemaModel:
         """Updates the schema properties given the schema properties defined in code."""
         update_diff_names = list(update_diff.keys())
@@ -399,6 +446,23 @@ class TagSchemaModel(BaseModel):
             else:
                 self.constraint = None
 
+        if "constraint_fields" in update_diff_names:
+            if update_props.constraint_fields:
+                has_bases = False
+                if "bases" in update_props.constraint_fields:
+                    has_bases = True
+                    update_props.constraint_fields.discard("bases")
+                constraint_fields = [
+                    f
+                    for f in self.fields
+                    if f.systemName in update_props.constraint_fields
+                ]
+                self.constraint = TagSchemaConstraint.from_constraint_fields(
+                    constraint_fields, has_bases
+                )
+            else:
+                self.constraint = None
+
         self.prefix = (
             update_props.prefix if "prefix" in update_diff_names else self.prefix
         )
@@ -408,6 +472,24 @@ class TagSchemaModel(BaseModel):
             else self.sqlIdentifier
         )
         self.name = update_props.name if "name" in update_diff_names else self.name
+        return self
+
+    def update_name_template(self, update_diff: dict[str, Any]) -> TagSchemaModel:
+        update_diff_names = list(update_diff.keys())
+        update_props = NameTemplate(**update_diff)
+        self.nameTemplateParts = (
+            [
+                NameTemplatePartModel.from_name_template_part(part, self.fields)
+                for part in update_props.parts
+            ]
+            if "parts" in update_diff_names
+            else self.nameTemplateParts
+        )
+        self.shouldOrderNamePartsBySequence = (
+            update_props.order_name_parts_by_sequence
+            if "order_name_parts_by_sequence" in update_diff_names
+            else self.shouldOrderNamePartsBySequence
+        )
         return self
 
     def update_field(

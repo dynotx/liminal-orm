@@ -19,9 +19,10 @@ Order of operations based on order class var:
     12. UnarchiveField
     13. UpdateField
     14. ArchiveField
-    15. ReorderFields
-    16. ArchiveSchema
-    17. ArchiveDropdown
+    15. UpdateEntitySchemaNameTemplate
+    16. ReorderFields
+    17. ArchiveSchema
+    18. ArchiveDropdown
 """
 
 

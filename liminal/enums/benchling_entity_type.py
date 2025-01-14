@@ -13,3 +13,11 @@ class BenchlingEntityType(StrEnum):
     ENTRY = "entry"
     MIXTURE = "mixture"
     MOLECULE = "molecule"
+
+    def is_sequence(self) -> bool:
+        return self in [
+            self.DNA_SEQUENCE,
+            self.RNA_SEQUENCE,
+            self.DNA_OLIGO,
+            self.RNA_OLIGO,
+        ]

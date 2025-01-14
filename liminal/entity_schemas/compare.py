@@ -1,5 +1,6 @@
 from liminal.base.compare_operation import CompareOperation
 from liminal.base.properties.base_field_properties import BaseFieldProperties
+from liminal.base.properties.base_name_template import BaseNameTemplate
 from liminal.base.properties.base_schema_properties import BaseSchemaProperties
 from liminal.connection import BenchlingService
 from liminal.entity_schemas.operations import (
@@ -12,6 +13,7 @@ from liminal.entity_schemas.operations import (
     UnarchiveEntitySchemaField,
     UpdateEntitySchema,
     UpdateEntitySchemaField,
+    UpdateEntitySchemaNameTemplate,
 )
 from liminal.entity_schemas.utils import get_converted_tag_schemas
 from liminal.orm.base_model import BaseModel
@@ -47,12 +49,12 @@ def compare_entity_schemas(
         if not m.__schema_properties__._archived
     ]
     archived_benchling_schema_wh_names = [
-        s.warehouse_name for s, _ in benchling_schemas if s._archived is True
+        s.warehouse_name for s, _, _ in benchling_schemas if s._archived is True
     ]
     # Running list of schema names from benchling. As each model is checked, remove the schema name from this list.
     # This is used at the end to check if there are any schemas left (schemas that exist in benchling but not in code) and archive them if they are.
     running_benchling_schema_names = list(
-        [s.warehouse_name for s, _ in benchling_schemas]
+        [s.warehouse_name for s, _, _ in benchling_schemas]
     )
     # Iterate through each benchling model defined in code.
     for model in models:
@@ -64,12 +66,14 @@ def compare_entity_schemas(
         model.validate_model()
         # if the model table_name is found in the benchling schemas, check for changes...
         if (model_wh_name := model.__schema_properties__.warehouse_name) in [
-            s.warehouse_name for s, _ in benchling_schemas
+            s.warehouse_name for s, _, _ in benchling_schemas
         ]:
-            benchling_schema_props, benchling_schema_fields = next(
-                (s, lof)
-                for s, lof in benchling_schemas
-                if s.warehouse_name == model_wh_name
+            benchling_schema_props, benchling_name_template, benchling_schema_fields = (
+                next(
+                    (s, nt, lof)
+                    for s, nt, lof in benchling_schemas
+                    if s.warehouse_name == model_wh_name
+                )
             )
             archived_benchling_schema_fields = {
                 k: v for k, v in benchling_schema_fields.items() if v._archived is True
@@ -237,6 +241,19 @@ def compare_entity_schemas(
                         ),
                     ),
                 )
+            if benchling_name_template != model.__name_template__:
+                ops.append(
+                    CompareOperation(
+                        op=UpdateEntitySchemaNameTemplate(
+                            model.__schema_properties__.warehouse_name,
+                            BaseNameTemplate(**model.__name_template__.model_dump()),
+                        ),
+                        reverse_op=UpdateEntitySchemaNameTemplate(
+                            model.__schema_properties__.warehouse_name,
+                            BaseNameTemplate(**benchling_name_template.model_dump()),
+                        ),
+                    )
+                )
         # If the model is not found as the benchling schema, Create.
         # Benchling api does not allow for setting a custom warehouse_name,
         # so we need to run another UpdateEntitySchema to set the warehouse_name if it is different from the snakecase version of the model name.
@@ -272,6 +289,24 @@ def compare_entity_schemas(
                             model.__schema_properties__.warehouse_name,
                             BaseSchemaProperties(
                                 warehouse_name=benchling_given_wh_name
+                            ),
+                        ),
+                    )
+                )
+            benchling_given_name_template = BaseNameTemplate(
+                parts=[], order_name_parts_by_sequence=False
+            )
+            if benchling_name_template != model.__name_template__:
+                ops.append(
+                    CompareOperation(
+                        op=UpdateEntitySchemaNameTemplate(
+                            model.__schema_properties__.warehouse_name,
+                            BaseNameTemplate(**model.__name_template__.model_dump()),
+                        ),
+                        reverse_op=UpdateEntitySchemaNameTemplate(
+                            model.__schema_properties__.warehouse_name,
+                            BaseNameTemplate(
+                                **benchling_given_name_template.model_dump()
                             ),
                         ),
                     )

@@ -75,3 +75,21 @@ def update_tag_schema(
         return await_queued_response(
             queued_response.json()["status_url"], benchling_service
         )
+
+
+def set_tag_schema_name_template(
+    benchling_service: BenchlingService, entity_schema_id: str, payload: dict[str, Any]
+) -> dict[str, Any]:
+    """
+    Update the tag schema name template. Must be in a separate endpoint compared to update_tag_schema.
+    """
+    with requests.Session() as session:
+        response = session.post(
+            f"https://{benchling_service.benchling_tenant}.benchling.com/1/api/tag-schemas/{entity_schema_id}/actions/set-name-template",
+            data=json.dumps(payload),
+            headers=benchling_service.custom_post_headers,
+            cookies=benchling_service.custom_post_cookies,
+        )
+        if not response.ok:
+            raise Exception("Failed to set tag schema name template:", response.content)
+        return response.json()

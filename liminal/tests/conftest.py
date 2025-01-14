@@ -12,6 +12,7 @@ from liminal.enums import BenchlingFieldType as Type
 from liminal.enums.benchling_naming_strategy import BenchlingNamingStrategy
 from liminal.orm.base_model import BaseModel
 from liminal.orm.column import Column
+from liminal.orm.name_template import NameTemplate
 from liminal.orm.schema_properties import SchemaProperties
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -118,7 +119,7 @@ def mock_benchling_dropdowns_archived() -> dict[str, Dropdown]:
 @pytest.fixture
 def mock_benchling_schema(
     mock_benchling_dropdown: type[BaseDropdown],
-) -> list[tuple[SchemaProperties, dict[str, Props]]]:
+) -> list[tuple[SchemaProperties, NameTemplate, dict[str, Props]]]:
     schema_props = SchemaProperties(
         name="Mock Entity",
         warehouse_name="mock_entity",
@@ -237,13 +238,13 @@ def mock_benchling_schema(
             _archived=False,
         ),
     }
-    return [(schema_props, fields)]
+    return [(schema_props, NameTemplate(), fields)]
 
 
 @pytest.fixture
 def mock_benchling_schema_one(
     mock_benchling_dropdown: type[BaseDropdown],
-) -> list[tuple[SchemaProperties, dict[str, Props]]]:
+) -> list[tuple[SchemaProperties, NameTemplate, dict[str, Props]]]:
     schema_props = SchemaProperties(
         name="Mock Entity One",
         warehouse_name="mock_entity_one",
@@ -304,11 +305,13 @@ def mock_benchling_schema_one(
             _archived=False,
         ),
     }
-    return [(schema_props, fields)]
+    return [(schema_props, NameTemplate(), fields)]
 
 
 @pytest.fixture
-def mock_benchling_schema_archived() -> list[tuple[SchemaProperties, dict[str, Props]]]:
+def mock_benchling_schema_archived() -> (
+    list[tuple[SchemaProperties, NameTemplate, dict[str, Props]]]
+):
     schema_props = SchemaProperties(
         name="Mock Entity Small",
         warehouse_name="mock_entity_small",
@@ -338,7 +341,7 @@ def mock_benchling_schema_archived() -> list[tuple[SchemaProperties, dict[str, P
             _archived=False,
         ),
     }
-    return [(schema_props, fields)]
+    return [(schema_props, NameTemplate(), fields)]
 
 
 @pytest.fixture

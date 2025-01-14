@@ -13,7 +13,7 @@ def _check_env_file(env_file_path: Path) -> None:
 
 
 def read_local_env_file(
-    env_file_path: Path, benchling_tenant: str
+    env_file_path: Path, benchling_tenant: str, import_all_files: bool = False
 ) -> tuple[str, BenchlingConnection]:
     """Imports the env.py file from the current working directory and returns the CURRENT_REVISION_ID variable along with the BenchlingConnection object.
     The env.py file is expected to have the CURRENT_REVISION_ID variable set to the revision id you are currently on.
