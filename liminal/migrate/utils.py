@@ -13,11 +13,12 @@ def _check_env_file(env_file_path: Path) -> None:
 
 
 def read_local_env_file(
-    env_file_path: Path, benchling_tenant: str
+    env_file_path: Path, benchling_tenant: str, execute: bool = False
 ) -> tuple[str, BenchlingConnection]:
     """Imports the env.py file from the current working directory and returns the CURRENT_REVISION_ID variable along with the BenchlingConnection object.
     The env.py file is expected to have the CURRENT_REVISION_ID variable set to the revision id you are currently on.
     The BenchlingConnection object is expected to be defined and have connection information for the Benchling API client and internal API.
+    If execute is True, the env.py file will be executed, importing all the variables into the local scope.
     """
     _check_env_file(env_file_path)
     module_path = Path.cwd() / env_file_path
@@ -25,7 +26,8 @@ def read_local_env_file(
     if spec is None or spec.loader is None:
         raise Exception(f"Could not find {env_file_path}.")
     module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    if execute:
+        spec.loader.exec_module(module)
     for attr_name in dir(module):
         bc = getattr(module, attr_name)
         if isinstance(bc, BenchlingConnection):

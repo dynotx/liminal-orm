@@ -126,7 +126,7 @@ def autogenerate(
     ),
 ) -> None:
     current_revision_id, benchling_connection = read_local_env_file(
-        ENV_FILE_PATH, benchling_tenant
+        ENV_FILE_PATH, benchling_tenant, execute=True
     )
     benchling_service = BenchlingService(benchling_connection, use_internal_api=True)
     autogenerate_revision_file(
@@ -149,7 +149,7 @@ def upgrade(
     ),
 ) -> None:
     current_revision_id, benchling_connection = read_local_env_file(
-        ENV_FILE_PATH, benchling_tenant
+        ENV_FILE_PATH, benchling_tenant, execute=True
     )
     benchling_service = BenchlingService(benchling_connection, use_internal_api=True)
     upgrade_revision_id = upgrade_benchling_tenant(
@@ -177,7 +177,7 @@ def downgrade(
     ),
 ) -> None:
     current_revision_id, benchling_connection = read_local_env_file(
-        ENV_FILE_PATH, benchling_tenant
+        ENV_FILE_PATH, benchling_tenant, execute=True
     )
     benchling_service = BenchlingService(benchling_connection, use_internal_api=True)
     downgrade_revision_id = downgrade_benchling_tenant(
