@@ -836,6 +836,30 @@ New Liminal ORM release, v2.0.0 out now! See <a href="/liminal-orm/release-notes
 </li>
       
         <li class="md-nav__item">
+  <a href="#name-template-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Name Template: class
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Name Template: class">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#relationships-module" class="md-nav__link">
     <span class="md-ellipsis">
       Relationships: module
@@ -1278,6 +1302,30 @@ New Liminal ORM release, v2.0.0 out now! See <a href="/liminal-orm/release-notes
 </li>
       
         <li class="md-nav__item">
+  <a href="#name-template-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Name Template: class
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Name Template: class">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#relationships-module" class="md-nav__link">
     <span class="md-ellipsis">
       Relationships: module
@@ -1310,11 +1358,11 @@ New Liminal ORM release, v2.0.0 out now! See <a href="/liminal-orm/release-notes
 <h2 id="entity-schema-class">Entity Schema: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/base_model.py">class</a></h2>
 <p>Below is an example of a custom entity schema defined in code. All Liminal entity schema classes inherit from Liminal's <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/base_model.py">BaseModel</a> and uses <a href="https://www.sqlalchemy.org/">SQLAlchemy</a> behind the scenes to create an ORM. Liminal provides base classes and clear abstractions to provide a standardized way to define entity schemas in code. However, you are still able to use raw SQLAlchemy to interact with the schemas when necessary.</p>
 <p>The properties defined in the <code>SchemaProperties</code> object and <code>Column</code> objects
-align with the properties shown on the Benchling website. This is how Liminal defines your Benchling entity schema in code. Any of these properties
+correspond with the properties shown on the Benchling website. This is how Liminal defines your Benchling entity schema in code. Any of these properties
 can be manipulated to change the definition of the entity schema. Updates to the schema or the addition/archival of schemas are automatically
 detected by Liminal's migration service, which is run using the <code>liminal autogenerate ...</code> command. Refer to the <a href="../../getting-started/first-migration/">First Migration</a> page to run your first migration.</p>
 <p>Below, we will go through the different components of defining an entity schema class.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">liminal.base.name_template_parts</span> <span class="kn">import</span> <span class="n">RegistryIdentifierNumberPart</span><span class="p">,</span> <span class="n">TextPart</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">liminal.orm.name_template_parts</span> <span class="kn">import</span> <span class="n">RegistryIdentifierNumberPart</span><span class="p">,</span> <span class="n">TextPart</span>
 <span class="kn">from</span> <span class="nn">liminal.orm.relationship</span> <span class="kn">import</span> <span class="n">single_relationship</span>
 <span class="kn">from</span> <span class="nn">liminal.orm.schema_properties</span> <span class="kn">import</span> <span class="n">SchemaProperties</span>
 <span class="kn">from</span> <span class="nn">liminal.orm.column</span> <span class="kn">import</span> <span class="n">Column</span>
@@ -1425,6 +1473,10 @@ detected by Liminal's migration service, which is run using the <code>liminal au
 <p>When schemas (and fields) are archived, they still existing the Benchling warehouse. Using _archived is useful when you need to access archived data.</p>
 </div>
 <h2 id="column-class">Column: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/column.py">class</a></h2>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Liminal also detects the ordering of your fields. Define columns on different lines in your schema class to change the ordering of the fields on the Benchling entity schema.</p>
+</div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>If warehouse access is not enabled on your tenant, you will be unable to update the warehouse name for fields.</p>
@@ -1471,6 +1523,19 @@ detected by Liminal's migration service, which is run using the <code>liminal au
 <li>
 <p><strong>_warehouse_name: str | None = None</strong></p>
 <p>Private attribute used to set the warehouse name of the column. This is useful when the variable name is not the same as the warehouse name.</p>
+</li>
+</ul>
+<h2 id="name-template-class">Name Template: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/name_template.py">class</a></h2>
+<p>The name template is used to generate the name of entity schema entities. It is comprised of a list of name template parts. The name template parts are defined in the <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/name_template_parts.py">name_template_parts</a> module.</p>
+<h3 id="parameters_2">Parameters</h3>
+<ul>
+<li>
+<p><strong>parts: list[NameTemplateParts]</strong></p>
+<p>The list of name template parts that make up the name template (order matters).</p>
+</li>
+<li>
+<p><strong>order_name_parts_by_sequence: bool = False</strong></p>
+<p>Whether to order the name parts by sequence. This can only be set to True for sequence enity types. If one or many part link fields are included in the name template, list parts in the order they appear on the sequence map, sorted by start position and then end position.</p>
 </li>
 </ul>
 <h2 id="relationships-module">Relationships: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/relationship.py">module</a></h2>
