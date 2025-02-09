@@ -14,7 +14,7 @@
         <link rel="prev" href="../dropdowns/">
       
       
-        <link rel="next" href="../validators/">
+        <link rel="next" href="../validation/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -97,7 +97,7 @@
             
   <!-- the following line is displayed in the announcement bar -->
 <!-- keep length under 164 characters (less HTML tags) to fit on 1280px desktop window -->
-New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes/#v110">release notes</a> for more details.
+New Liminal ORM release, v2.0.0 out now! See <a href="/liminal-orm/release-notes/#v220">release notes</a> for more details.
 
 <button class="md-banner__button md-icon" aria-label="Don't show this again" id="close-banner">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -309,10 +309,10 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
     
     
       <li class="md-tabs__item">
-        <a href="../../case-studies/dynotx-recommended-sop/" class="md-tabs__link">
+        <a href="../../blog/dynotx-recommended-sop/" class="md-tabs__link">
           
   
-  Case Studies
+  Blog
 
         </a>
       </li>
@@ -844,42 +844,6 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#custom-query" class="md-nav__link">
-    <span class="md-ellipsis">
-      Custom Query
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validators-class" class="md-nav__link">
-    <span class="md-ellipsis">
-      Validators: class
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#additional-functionality" class="md-nav__link">
-    <span class="md-ellipsis">
-      Additional Functionality
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Notes
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -896,11 +860,11 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
   
   
     <li class="md-nav__item">
-      <a href="../validators/" class="md-nav__link">
+      <a href="../validation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Validators
+    Validation
   </span>
   
 
@@ -983,7 +947,7 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
             
   
   <span class="md-ellipsis">
-    Case Studies
+    Blog
   </span>
   
 
@@ -993,7 +957,7 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            Case Studies
+            Blog
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -1004,7 +968,7 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
   
   
     <li class="md-nav__item">
-      <a href="../../case-studies/dynotx-recommended-sop/" class="md-nav__link">
+      <a href="../../blog/dynotx-recommended-sop/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1322,42 +1286,6 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#custom-query" class="md-nav__link">
-    <span class="md-ellipsis">
-      Custom Query
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validators-class" class="md-nav__link">
-    <span class="md-ellipsis">
-      Validators: class
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#additional-functionality" class="md-nav__link">
-    <span class="md-ellipsis">
-      Additional Functionality
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Notes
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -1380,15 +1308,17 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
   <h1>Entity schemas</h1>
 
 <h2 id="entity-schema-class">Entity Schema: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/base_model.py">class</a></h2>
-<p>Below is an example of a custom entity schema defined in code. All Liminal entity schema classes inherit from Liminal's <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/base_model.py">BaseModel</a> and uses <a href="https://www.sqlalchemy.org/">SQLAlchemy</a> behind the scenes to create an ORM. Liminal provides base classes and clear abstractions to an easy and standardized way to define entity schemas in code. However, you are still able to use raw SQLAlchemy to interact with the schemas when necessary.</p>
-<p>The properties defined in the <code>SchemaProperties</code> object and for <code>Column</code> objects
+<p>Below is an example of a custom entity schema defined in code. All Liminal entity schema classes inherit from Liminal's <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/base_model.py">BaseModel</a> and uses <a href="https://www.sqlalchemy.org/">SQLAlchemy</a> behind the scenes to create an ORM. Liminal provides base classes and clear abstractions to provide a standardized way to define entity schemas in code. However, you are still able to use raw SQLAlchemy to interact with the schemas when necessary.</p>
+<p>The properties defined in the <code>SchemaProperties</code> object and <code>Column</code> objects
 align with the properties shown on the Benchling website. This is how Liminal defines your Benchling entity schema in code. Any of these properties
 can be manipulated to change the definition of the entity schema. Updates to the schema or the addition/archival of schemas are automatically
-detected by Liminal's migration service, which is run using the <code>liminal autogenerate</code> command. Refer to the <a href="../../getting-started/first-migration/">First Migration</a> page to run your first migration.</p>
+detected by Liminal's migration service, which is run using the <code>liminal autogenerate ...</code> command. Refer to the <a href="../../getting-started/first-migration/">First Migration</a> page to run your first migration.</p>
 <p>Below, we will go through the different components of defining an entity schema class.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">liminal.orm.relationship</span> <span class="kn">import</span> <span class="n">single_relationship</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">liminal.base.name_template_parts</span> <span class="kn">import</span> <span class="n">RegistryIdentifierNumberPart</span><span class="p">,</span> <span class="n">TextPart</span>
+<span class="kn">from</span> <span class="nn">liminal.orm.relationship</span> <span class="kn">import</span> <span class="n">single_relationship</span>
 <span class="kn">from</span> <span class="nn">liminal.orm.schema_properties</span> <span class="kn">import</span> <span class="n">SchemaProperties</span>
 <span class="kn">from</span> <span class="nn">liminal.orm.column</span> <span class="kn">import</span> <span class="n">Column</span>
+<span class="kn">from</span> <span class="nn">liminal.orm.name_template</span> <span class="kn">import</span> <span class="n">NameTemplate</span>
 <span class="kn">from</span> <span class="nn">liminal.validation</span> <span class="kn">import</span> <span class="n">BenchlingValidator</span>
 <span class="kn">from</span> <span class="nn">liminal.enums</span> <span class="kn">import</span> <span class="n">BenchlingEntityType</span><span class="p">,</span> <span class="n">BenchlingFieldType</span><span class="p">,</span> <span class="n">BenchlingNamingStrategy</span>
 <span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">Query</span><span class="p">,</span> <span class="n">Session</span>
@@ -1409,6 +1339,7 @@ detected by Liminal's migration service, which is run using the <code>liminal au
         <span class="p">},</span>
         <span class="n">mixture_schema_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">__name_template__</span> <span class="o">=</span> <span class="n">NameTemplate</span><span class="p">(</span><span class="n">parts</span><span class="o">=</span><span class="p">[</span><span class="n">TextPart</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Pizza&quot;</span><span class="p">),</span> <span class="n">RegistryIdentifierNumberPart</span><span class="p">()])</span>
 
     <span class="n">dough</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;dough&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">BenchlingFieldType</span><span class="o">.</span><span class="n">ENTITY_LINK</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">entity_link</span><span class="o">=</span><span class="s2">&quot;dough&quot;</span><span class="p">)</span>
     <span class="n">cook_temp</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cook_temp&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">BenchlingFieldType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1431,27 +1362,21 @@ detected by Liminal's migration service, which is run using the <code>liminal au
         <span class="bp">self</span><span class="o">.</span><span class="n">cook_temp</span> <span class="o">=</span> <span class="n">cook_temp</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cook_time</span> <span class="o">=</span> <span class="n">cook_time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">customer_review</span> <span class="o">=</span> <span class="n">customer_review</span>
-
-
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">Session</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Query</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Pizza</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">get_validators</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BenchlingValidator</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">[]</span>
 </code></pre></div>
 <h2 id="mixins-class">Mixins: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/mixins.py">class</a></h2>
 <p>All Liminal entity schema classes must inherit from one of the mixins in the <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/mixins.py">mixins</a> module. The mixin provides the base columns for the specific entity schema type. For example, the <code>CustomEntityMixin</code> provides the base columns for a custom entity schema. To learn more, check out the SQLAlchemy documentation <a href="https://docs.sqlalchemy.org/en/13/orm/extensions/declarative/mixins.html">here</a>.</p>
 <h2 id="schema-properties-class">Schema Properties: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/schema_properties.py">class</a></h2>
 <h3 id="parameters">Parameters</h3>
+<ul>
+<li>
 <p><strong>name: str</strong></p>
-<blockquote>
 <p>The name of the entity schema. Must be unique across all entity schemas.</p>
-</blockquote>
+</li>
+<li>
 <p><strong>warehouse_name: str</strong></p>
-<blockquote>
 <p>The warehouse name of the entity schema. Must be unique across all entity schemas.</p>
-</blockquote>
+</li>
+</ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The warehouse names are used as keys across liminal and are used as entity_link values in Columns.</p>
@@ -1461,22 +1386,44 @@ detected by Liminal's migration service, which is run using the <code>liminal au
 <p>If warehouse access is not enabled on your tenant, you will be unable to update the warehouse name.</p>
 <p>Liminal assumes the Benchling generated warehouse name to be <code>to_snake_case(name)</code>.</p>
 </div>
+<ul>
+<li>
 <p><strong>prefix: str</strong></p>
-<blockquote>
 <p>The prefix of the entity schema. Must be unique across all entity schemas.</p>
-</blockquote>
+</li>
+<li>
 <p><strong>entity_type: BenchlingEntityType</strong></p>
-<blockquote>
 <p>The type of entity schema. Type must be one of the values from the <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/enums/benchling_entity_type.py">BenchlingEntityType</a> enum.</p>
-</blockquote>
+</li>
+<li>
 <p><strong>naming_strategies: set[BenchlingNamingStrategy]</strong></p>
-<blockquote>
 <p>The naming strategies for the entity schema. Must be a set of values from the <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/enums/benchling_naming_strategy.py">BenchlingNamingStrategy</a> enum.</p>
-</blockquote>
+</li>
+<li>
 <p><strong>mixture_schema_config: MixtureSchemaConfig | None</strong></p>
-<blockquote>
 <p>The mixture schema configuration for the entity schema. Must be defined as a <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/base/properties/base_schema_properties.py">MixtureSchemaConfig</a> object.</p>
-</blockquote>
+</li>
+<li>
+<p><strong>use_registry_id_as_label: bool | None = None</strong></p>
+<p>Flag for configuring the chip label for entities. Determines if the chip will use the Registry ID as the main label for items.</p>
+</li>
+<li>
+<p><strong>include_registry_id_in_chips: bool | None = None</strong></p>
+<p>Flag for configuring the chip label for entities. Determines if the chip will include the Registry ID in the chip label.</p>
+</li>
+<li>
+<p><strong>constraint_fields: set[str] | None</strong></p>
+<p>Set of constraints for field values for the schema. Must be a set of column names that specify that their values must be a unique combination within an entity. If the entity type is a Sequence, "bases" can be a constraint field.</p>
+</li>
+<li>
+<p><strong>_archived: bool | None = None</strong></p>
+<p>Private attribute used to set the archived status of the schema.</p>
+</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>When schemas (and fields) are archived, they still existing the Benchling warehouse. Using _archived is useful when you need to access archived data.</p>
+</div>
 <h2 id="column-class">Column: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/column.py">class</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -1484,42 +1431,54 @@ detected by Liminal's migration service, which is run using the <code>liminal au
 <p>Liminal will enforce that the column variable name (which represents the warehouse name) matches the Benchling generated warehouse name, which Liminal assumes to be <code>to_snake_case(name)</code>.</p>
 </div>
 <h3 id="parameters_1">Parameters</h3>
+<ul>
+<li>
 <p><strong>name: str</strong></p>
-<blockquote>
 <p>The external facing name of the column.</p>
-</blockquote>
+</li>
+<li>
 <p><strong>type: BenchlingFieldType</strong></p>
-<blockquote>
 <p>The type of the field. Type must be one of the values from the <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/enums/benchling_field_type.py">BenchlingFieldType</a> enum.</p>
-</blockquote>
+</li>
+<li>
 <p><strong>required: bool</strong></p>
-<blockquote>
 <p>Whether the field is required.</p>
-</blockquote>
+</li>
+<li>
 <p><strong>is_multi: bool = False</strong></p>
-<blockquote>
 <p>Whether the field is a multi-value field. Defaults to False.</p>
-</blockquote>
+</li>
+<li>
 <p><strong>parent_link: bool = False</strong></p>
-<blockquote>
 <p>Whether the field is a parent link field. Defaults to False.</p>
-</blockquote>
-<p><strong>dropdown: Type[BaseDropdown] | None = None</strong></p>
-<blockquote>
-<p>The dropdown object for the field. The dropdown object must inherit from BaseDropdown and the type of the Column must be <code>BenchlingFieldType.DROPDOWN</code>. Defaults to None.</p>
-</blockquote>
-<p><strong>entity_link: str | None = None</strong></p>
-<blockquote>
-<p>The entity link for the field. The entity link must be the <code>warehouse_name</code> as a string of the entity schema that the field is linking to. The type of the Column must be <code>BenchlingFieldType.ENTITY_LINK</code> in order to be valid. Defaults to None.</p>
-</blockquote>
+</li>
+<li>
 <p><strong>tooltip: str | None = None</strong></p>
-<blockquote>
 <p>The tooltip for the field. Defaults to None.</p>
-</blockquote>
+</li>
+<li>
+<p><strong>dropdown: Type[BaseDropdown] | None = None</strong></p>
+<p>The dropdown object for the field. The dropdown object must inherit from BaseDropdown and the type of the Column must be <code>BenchlingFieldType.DROPDOWN</code>. Defaults to None.</p>
+</li>
+<li>
+<p><strong>entity_link: str | None = None</strong></p>
+<p>The entity link for the field. The entity link must be the <code>warehouse_name</code> as a string of the entity schema that the field is linking to. The type of the Column must be <code>BenchlingFieldType.ENTITY_LINK</code> in order to be valid. Defaults to None.</p>
+</li>
+<li>
+<p><strong>_archived: bool = False</strong></p>
+<p>Private attribute used to set the archived status of the column.  Useful when you need to access archived data and want to define archived fields.</p>
+</li>
+<li>
+<p><strong>_warehouse_name: str | None = None</strong></p>
+<p>Private attribute used to set the warehouse name of the column. This is useful when the variable name is not the same as the warehouse name.</p>
+</li>
+</ul>
 <h2 id="relationships-module">Relationships: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/relationship.py">module</a></h2>
 <p>If there are columns that are entity links, that means the value of the column is the linked entity id or ids. You can easily define relationships using Liminal's wrapper functions around SQLAlchemy. The two relationships to define are <code>single_relationship</code> and <code>multi_relationship</code>, and examples are shown above.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># single_relationship is used for a non-multi field where there is a one-to-one relationship from the current class to the target class.</span>
-<span class="n">single_relationship</span><span class="p">(</span><span class="n">target_class_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">entity_link_field</span><span class="p">:</span> <span class="n">Column</span><span class="p">,</span> <span class="n">backref</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RelationshipProperty</span><span class="p">:</span>
+<span class="kn">from</span> <span class="nn">liminal.orm.relationship</span> <span class="kn">import</span> <span class="n">single_relationship</span><span class="p">,</span> <span class="n">multi_relationship</span>
+
+<span class="n">single_relationship</span><span class="p">(</span><span class="n">target_class_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">entity_link_field</span><span class="p">:</span> <span class="n">Column</span><span class="p">,</span> <span class="n">backref</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RelationshipProperty</span>
 
 <span class="c1"># multi_relationship is used for a multi field where there is a &quot;one-to-many&quot; relationship from the current class to the target class.</span>
 <span class="c1"># NOTE: This is not a normal one-to-many relationship. The multi field is represented as a list of entity ids.</span>
@@ -1538,40 +1497,6 @@ detected by Liminal's migration service, which is run using the <code>liminal au
     <span class="n">slices</span> <span class="o">=</span> <span class="n">pizza_entity</span><span class="o">.</span><span class="n">slice_entities</span>
 </code></pre></div>
 </div>
-<h2 id="custom-query">Custom Query</h2>
-<p>The <code>query()</code> method must be implemented for the entity schema class to define a custom query. This is useful if you want to add additional filtering or joins to the query.</p>
-<h2 id="validators-class">Validators: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/validation/__init__.py">class</a></h2>
-<p>As seen in the example above, the <code>get_validators</code> method is used to define a list of validators for the entity schema. These validators run on entities of the schema that are queried from Benchling's Postgres database. For example:</p>
-<div class="highlight"><pre><span></span><code><span class="n">pizza_entity</span> <span class="o">=</span> <span class="n">Pizza</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">session</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
-
-<span class="c1"># Validate a single entity from a query</span>
-<span class="n">report</span> <span class="o">=</span> <span class="n">CookTempValidator</span><span class="p">()</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">pizza_entity</span><span class="p">)</span>
-
-<span class="c1"># Validate all entities for a schema</span>
-<span class="n">reports</span> <span class="o">=</span> <span class="n">Pizza</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
-</code></pre></div>
-<p>The list of validators within <code>get_validators</code> are used to run on all entities of the schema.</p>
-<p>The <code>BenchlingValidator</code> object is used to define the validator classes, that can be defined with custom logic to validate entities of a schema. Refer to the <a href="../validators/">Validators</a> page to learn more about how to define validators.</p>
-<h2 id="additional-functionality">Additional Functionality</h2>
-<p>Below is additional functionality that is provided by the Liminal BaseModel class.</p>
-<div class="highlight"><pre><span></span><code><span class="n">connection</span> <span class="o">=</span> <span class="n">BenchlingConnection</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="n">benchling_service</span> <span class="o">=</span> <span class="n">BenchlingService</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">use_db</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="k">with</span> <span class="n">benchling_service</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-
-    <span class="c1"># Get all entities for a schema and return a dataframe</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">Pizza</span><span class="o">.</span><span class="n">df</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
-
-    <span class="c1"># Validate all entities for a schema and return a list of ValidatorReports</span>
-    <span class="n">reports</span> <span class="o">=</span> <span class="n">Pizza</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
-
-    <span class="c1"># Validate all entities for a schema and return a dataframe</span>
-    <span class="n">validated_df</span> <span class="o">=</span> <span class="n">Pizza</span><span class="o">.</span><span class="n">validate_to_df</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
-</code></pre></div>
-<h2 id="notes">Notes</h2>
-<ul>
-<li>Note that the Entity Schema definition in Liminal does not cover 100% of the properties that can be set through the Benchling website. However, the goal is to have 100% parity! If you find any missing properties that are not covered in the definition or migration service, please open an issue on <a href="https://github.com/dynotx/liminal-orm/issues">Github</a>. In the meantime, you can manually set the properties through the Benchling website.</li>
-</ul>
 
 
 
@@ -1631,13 +1556,13 @@ detected by Liminal's migration service, which is run using the <code>liminal au
         
         
           
-          <a href="../validators/" class="md-footer__link md-footer__link--next" aria-label="Next: Validators">
+          <a href="../validation/" class="md-footer__link md-footer__link--next" aria-label="Next: Validation">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Validators
+                Validation
               </div>
             </div>
             <div class="md-footer__button md-icon">

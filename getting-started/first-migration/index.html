@@ -83,11 +83,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#example-revision-file" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -97,7 +92,7 @@
             
   <!-- the following line is displayed in the announcement bar -->
 <!-- keep length under 164 characters (less HTML tags) to fit on 1280px desktop window -->
-New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes/#v110">release notes</a> for more details.
+New Liminal ORM release, v2.0.0 out now! See <a href="/liminal-orm/release-notes/#v220">release notes</a> for more details.
 
 <button class="md-banner__button md-icon" aria-label="Don't show this again" id="close-banner">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -309,10 +304,10 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
     
     
       <li class="md-tabs__item">
-        <a href="../../case-studies/dynotx-recommended-sop/" class="md-tabs__link">
+        <a href="../../blog/dynotx-recommended-sop/" class="md-tabs__link">
           
   
-  Case Studies
+  Blog
 
         </a>
       </li>
@@ -564,17 +559,6 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
       
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    First migration
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -584,32 +568,6 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#example-revision-file" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example Revision File
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -794,11 +752,11 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
   
   
     <li class="md-nav__item">
-      <a href="../../reference/validators/" class="md-nav__link">
+      <a href="../../reference/validation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Validators
+    Validation
   </span>
   
 
@@ -881,7 +839,7 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
             
   
   <span class="md-ellipsis">
-    Case Studies
+    Blog
   </span>
   
 
@@ -891,7 +849,7 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            Case Studies
+            Blog
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -902,7 +860,7 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
   
   
     <li class="md-nav__item">
-      <a href="../../case-studies/dynotx-recommended-sop/" class="md-nav__link">
+      <a href="../../blog/dynotx-recommended-sop/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1139,23 +1097,6 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
   
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#example-revision-file" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example Revision File
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -1185,7 +1126,7 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
 </li>
 <li>
 <p>In your CLI in Liminal's root directory (that contains the <code>liminal/</code> path), run the following command:</p>
-<div class="highlight"><pre><span></span><code>liminal<span class="w"> </span>upgrade<span class="w"> </span>&lt;benchling_tenant&gt;<span class="w"> </span>&lt;upgrade_descriptor&gt;
+<div class="highlight"><pre><span></span><code>liminal<span class="w"> </span>upgrade<span class="w"> </span>&lt;benchling_tenant_name&gt;<span class="w"> </span>&lt;upgrade_descriptor&gt;
 </code></pre></div>
 <p>Example: <code>liminal upgrade prod "remove dough column from pizza schema"</code>.</p>
 <p>This will automatically generate a new revision file in the <code>versions/</code> directory. This revision file defines the set of steps (or "operations") that will be needed to make the targeted Benchling tenant up to date with the changes made in the schema model.</p>
@@ -1196,24 +1137,29 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
 </li>
 <li>
 <p>Review the generated revision file and set of operations to ensure that it is accurate.</p>
-<h3 id="example-revision-file">Example Revision File</h3>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">liminal.external</span> <span class="k">as</span> <span class="nn">b</span>
-
-<span class="c1"># revision identifiers, used by Liminal.</span>
-<span class="n">revision</span> <span class="o">=</span> <span class="s2">&quot;c3a9cd009713&quot;</span>
-<span class="n">down_revision</span> <span class="o">=</span> <span class="s2">&quot;d28335bffaba&quot;</span>
-
-
-<span class="c1"># ### commands auto generated by Liminal - please review (and adjust if needed)! ###</span>
-<span class="k">def</span> <span class="nf">upgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">BaseOperation</span><span class="p">]:</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">ArchiveEntitySchemaField</span><span class="p">(</span><span class="s1">&#39;pizza&#39;</span><span class="p">,</span> <span class="s1">&#39;dough&#39;</span><span class="p">)]</span>
-
-<span class="c1"># ### commands auto generated by Liminal - please review (and adjust if needed)! ###</span>
-<span class="k">def</span> <span class="nf">downgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">BaseOperation</span><span class="p">]:</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">UnarchiveEntitySchemaField</span><span class="p">(</span><span class="s1">&#39;pizza&#39;</span><span class="p">,</span> <span class="s1">&#39;dough&#39;</span><span class="p">)]</span>
-</code></pre></div>
-<p>This looks correct! I wanted to archive the <code>dough</code> column from the <code>pizza</code> entity schema.</p>
 </li>
+</ol>
+<p>### Example Revision File</p>
+<pre><code>```python
+import liminal.external as b
+
+# revision identifiers, used by Liminal.
+revision = "c3a9cd009713"
+down_revision = "d28335bffaba"
+
+
+# ### commands auto generated by Liminal - please review (and adjust if needed)! ###
+def upgrade() -&gt; list[b.BaseOperation]:
+    return [b.ArchiveEntitySchemaField('pizza', 'dough')]
+
+# ### commands auto generated by Liminal - please review (and adjust if needed)! ###
+def downgrade() -&gt; list[b.BaseOperation]:
+    return [b.UnarchiveEntitySchemaField('pizza', 'dough')]
+```
+
+This looks correct! I wanted to archive the `dough` column from the `pizza` entity schema.
+</code></pre>
+<ol>
 <li>
 <p>Once you've reviewed the revision file and are ready to apply the changes, run the following command:</p>
 <div class="highlight"><pre><span></span><code>liminal<span class="w"> </span>upgrade<span class="w"> </span>&lt;benchling_tenant_name&gt;<span class="w"> </span>&lt;upgrade_descriptor&gt;
@@ -1237,6 +1183,11 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
 <p>You should see output indicating that the revision was applied successfully. Check your Benchling tenant to ensure the changes were applied as expected!</p>
 </li>
 </ol>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If the migration fails mid way through, do not attempt to run the full upgrade again. This will re-run the same operations that were already run which is unsafe. Instead, you can comment out the operations
+that have already been run in the <code>upgrade()</code> function and run <code>liminal upgrade</code> again. This will ensure that only the operations that have not yet been run get applied. Alternatively, you can comment out the mirrored operations not run yet in the <code>downgrade()</code> function and run <code>liminal downgrade</code> to revert the changes so that you can try again. (More information on downgrades on the next page!)</p>
+</div>
 
 
 

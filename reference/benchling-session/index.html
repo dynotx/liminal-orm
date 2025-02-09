@@ -97,7 +97,7 @@
             
   <!-- the following line is displayed in the announcement bar -->
 <!-- keep length under 164 characters (less HTML tags) to fit on 1280px desktop window -->
-New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes/#v110">release notes</a> for more details.
+New Liminal ORM release, v2.0.0 out now! See <a href="/liminal-orm/release-notes/#v220">release notes</a> for more details.
 
 <button class="md-banner__button md-icon" aria-label="Don't show this again" id="close-banner">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -309,10 +309,10 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
     
     
       <li class="md-tabs__item">
-        <a href="../../case-studies/dynotx-recommended-sop/" class="md-tabs__link">
+        <a href="../../blog/dynotx-recommended-sop/" class="md-tabs__link">
           
   
-  Case Studies
+  Blog
 
         </a>
       </li>
@@ -809,11 +809,11 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
   
   
     <li class="md-nav__item">
-      <a href="../validators/" class="md-nav__link">
+      <a href="../validation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Validators
+    Validation
   </span>
   
 
@@ -896,7 +896,7 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
             
   
   <span class="md-ellipsis">
-    Case Studies
+    Blog
   </span>
   
 
@@ -906,7 +906,7 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            Case Studies
+            Blog
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -917,7 +917,7 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
   
   
     <li class="md-nav__item">
-      <a href="../../case-studies/dynotx-recommended-sop/" class="md-nav__link">
+      <a href="../../blog/dynotx-recommended-sop/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1207,7 +1207,6 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
 
 <h2 id="benchlingservice-class">BenchlingService: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/connection/benchling_service.py">class</a></h2>
 <p>The BenchlingService class takes in a BenchlingConnection object and is used to directly interact with Benchling's SDK, internal API, and Postgres warehouse. This class is surfaced for users so that there is one standard interface for interacting with Benchling around your codebase. Liminal's BenchlingService handles all session management and is a subclass of Benchling's SDK, so all functionality of Benchling's SDK is available.</p>
-<p>BenchlingService can be used to build on top of Liminal's ORM. Below is an example of how to use the BenchlingService class.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">liminal.connection</span> <span class="kn">import</span> <span class="n">BenchlingConnection</span>
 <span class="kn">from</span> <span class="nn">liminal.connection</span> <span class="kn">import</span> <span class="n">BenchlingService</span>
 
@@ -1224,22 +1223,24 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
     <span class="n">entity</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Pizza</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 </code></pre></div>
 <h3 id="parameters">Parameters</h3>
+<ul>
+<li>
 <p><strong>connection: BenchlingConnection</strong></p>
-<blockquote>
 <p>The connection object that contains the credentials for the Benchling tenant.</p>
-</blockquote>
+</li>
+<li>
 <p><strong>use_api: bool</strong></p>
-<blockquote>
 <p>Whether to connect to the Benchling SDK. Defaults to True. (See Benchling SDK documentation <a href="https://docs.benchling.com/docs/getting-started-with-the-sdk">here</a>)</p>
-</blockquote>
+</li>
+<li>
 <p><strong>use_internal_api: bool</strong></p>
-<blockquote>
 <p>Whether to connect to the Benchling internal API. Defaults to False.</p>
-</blockquote>
+</li>
+<li>
 <p><strong>use_warehouse: bool</strong></p>
-<blockquote>
 <p>Whether to connect to the Benchling Postgres warehouse. Defaults to False. See SQLAlchemy documentation <a href="https://www.sqlalchemy.org/">here</a> for more information.</p>
-</blockquote>
+</li>
+</ul>
 
 
 

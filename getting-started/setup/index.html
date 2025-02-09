@@ -92,7 +92,7 @@
             
   <!-- the following line is displayed in the announcement bar -->
 <!-- keep length under 164 characters (less HTML tags) to fit on 1280px desktop window -->
-New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes/#v110">release notes</a> for more details.
+New Liminal ORM release, v2.0.0 out now! See <a href="/liminal-orm/release-notes/#v220">release notes</a> for more details.
 
 <button class="md-banner__button md-icon" aria-label="Don't show this again" id="close-banner">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -304,10 +304,10 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
     
     
       <li class="md-tabs__item">
-        <a href="../../case-studies/dynotx-recommended-sop/" class="md-tabs__link">
+        <a href="../../blog/dynotx-recommended-sop/" class="md-tabs__link">
           
   
-  Case Studies
+  Blog
 
         </a>
       </li>
@@ -752,11 +752,11 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
   
   
     <li class="md-nav__item">
-      <a href="../../reference/validators/" class="md-nav__link">
+      <a href="../../reference/validation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Validators
+    Validation
   </span>
   
 
@@ -839,7 +839,7 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
             
   
   <span class="md-ellipsis">
-    Case Studies
+    Blog
   </span>
   
 
@@ -849,7 +849,7 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            Case Studies
+            Blog
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -860,7 +860,7 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
   
   
     <li class="md-nav__item">
-      <a href="../../case-studies/dynotx-recommended-sop/" class="md-nav__link">
+      <a href="../../blog/dynotx-recommended-sop/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1151,11 +1151,11 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
 <p>The <code>CURRENT_REVISION_ID</code> variable is used to store the current state of where your Benchling tenant lies on the revision timeline. The id is the <code>revision_id</code> of the revision file that has been applied to your Benchling tenant.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>If you have multiple Benchling tenants you'd like to synchronize, you can define multiple Benchling connections in the <code>env.py</code> file by creating multiple <code>BenchlingConnection</code> objects and respective <code>CURRENT_REVISION_ID</code> variables. Use the optional <code>current_revision_id_var_name</code> parameter to link the variable to the <code>BenchlingConnection</code> object.</p>
+<p>If you have multiple Benchling tenants you'd like to synchronize, you can define multiple Benchling connections in the <code>env.py</code> file by creating multiple <code>BenchlingConnection</code> objects and respective <code>CURRENT_REVISION_ID</code> variables.</p>
 </div>
 </li>
 <li>
-<p>If your Benchling tenant has pre-existing schemas, run <code>liminal generate-files &lt;benchling_tenant&gt; [&lt;write_path&gt;]</code> to populate the root directory with your schema files from the given Benchling tenant. Your file structure should now look like this:</p>
+<p>If your Benchling tenant has pre-existing schemas, run <code>liminal generate-files &lt;benchling_tenant_name&gt; [&lt;write_path&gt;]</code> to populate the root directory with your schema files from the given Benchling tenant. Your file structure should now look like this:</p>
 <pre><code>pizzahouse/
     liminal/
         env.py

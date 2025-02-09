@@ -97,7 +97,7 @@
             
   <!-- the following line is displayed in the announcement bar -->
 <!-- keep length under 164 characters (less HTML tags) to fit on 1280px desktop window -->
-New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes/#v110">release notes</a> for more details.
+New Liminal ORM release, v2.0.0 out now! See <a href="/liminal-orm/release-notes/#v220">release notes</a> for more details.
 
 <button class="md-banner__button md-icon" aria-label="Don't show this again" id="close-banner">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -309,10 +309,10 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
     
     
       <li class="md-tabs__item">
-        <a href="../../case-studies/dynotx-recommended-sop/" class="md-tabs__link">
+        <a href="../../blog/dynotx-recommended-sop/" class="md-tabs__link">
           
   
-  Case Studies
+  Blog
 
         </a>
       </li>
@@ -809,11 +809,11 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
   
   
     <li class="md-nav__item">
-      <a href="../validators/" class="md-nav__link">
+      <a href="../validation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Validators
+    Validation
   </span>
   
 
@@ -896,7 +896,7 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
             
   
   <span class="md-ellipsis">
-    Case Studies
+    Blog
   </span>
   
 
@@ -906,7 +906,7 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            Case Studies
+            Blog
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -917,7 +917,7 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
   
   
     <li class="md-nav__item">
-      <a href="../../case-studies/dynotx-recommended-sop/" class="md-nav__link">
+      <a href="../../blog/dynotx-recommended-sop/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1225,40 +1225,42 @@ New Liminal ORM release, v1.1.0 out now! See <a href="/liminal-orm/release-notes
 <span class="p">)</span>
 </code></pre></div>
 <h3 id="parameters">Parameters</h3>
+<ul>
+<li>
 <p><strong>tenant_name: str</strong></p>
-<blockquote>
 <p>The name of the tenant. ex: {tenant_name}.benchling.com</p>
-</blockquote>
+</li>
+<li>
 <p><strong>tenant_alias: Optional[str] = None</strong></p>
-<blockquote>
 <p>The alias of the tenant name. This is optional and is used as an alternate value when using the Liminal CLI</p>
-</blockquote>
+</li>
+<li>
 <p><strong>current_revision_id_var_name: str = ""</strong></p>
-<blockquote>
 <p>The name of the variable that contains the current revision id.
 If not provided, a derived name will be generated based on the tenant name/alias.
 Ex: {tenant_alias}_CURRENT_REVISION_ID or {tenant_name}_CURRENT_REVISION_ID if alias is not provided.</p>
-</blockquote>
+</li>
+<li>
 <p><strong>api_client_id: Optional[str] = None</strong></p>
-<blockquote>
 <p>The id of the API client.</p>
-</blockquote>
+</li>
+<li>
 <p><strong>api_client_secret: Optional[str] = None</strong></p>
-<blockquote>
 <p>The secret of the API client.</p>
-</blockquote>
+</li>
+<li>
 <p><strong>warehouse_connection_string: Optional[str] = None</strong></p>
-<blockquote>
 <p>The connection string for the warehouse.</p>
-</blockquote>
+</li>
+<li>
 <p><strong>internal_api_admin_email: Optional[str] = None</strong></p>
-<blockquote>
 <p>The email of the internal API admin.</p>
-</blockquote>
+</li>
+<li>
 <p><strong>internal_api_admin_password: Optional[str] = None</strong></p>
-<blockquote>
 <p>The password of the internal API admin.</p>
-</blockquote>
+</li>
+</ul>
 
 
 
