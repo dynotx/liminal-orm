@@ -1381,7 +1381,7 @@ If no errors are raised when it is run on an entity, the report will be valid. I
 <span class="k">class</span> <span class="nc">Pizza</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">,</span> <span class="n">CustomEntityMixin</span><span class="p">):</span>
     <span class="o">...</span>
 
-    <span class="nd">@liminal_validator</span><span class="p">(</span><span class="n">ValidationSeverity</span><span class="o">.</span><span class="n">MED</span><span class="p">)</span>
+    <span class="nd">@liminal_validator</span>
     <span class="k">def</span> <span class="nf">cook_time_and_temp_validator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cook_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cook_temp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cook temp is required if cook time is set&quot;</span><span class="p">)</span>
