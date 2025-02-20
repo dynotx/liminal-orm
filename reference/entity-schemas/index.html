@@ -1391,7 +1391,7 @@ detected by Liminal's migration service, which is run using the <code>liminal au
 
     <span class="n">dough</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;dough&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">BenchlingFieldType</span><span class="o">.</span><span class="n">ENTITY_LINK</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">entity_link</span><span class="o">=</span><span class="s2">&quot;dough&quot;</span><span class="p">)</span>
     <span class="n">cook_temp</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cook_temp&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">BenchlingFieldType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">cook_time</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cook_time&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">BenchlingFieldType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">cook_time</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cook_time&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">BenchlingFieldType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unit_name</span><span class="s2">&quot;second&quot;</span><span class="p">)</span>
     <span class="n">toppings</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;toppings&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">BenchlingFieldType</span><span class="o">.</span><span class="n">DROPDOWN</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dropdown</span><span class="o">=</span><span class="n">Toppings</span><span class="p">)</span>
     <span class="n">customer_review</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;customer_review&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">BenchlingFieldType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">slices</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;slices&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">BenchlingFieldType</span><span class="o">.</span><span class="n">ENTITY_LINK</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">is_multi</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">entity_link</span><span class="o">=</span><span class="s2">&quot;slice&quot;</span><span class="p">)</span>
@@ -1461,7 +1461,15 @@ detected by Liminal's migration service, which is run using the <code>liminal au
 </li>
 <li>
 <p><strong>constraint_fields: set[str] | None</strong></p>
-<p>Set of constraints for field values for the schema. Must be a set of column names that specify that their values must be a unique combination within an entity. If the entity type is a Sequence, "bases" can be a constraint field.</p>
+<p>Set of constraints for field values for the schema. Must be a set of warehouse column names. This specifies that their entity field values must be a unique combination within an entity.
+The following sequence constraints are also supported:
+- <code>'bases'</code>: only supported for nucleotide sequence entity types. hasUniqueResidues=True
+- <code>'amino_acids_ignore_case'</code>: only supported for amino acid sequence entity types. hasUniqueResidues=True
+- <code>'amino_acids_exact_match'</code>: only supported for amino acid sequence entity types. hasUniqueResidues=True, areUniqueResiduesCaseSensitive=True</p>
+</li>
+<li>
+<p><strong>show_bases_in_expanded_view: bool | None = None</strong></p>
+<p>Whether the bases should be shown in the expanded view of the entity.</p>
 </li>
 <li>
 <p><strong>_archived: bool | None = None</strong></p>
@@ -1515,6 +1523,18 @@ detected by Liminal's migration service, which is run using the <code>liminal au
 <li>
 <p><strong>entity_link: str | None = None</strong></p>
 <p>The entity link for the field. The entity link must be the <code>warehouse_name</code> as a string of the entity schema that the field is linking to. The type of the Column must be <code>BenchlingFieldType.ENTITY_LINK</code> in order to be valid. Defaults to None.</p>
+</li>
+<li>
+<p><strong>unit_name: str | None = None</strong></p>
+<p>The unit name for the field. Defaults to None.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Once the unit is set on a field, it CANNOT be changed. Benchling's recommendation is to archive the field and create a new one if you need to change the unit.</p>
+</div>
+</li>
+<li>
+<p><strong>decimal_places: int | None = None</strong></p>
+<p>The number of decimal places for the field. Must be an integer between 0 and 15. Defaults to None.</p>
 </li>
 <li>
 <p><strong>_archived: bool = False</strong></p>
