@@ -1431,7 +1431,7 @@ detected by Liminal's migration service, which is run using the <code>liminal au
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>If warehouse access is not enabled on your tenant, you will be unable to update the warehouse name.</p>
+<p>If the <code>schemas_enable_change_warehouse_name</code> config flag is not set on your tenant BenchlingConnection, you will be unable to update the warehouse name.</p>
 <p>Liminal assumes the Benchling generated warehouse name to be <code>to_snake_case(name)</code>.</p>
 </div>
 <ul>
@@ -1487,7 +1487,7 @@ The following sequence constraints are also supported:
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>If warehouse access is not enabled on your tenant, you will be unable to update the warehouse name for fields.</p>
+<p>If the <code>schemas_enable_change_warehouse_name</code> config flag is not set on your tenant BenchlingConnection, you will be unable to update the warehouse name for fields.</p>
 <p>Liminal will enforce that the column variable name (which represents the warehouse name) matches the Benchling generated warehouse name, which Liminal assumes to be <code>to_snake_case(name)</code>.</p>
 </div>
 <h3 id="parameters_1">Parameters</h3>

@@ -1129,7 +1129,7 @@ New Liminal ORM release, v3.0.0 out now! See <a href="/liminal-orm/release-notes
 </li>
 <li>
 <p>Populate the <code>env.py</code> file with your Benchling connection information, following the instructions in the file. For example:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">liminal.connection</span> <span class="kn">import</span> <span class="n">BenchlingConnection</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">liminal.connection</span> <span class="kn">import</span> <span class="n">BenchlingConnection</span><span class="p">,</span> <span class="n">TenantConfigFlags</span>
 
     <span class="n">PROD_CURRENT_REVISION_ID</span> <span class="o">=</span> <span class="s2">&quot;12b31776a755b&quot;</span>
 
@@ -1140,13 +1140,20 @@ New Liminal ORM release, v3.0.0 out now! See <a href="/liminal-orm/release-notes
         <span class="n">current_revision_id_var_name</span><span class="o">=</span><span class="s2">&quot;PROD_CURRENT_REVISION_ID&quot;</span><span class="p">,</span>
         <span class="n">api_client_id</span><span class="o">=</span><span class="s2">&quot;my-secret-api-client-id&quot;</span><span class="p">,</span>
         <span class="n">api_client_secret</span><span class="o">=</span><span class="s2">&quot;my-secret-api-client-secret&quot;</span><span class="p">,</span>
+        <span class="n">warehouse_connection_string</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
         <span class="n">internal_api_admin_email</span><span class="o">=</span><span class="s2">&quot;my-secret-internal-api-admin-email&quot;</span><span class="p">,</span>
         <span class="n">internal_api_admin_password</span><span class="o">=</span><span class="s2">&quot;my-secret-internal-api-admin-password&quot;</span><span class="p">,</span>
+        <span class="n">config_flags</span><span class="o">=</span><span class="n">TenantConfigFlags</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="p">)</span>
 </code></pre></div>
 <ul>
-<li>Required: The <code>api_client_id</code> and <code>api_client_secret</code> are used to connect to Benchling's SDK. For more information, see the <a href="https://docs.benchling.com/docs/getting-started-benchling-apps#calling-the-api-as-an-app">Benchling API documentation</a>.</li>
-<li>Required: The <code>internal_api_admin_email</code> and <code>internal_api_admin_password</code> are used to connect to Benchling's API for the migration service. This must be the email and password used to log in to an Admin account.</li>
+<li><strong>Required</strong>: The <code>api_client_id</code> and <code>api_client_secret</code> are used to connect to Benchling's SDK. For more information, see the <a href="https://docs.benchling.com/docs/getting-started-benchling-apps#calling-the-api-as-an-app">Benchling API documentation</a>.</li>
+<li><strong>Required</strong>: The <code>internal_api_admin_email</code> and <code>internal_api_admin_password</code> are used to connect to Benchling's API for the migration service. This must be the email and password used to log in to an Admin account.</li>
+<li>Optional: The <code>warehouse_connection_string</code> is used to connect to Benchling's read-only warehouse. If you have access, set this as the connection string for the warehouse.</li>
+<li>Optional: The <code>config_flags</code> parameter is used to set tenant-specific configuration flags. For more information, see the <a href="../../reference/benchling-connection/">BenchlingConnection</a> reference.<ul>
+<li>Set <code>schemas_enable_change_warehouse_name</code> to <code>True</code> if you want to enable changing schema and field warehouse names.</li>
+</ul>
+</li>
 </ul>
 <p>The <code>CURRENT_REVISION_ID</code> variable is used to store the current state of where your Benchling tenant lies on the revision timeline. The id is the <code>revision_id</code> of the revision file that has been applied to your Benchling tenant.</p>
 <div class="admonition tip">
