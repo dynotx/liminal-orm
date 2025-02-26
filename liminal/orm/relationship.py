@@ -35,7 +35,9 @@ def multi_relationship(
     target_class_name: str, current_class_name: str, entity_link_field_name: str
 ) -> RelationshipProperty:
     """Wrapper for SQLAlchemy's relationship function. Liminal's recommendation for defining a relationship from
-    a class to a linked entity field that has is_multi=True. This means the representation of that field is a list of entity_ids.
+    a class to a linked entity field that has is_multi=True. This means the representation of that field is a jsonb array of entity_ids.
+    NOTE: Because Benchling represents the multi linked field as a jsonb array of entity_ids, we need to use the func.string_to_array function and func.replace formatting
+     to convert the jsonb array to a list of entity_ids.
     Parameters
     ----------
     target_class_name : str
@@ -52,11 +54,11 @@ def multi_relationship(
     if target_class_name == current_class_name:
         return relationship(
             target_class_name,
-            primaryjoin=f"remote({target_class_name}.id) == any_(foreign({current_class_name}.{entity_link_field_name}))",
+            primaryjoin=f"remote({target_class_name}.id) == any_(func.string_to_array(func.replace(func.replace(func.replace(foreign({current_class_name}.{entity_link_field_name}), '\"', ''), '[', ''), ']', ''), ','))",
             uselist=True,
         )
     return relationship(
         target_class_name,
-        primaryjoin=f"{target_class_name}.id == any_(foreign({current_class_name}.{entity_link_field_name}))",
+        primaryjoin=f"{target_class_name}.id == any_(func.string_to_array(func.replace(func.replace(func.replace(foreign({current_class_name}.{entity_link_field_name}), '\"', ''), '[', ''), ']', ''), ','))",
         uselist=True,
     )
