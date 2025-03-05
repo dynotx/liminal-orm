@@ -222,7 +222,7 @@ class RevisionsTimeline:
 
     def write_new_revision(
         self, message: str, operations: list[CompareOperation]
-    ) -> str | None:
+    ) -> str:
         """Adds a new revision to the revisions map and writes the revision file to the versions directory if write is True.
         The added revision will be the latest revision.
         """
@@ -234,8 +234,6 @@ class RevisionsTimeline:
             upgrade_operations=[o.op for o in operations],
             downgrade_operations=reversed([o.reverse_op for o in operations]),
         )
-        if len(operations) == 0:
-            return None
         new_revision.write_revision_file(self.versions_dir_path)
         self.revisions_map[new_revision.id] = new_revision
         self.get_revision(

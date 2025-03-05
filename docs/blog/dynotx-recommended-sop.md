@@ -19,7 +19,7 @@ Let's say a change has to be made to a Benchling schema...
 
 1. Make change(s) to the Liminal schemas in code.
 
-2. Run `liminal autogenerate PROD 'description'`. This will generate a revision file, and create a list of operations to migrate PROD to be in sync with the schemas defined in code.
+2. Run `liminal revision PROD 'description'`. This will generate a revision file, and create a list of operations to migrate PROD to be in sync with the schemas defined in code.
 
     !!! question "Why point to PROD?"
         The PROD tenant is the tenant that users interact with, meaning it should always be in sync with the code. This means when we autogenerate against PROD, we are comparing the Liminal schemas in code against the actual Benchling schemas in PROD. `autogenerate` creates a diff (a computed difference) and generates a list of operations for what needs to be done to make the PROD tenant match the Liminal schemas in code.
@@ -40,7 +40,7 @@ Let's say a change has to be made to a Benchling schema...
 
 Let's say you are making some changes in the DEV tenant, but you need to revert back to the current state of your schemas defined in code. Liminal offers a way to quickly migrate the tenant back/forward to the current state.
 
-1. Run `liminal autogenerate TEST 'description'`. This will generate a revision file, and create a list of operations to migrate TEST to be in sync with the schemas defined in code.
+1. Run `liminal revision TEST 'description'`. This will generate a revision file, and create a list of operations to migrate TEST to be in sync with the schemas defined in code.
 
 2. Run `liminal upgrade TEST`. This will apply the operations to the TEST tenant.
 

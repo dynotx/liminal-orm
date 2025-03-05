@@ -30,6 +30,7 @@ def autogenerate_revision_file(
     write_dir_path: Path,
     description: str,
     current_revision_id: str,
+    compare: bool = True,
 ) -> None:
     """Generates a revision file by comparing locally defined schemas to the given Benchling tenant.
     The revision file contains a unique revision id, the down_revision_id (which is the latest revision id that this revision is based on),
@@ -50,12 +51,12 @@ def autogenerate_revision_file(
         raise Exception(
             f"Your target Benchling tenant is not up to date with the latest revision ({revision_timeline.get_latest_revision().id}). Please upgrade to the latest revision before generating a new revision."
         )
-    compare_ops = get_full_migration_operations(benchling_service)
-    write_path = revision_timeline.write_new_revision(description, compare_ops)
-    if write_path is None:
-        print("[bold green]No changes needed. Skipping revision file generation.")
+    if compare:
+        compare_ops = get_full_migration_operations(benchling_service)
     else:
-        print(f"[bold green]Revision file generated at {write_path}")
+        compare_ops = []
+    write_path = revision_timeline.write_new_revision(description, compare_ops)
+    print(f"[bold green]Revision file generated at {write_path}")
 
 
 def upgrade_benchling_tenant(

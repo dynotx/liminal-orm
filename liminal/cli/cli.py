@@ -60,9 +60,20 @@ def init() -> None:
 # Instantiate the BenchlingConnection(s) with the correct parameters for your tenant(s).
 # There must be a revision_id variable defined for each BenchlingConnection instance. The variable name should match the `current_revision_id_var_name` variable passed into the BenchlingConnection instance.
 # The revision_id variable name can also match the format `<tenant_name>_CURRENT_REVISION_ID` / `<tenant_alias>_CURRENT_REVISION_ID`.
-from liminal.connection import BenchlingConnection
+from liminal.connection import BenchlingConnection, TenantConfigFlags
 
-CURRENT_REVISION_ID = "{revision_id}"
+PROD_CURRENT_REVISION_ID = "{revision_id}"
+connection = BenchlingConnection(
+    tenant_name="pizzahouse-prod",
+    tenant_alias="prod",
+    current_revision_id_var_name="PROD_CURRENT_REVISION_ID",
+    api_client_id="my-secret-api-client-id",
+    api_client_secret="my-secret-api-client-secret",
+    warehouse_connection_string="...",
+    internal_api_admin_email="my-secret-internal-api-admin-email",
+    internal_api_admin_password="my-secret-internal-api-admin-password",
+    config_flags=TenantConfigFlags(...)
+)
 """
     with open(ENV_FILE_PATH, "w") as file:
         file.write(env_file)
@@ -114,8 +125,38 @@ def current(
 
 
 @app.command(
-    name="autogenerate",
+    name="revision",
     help="Generates a revision file with a list of operations to bring the given Benchling tenant up to date with the locally defined schemas. Writes revision file to liminal/versions/.",
+)
+def revision(
+    benchling_tenant: str = typer.Argument(
+        ..., help="Benchling tenant (or alias) to connect to."
+    ),
+    description: str = typer.Argument(
+        ...,
+        help="A description of the revision being generated. This will also be included in the file name.",
+    ),
+    autogenerate: bool = typer.Option(
+        True,
+        "--autogenerate",
+        help="Automatically generate the revision file based on comparisons.",
+    ),
+) -> None:
+    current_revision_id, benchling_connection = read_local_liminal_dir(
+        LIMINAL_DIR_PATH, benchling_tenant
+    )
+    benchling_service = BenchlingService(benchling_connection, use_internal_api=True)
+    autogenerate_revision_file(
+        benchling_service,
+        VERSIONS_DIR_PATH,
+        description,
+        current_revision_id,
+        autogenerate,
+    )
+    
+@app.command(
+    name="autogenerate",
+    hidden=True,
 )
 def autogenerate(
     benchling_tenant: str = typer.Argument(
@@ -126,14 +167,9 @@ def autogenerate(
         help="A description of the revision being generated. This will also be included in the file name.",
     ),
 ) -> None:
-    current_revision_id, benchling_connection = read_local_liminal_dir(
-        LIMINAL_DIR_PATH, benchling_tenant
+    raise DeprecationWarning(
+        "CLI command `liminal autogenerate ...` is deprecated. Please use `liminal revision ...` instead."
     )
-    benchling_service = BenchlingService(benchling_connection, use_internal_api=True)
-    autogenerate_revision_file(
-        benchling_service, VERSIONS_DIR_PATH, description, current_revision_id
-    )
-
 
 @app.command(
     name="upgrade",
