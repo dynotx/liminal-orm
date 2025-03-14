@@ -117,7 +117,7 @@ def generate_all_entity_schema_files(
                     )
                 else:
                     relationship_strings.append(
-                        f"""{tab}{col_name}_entities = multi_relationship("{wh_name_to_classname[col.entity_link]}", "{classname}", "{col_name}")"""
+                        f"""{tab}{col_name}_entities = multi_relationship("{wh_name_to_classname[col.entity_link]}", {col_name})"""
                     )
                     import_strings.append(
                         "from liminal.orm.relationship import multi_relationship"
