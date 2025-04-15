@@ -1262,10 +1262,10 @@ Author: Nirmit Damania</p>
 <p>Make change(s) to the Liminal schemas in code.</p>
 </li>
 <li>
-<p>Run <code>liminal autogenerate PROD 'description'</code>. This will generate a revision file, and create a list of operations to migrate PROD to be in sync with the schemas defined in code.</p>
+<p>Run <code>liminal revision PROD 'description'</code>. This will generate a revision file, and create a list of operations to migrate PROD to be in sync with the schemas defined in code.</p>
 <div class="admonition question">
 <p class="admonition-title">Why point to PROD?</p>
-<p>The PROD tenant is the tenant that users interact with, meaning it should always be in sync with the code. This means when we autogenerate against PROD, we are comparing the Liminal schemas in code against the actual Benchling schemas in PROD. <code>autogenerate</code> creates a diff (a computed difference) and generates a list of operations for what needs to be done to make the PROD tenant match the Liminal schemas in code.</p>
+<p>The PROD tenant is the tenant that users interact with, meaning it should always be in sync with the code. This means when we autogenerate against PROD, we are comparing the Liminal schemas in code against the actual Benchling schemas in PROD. <code>liminal revision</code> creates a diff (a computed difference) and generates a list of operations for what needs to be done to make the PROD tenant match the Liminal schemas in code.</p>
 </div>
 </li>
 <li>
@@ -1291,7 +1291,7 @@ Author: Nirmit Damania</p>
 <p>Let's say you are making some changes in the DEV tenant, but you need to revert back to the current state of your schemas defined in code. Liminal offers a way to quickly migrate the tenant back/forward to the current state.</p>
 <ol>
 <li>
-<p>Run <code>liminal autogenerate TEST 'description'</code>. This will generate a revision file, and create a list of operations to migrate TEST to be in sync with the schemas defined in code.</p>
+<p>Run <code>liminal revision TEST 'description'</code>. This will generate a revision file, and create a list of operations to migrate TEST to be in sync with the schemas defined in code.</p>
 </li>
 <li>
 <p>Run <code>liminal upgrade TEST</code>. This will apply the operations to the TEST tenant.</p>

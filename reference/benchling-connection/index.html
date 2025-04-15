@@ -1228,13 +1228,10 @@ New Liminal ORM release, v3.0.0 out now! See <a href="/liminal-orm/release-notes
 <div class="highlight"><pre><span></span><code><span class="c1"># Example BenchlingConnection definition</span>
 <span class="kn">from</span> <span class="nn">liminal.connection</span> <span class="kn">import</span> <span class="n">BenchlingConnection</span><span class="p">,</span> <span class="n">TenantConfigFlags</span>
 
-<span class="n">PROD_CURRENT_REVISION_ID</span> <span class="o">=</span> <span class="s2">&quot;12b31776a755b&quot;</span>
-
 <span class="c1"># It is highly recommended to use a secrets manager to store your credentials.</span>
 <span class="n">connection</span> <span class="o">=</span> <span class="n">BenchlingConnection</span><span class="p">(</span>
     <span class="n">tenant_name</span><span class="o">=</span><span class="s2">&quot;pizzahouse-prod&quot;</span><span class="p">,</span>
     <span class="n">tenant_alias</span><span class="o">=</span><span class="s2">&quot;prod&quot;</span><span class="p">,</span>
-    <span class="n">current_revision_id_var_name</span><span class="o">=</span><span class="s2">&quot;PROD_CURRENT_REVISION_ID&quot;</span><span class="p">,</span>
     <span class="n">api_client_id</span><span class="o">=</span><span class="s2">&quot;my-secret-api-client-id&quot;</span><span class="p">,</span>
     <span class="n">api_client_secret</span><span class="o">=</span><span class="s2">&quot;my-secret-api-client-secret&quot;</span><span class="p">,</span>
     <span class="n">warehouse_connection_string</span><span class="o">=</span><span class="s2">&quot;my-warehouse-connection-string&quot;</span><span class="p">,</span>
@@ -1252,12 +1249,6 @@ New Liminal ORM release, v3.0.0 out now! See <a href="/liminal-orm/release-notes
 <li>
 <p><strong>tenant_alias: Optional[str] = None</strong></p>
 <p>The alias of the tenant name. This is optional and is used as an alternate value when using the Liminal CLI</p>
-</li>
-<li>
-<p><strong>current_revision_id_var_name: str = ""</strong></p>
-<p>The name of the variable that contains the current revision id.
-If not provided, a derived name will be generated based on the tenant name/alias.
-Ex: {tenant_alias}_CURRENT_REVISION_ID or {tenant_name}_CURRENT_REVISION_ID if alias is not provided.</p>
 </li>
 <li>
 <p><strong>api_client_id: Optional[str] = None</strong></p>

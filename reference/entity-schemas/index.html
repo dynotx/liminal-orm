@@ -1360,7 +1360,7 @@ New Liminal ORM release, v3.0.0 out now! See <a href="/liminal-orm/release-notes
 <p>The properties defined in the <code>SchemaProperties</code> object and <code>Column</code> objects
 correspond with the properties shown on the Benchling website. This is how Liminal defines your Benchling entity schema in code. Any of these properties
 can be manipulated to change the definition of the entity schema. Updates to the schema or the addition/archival of schemas are automatically
-detected by Liminal's migration service, which is run using the <code>liminal autogenerate ...</code> command. Refer to the <a href="../../getting-started/first-migration/">First Migration</a> page to run your first migration.</p>
+detected by Liminal's migration service, which is run using the <code>liminal revision ...</code> command. Refer to the <a href="../../getting-started/first-migration/">First Migration</a> page to run your first migration.</p>
 <p>Below, we will go through the different components of defining an entity schema class.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">liminal.orm.name_template_parts</span> <span class="kn">import</span> <span class="n">RegistryIdentifierNumberPart</span><span class="p">,</span> <span class="n">TextPart</span>
 <span class="kn">from</span> <span class="nn">liminal.orm.relationship</span> <span class="kn">import</span> <span class="n">single_relationship</span>
@@ -1397,7 +1397,7 @@ detected by Liminal's migration service, which is run using the <code>liminal au
     <span class="n">slices</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;slices&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">BenchlingFieldType</span><span class="o">.</span><span class="n">ENTITY_LINK</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">is_multi</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">entity_link</span><span class="o">=</span><span class="s2">&quot;slice&quot;</span><span class="p">)</span>
 
     <span class="n">dough_entity</span> <span class="o">=</span> <span class="n">single_relationship</span><span class="p">(</span><span class="s2">&quot;Dough&quot;</span><span class="p">,</span> <span class="n">dough</span><span class="p">)</span>
-    <span class="n">slice_entities</span> <span class="o">=</span> <span class="n">multi_relationship</span><span class="p">(</span><span class="s2">&quot;Slice&quot;</span><span class="p">,</span> <span class="s2">&quot;Pizza&quot;</span><span class="p">,</span> <span class="s2">&quot;slices&quot;</span><span class="p">)</span>
+    <span class="n">slice_entities</span> <span class="o">=</span> <span class="n">multi_relationship</span><span class="p">(</span><span class="s2">&quot;Slice&quot;</span><span class="p">,</span> <span class="n">slices</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1566,8 +1566,8 @@ The following sequence constraints are also supported:
 <span class="n">single_relationship</span><span class="p">(</span><span class="n">target_class_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">entity_link_field</span><span class="p">:</span> <span class="n">Column</span><span class="p">,</span> <span class="n">backref</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RelationshipProperty</span>
 
 <span class="c1"># multi_relationship is used for a multi field where there is a &quot;one-to-many&quot; relationship from the current class to the target class.</span>
-<span class="c1"># NOTE: This is not a normal one-to-many relationship. The multi field is represented as a list of entity ids.</span>
-<span class="n">multi_relationship</span><span class="p">(</span><span class="n">target_class_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">current_class_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">entity_link_field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RelationshipProperty</span>
+<span class="c1"># NOTE: This is not a normal one-to-many relationship with an associated table. The multi field is represented as a list of entity ids.</span>
+<span class="n">multi_relationship</span><span class="p">(</span><span class="n">target_class_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">entity_link_field</span><span class="p">:</span> <span class="n">Column</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RelationshipProperty</span>
 </code></pre></div>
 <div class="admonition question">
 <p class="admonition-title">How do I access the joined entity or entities?</p>

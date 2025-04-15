@@ -1126,13 +1126,13 @@ New Liminal ORM release, v3.0.0 out now! See <a href="/liminal-orm/release-notes
 </li>
 <li>
 <p>In your CLI in Liminal's root directory (that contains the <code>liminal/</code> path), run the following command:</p>
-<div class="highlight"><pre><span></span><code>liminal<span class="w"> </span>upgrade<span class="w"> </span>&lt;benchling_tenant_name&gt;<span class="w"> </span>&lt;upgrade_descriptor&gt;
+<div class="highlight"><pre><span></span><code>liminal<span class="w"> </span>revision<span class="w"> </span>&lt;benchling_tenant_name&gt;<span class="w"> </span>&lt;upgrade_descriptor&gt;
 </code></pre></div>
-<p>Example: <code>liminal upgrade prod "remove dough column from pizza schema"</code>.</p>
+<p>Example: <code>liminal revision prod "remove dough column from pizza schema"</code>.</p>
 <p>This will automatically generate a new revision file in the <code>versions/</code> directory. This revision file defines the set of steps (or "operations") that will be needed to make the targeted Benchling tenant up to date with the changes made in the schema model.</p>
 <div class="admonition question">
-<p class="admonition-title">If I have multiple Benchling tenants, do I have to run <code>autogenerate</code> for each tenant?</p>
-<p>No, Liminal only keeps a single thread of revision history so that each revision file has a linear link. In the case of multiple tenants that need to stay in sync together, we recommend pointing <code>autogenerate</code> at your production tenant, or the tenant that acts as the production environment. This will ensure there is a consistent history that your other tenants can follow. When ready, you can then apply the revision to all your tenants.</p>
+<p class="admonition-title">If I have multiple Benchling tenants, do I have to run <code>liminal revision ...</code> for each tenant?</p>
+<p>No, Liminal only keeps a single thread of revision history so that each revision file has a linear link. In the case of multiple tenants that need to stay in sync together, we recommend pointing <code>liminal revision...</code> at your production tenant, or the tenant that acts as the production environment. This will ensure there is a consistent history that your other tenants can follow. When ready, you can then apply the revision to all your tenants.</p>
 </div>
 </li>
 <li>
@@ -1183,6 +1183,15 @@ New Liminal ORM release, v3.0.0 out now! See <a href="/liminal-orm/release-notes
 <p>If the migration fails mid way through, do not attempt to run the full upgrade again. This will re-run the same operations that were already run which is unsafe. Instead, you can comment out the operations
 that have already been run in the <code>upgrade()</code> function and run <code>liminal upgrade</code> again. This will ensure that only the operations that have not yet been run get applied. Alternatively, you can comment out the mirrored operations not run yet in the <code>downgrade()</code> function and run <code>liminal downgrade</code> to revert the changes so that you can try again. (More information on downgrades on the next page!)</p>
 </div>
+<ol>
+<li>
+<p>You can see what revision_id your Benchling tenant is on by running <code>liminal current &lt;benchling_tenant_name&gt;</code>. This is stored remotely within a generated <em>_liminal_remote</em> in Benchling.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can see the local latest revision_id by running <code>liminal head &lt;benchling_tenant_name&gt;</code>.</p>
+</div>
+</li>
+</ol>
 
 
 
