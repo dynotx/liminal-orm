@@ -536,9 +536,12 @@ class UpdateEntitySchemaField(BaseOperation):
         return f"{self.wh_schema_name}: Entity schema field '{self.wh_field_name}' in Benchling is different than in code: {str(self.update_props)}."
 
     def validate(self, benchling_service: BenchlingService) -> None:
-        tag_schema = TagSchemaModel.get_one_cached(
-            benchling_service, self.wh_schema_name
-        )
+        try:
+            tag_schema = TagSchemaModel.get_one_cached(
+                benchling_service, self.wh_schema_name
+            )
+        except Exception:
+            return
         if (
             benchling_service.connection.config_flags.schemas_enable_change_warehouse_name
             is False

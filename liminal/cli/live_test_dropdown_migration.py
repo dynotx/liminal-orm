@@ -29,9 +29,11 @@ def mock_dropdown_full_migration(
     dropdown_options = ["Option 1", "Option 2"]
     create_dropdown_op = CreateDropdown(test_dropdown_name, dropdown_options)
 
-    test_dropdown_name = f"{test_dropdown_name}_arch"
+    update_dropdown_op = UpdateDropdownName(
+        test_dropdown_name, f"{test_dropdown_name}_arch"
+    )
 
-    update_dropdown_op = UpdateDropdownName(test_dropdown_name, test_dropdown_name)
+    test_dropdown_name = f"{test_dropdown_name}_arch"
 
     create_dropdown_option_op = CreateDropdownOption(
         test_dropdown_name, "Option 3 New", 2

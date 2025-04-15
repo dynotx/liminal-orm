@@ -272,10 +272,16 @@ def compare_entity_schemas(
         # Benchling api does not allow for setting a custom warehouse_name,
         # so we need to run another UpdateEntitySchema to set the warehouse_name if it is different from the snakecase version of the model name.
         else:
-            model_props = [
+            field_props = [
                 col.properties.set_warehouse_name(wh_name)
                 for wh_name, col in model_columns.items()
             ]
+            tooltips_to_update = {
+                p.warehouse_name: p.tooltip
+                for p in field_props
+                if (p.tooltip and p.warehouse_name)
+            }
+            field_props = [f.unset_tooltip() for f in field_props]
             template_based_naming_strategies = {
                 s
                 for s in model.__schema_properties__.naming_strategies
@@ -286,50 +292,25 @@ def compare_entity_schemas(
                 for s in model.__schema_properties__.naming_strategies
                 if not BenchlingNamingStrategy.is_template_based(s)
             }
+            model_wh_name = model.__schema_properties__.warehouse_name
+            benchling_given_wh_name = to_snake_case(model.__schema_properties__.name)
             ops.append(
                 CompareOperation(
                     op=CreateEntitySchema(
                         BaseSchemaProperties(
-                            **model.__schema_properties__.model_dump()
+                            **model.__schema_properties__.set_warehouse_name(
+                                benchling_given_wh_name
+                            ).model_dump()
                         ),
-                        fields=model_props,
+                        fields=field_props,
                     ),
-                    reverse_op=ArchiveEntitySchema(
-                        model.__schema_properties__.warehouse_name
-                    ),
+                    reverse_op=ArchiveEntitySchema(benchling_given_wh_name),
                 )
             )
-            benchling_given_name_template = BaseNameTemplate(
-                parts=[], order_name_parts_by_sequence=False
-            )
-            if benchling_given_name_template != model.__name_template__:
-                ops.append(
-                    CompareOperation(
-                        op=UpdateEntitySchemaNameTemplate(
-                            model.__schema_properties__.warehouse_name,
-                            BaseNameTemplate(
-                                **benchling_given_name_template.merge(
-                                    model.__name_template__
-                                )
-                            ),
-                        ),
-                        reverse_op=UpdateEntitySchemaNameTemplate(
-                            model.__schema_properties__.warehouse_name,
-                            BaseNameTemplate(
-                                **model.__name_template__.merge(
-                                    benchling_given_name_template
-                                )
-                            ),
-                        ),
-                    )
-                )
-            benchling_given_wh_name = to_snake_case(model.__schema_properties__.name)
             new_schema_props = BaseSchemaProperties()
             rollback_schema_props = BaseSchemaProperties()
-            if model.__schema_properties__.warehouse_name != benchling_given_wh_name:
-                new_schema_props.warehouse_name = (
-                    model.__schema_properties__.warehouse_name
-                )
+            if model_wh_name != benchling_given_wh_name:
+                new_schema_props.warehouse_name = model_wh_name
                 rollback_schema_props.warehouse_name = benchling_given_wh_name
             if template_based_naming_strategies:
                 new_schema_props.naming_strategies = template_based_naming_strategies
@@ -344,8 +325,49 @@ def compare_entity_schemas(
                             new_schema_props,
                         ),
                         reverse_op=UpdateEntitySchema(
-                            model.__schema_properties__.warehouse_name,
+                            model_wh_name,
                             rollback_schema_props,
+                        ),
+                    )
+                )
+            # Benchling api also does not allow for setting of field tooltips
+            # so we need to run another UpdateEntitySchemaField to set the tooltip after the schema is created
+            for wh_field_name, tooltip_value in tooltips_to_update.items():
+                ops.append(
+                    CompareOperation(
+                        op=UpdateEntitySchemaField(
+                            model_wh_name,
+                            wh_field_name,
+                            BaseFieldProperties(tooltip=tooltip_value),
+                        ),
+                        reverse_op=UpdateEntitySchemaField(
+                            model_wh_name,
+                            wh_field_name,
+                            BaseFieldProperties(tooltip=None),
+                        ),
+                    )
+                )
+            benchling_given_name_template = BaseNameTemplate(
+                parts=[], order_name_parts_by_sequence=False
+            )
+            if benchling_given_name_template != model.__name_template__:
+                ops.append(
+                    CompareOperation(
+                        op=UpdateEntitySchemaNameTemplate(
+                            model_wh_name,
+                            BaseNameTemplate(
+                                **benchling_given_name_template.merge(
+                                    model.__name_template__
+                                )
+                            ),
+                        ),
+                        reverse_op=UpdateEntitySchemaNameTemplate(
+                            model_wh_name,
+                            BaseNameTemplate(
+                                **model.__name_template__.merge(
+                                    benchling_given_name_template
+                                )
+                            ),
                         ),
                     )
                 )
