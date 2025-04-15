@@ -230,6 +230,25 @@ def compare_entity_schemas(
                             ),
                         )
                     )
+                    if model_columns[column_name].properties.tooltip:
+                        ops.append(
+                            CompareOperation(
+                                op=UpdateEntitySchemaField(
+                                    model_wh_name,
+                                    column_name,
+                                    BaseFieldProperties(
+                                        tooltip=model_columns[
+                                            column_name
+                                        ].properties.tooltip
+                                    ),
+                                ),
+                                reverse_op=UpdateEntitySchemaField(
+                                    model_wh_name,
+                                    column_name,
+                                    BaseFieldProperties(tooltip=None),
+                                ),
+                            )
+                        )
             if benchling_schema_props != model.__schema_properties__:
                 ops.append(
                     CompareOperation(
@@ -349,6 +368,28 @@ def compare_entity_schemas(
                         ),
                     )
                 )
+            # Benchling api also does not allow for setting of field tooltips
+            # so we need to run another UpdateEntitySchemaField to set the tooltip after the schema is created
+            for column_name in model_columns.keys():
+                if model_columns[column_name].properties.tooltip:
+                    ops.append(
+                        CompareOperation(
+                            op=UpdateEntitySchemaField(
+                                model.__schema_properties__.warehouse_name,
+                                column_name,
+                                BaseFieldProperties(
+                                    tooltip=model_columns[
+                                        column_name
+                                    ].properties.tooltip
+                                ),
+                            ),
+                            reverse_op=UpdateEntitySchemaField(
+                                model.__schema_properties__.warehouse_name,
+                                column_name,
+                                BaseFieldProperties(tooltip=None),
+                            ),
+                        )
+                    )
 
         model_operations[model.__schema_properties__.warehouse_name] = ops
         running_benchling_schema_names = [
