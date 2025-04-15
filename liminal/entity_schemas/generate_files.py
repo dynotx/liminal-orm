@@ -45,6 +45,9 @@ def get_file_subdirectory(entity_type: BenchlingEntityType) -> str:
     return type_to_subdir_map[entity_type]
 
 
+TAB = "    "
+
+
 def generate_all_entity_schema_files(
     benchling_service: BenchlingService, write_path: Path
 ) -> None:
@@ -54,7 +57,6 @@ def generate_all_entity_schema_files(
         print(f"[green]Created directory: {write_path}")
 
     models = get_converted_tag_schemas(benchling_service)
-    tab = "    "
     has_date = False
     subdirectory_map: dict[str, list[tuple[str, str]]] = {}
     benchling_dropdowns = get_benchling_dropdowns_dict(benchling_service)
@@ -81,7 +83,7 @@ def generate_all_entity_schema_files(
             "from liminal.enums import BenchlingEntityType, BenchlingFieldType, BenchlingNamingStrategy",
             f"from liminal.orm.mixins import {get_entity_mixin(schema_properties.entity_type)}",
         ]
-        init_strings = [f"{tab}def __init__(", f"{tab}self,"]
+        init_strings = [f"{TAB}def __init__(", f"{TAB}self,"]
         column_strings = []
         dropdowns = []
         relationship_strings = []
@@ -91,11 +93,11 @@ def generate_all_entity_schema_files(
                 dropdown_classname = dropdown_name_to_classname_map[col.dropdown_link]
                 dropdowns.append(dropdown_classname)
             column_strings.append(
-                f"""{tab}{col_name}: SqlColumn = Column(name="{col.name}", type={str(col.type)}, required={col.required}{', is_multi=True' if col.is_multi else ''}{', parent_link=True' if col.parent_link else ''}{f', entity_link="{col.entity_link}"' if col.entity_link else ''}{f', dropdown={dropdown_classname}' if dropdown_classname else ''}{f', tooltip="{col.tooltip}"' if col.tooltip else ''}{f', unit_name="{col.unit_name}"' if col.unit_name else ''}{f', decimal_places={col.decimal_places}' if col.decimal_places is not None else ''})"""
+                f"""{TAB}{col_name}: SqlColumn = Column(name="{col.name}", type={str(col.type)}, required={col.required}{', is_multi=True' if col.is_multi else ''}{', parent_link=True' if col.parent_link else ''}{f', entity_link="{col.entity_link}"' if col.entity_link else ''}{f', dropdown={dropdown_classname}' if dropdown_classname else ''}{f', tooltip="{col.tooltip}"' if col.tooltip else ''}{f', unit_name="{col.unit_name}"' if col.unit_name else ''}{f', decimal_places={col.decimal_places}' if col.decimal_places is not None else ''})"""
             )
             if col.required and col.type:
                 init_strings.append(
-                    f"""{tab}{col_name}: {convert_benchling_type_to_python_type(col.type).__name__},"""
+                    f"""{TAB}{col_name}: {convert_benchling_type_to_python_type(col.type).__name__},"""
                 )
 
             if (
@@ -110,14 +112,14 @@ def generate_all_entity_schema_files(
             ):
                 if not col.is_multi:
                     relationship_strings.append(
-                        f"""{tab}{col_name}_entity = single_relationship("{wh_name_to_classname[col.entity_link]}", {col_name})"""
+                        f"""{TAB}{col_name}_entity = single_relationship("{wh_name_to_classname[col.entity_link]}", {col_name})"""
                     )
                     import_strings.append(
                         "from liminal.orm.relationship import single_relationship"
                     )
                 else:
                     relationship_strings.append(
-                        f"""{tab}{col_name}_entities = multi_relationship("{wh_name_to_classname[col.entity_link]}", {col_name})"""
+                        f"""{TAB}{col_name}_entities = multi_relationship("{wh_name_to_classname[col.entity_link]}", {col_name})"""
                     )
                     import_strings.append(
                         "from liminal.orm.relationship import multi_relationship"
@@ -125,11 +127,11 @@ def generate_all_entity_schema_files(
         for col_name, col in columns.items():
             if not col.required and col.type:
                 init_strings.append(
-                    f"""{tab}{col_name}: {convert_benchling_type_to_python_type(col.type).__name__} | None = None,"""
+                    f"""{TAB}{col_name}: {convert_benchling_type_to_python_type(col.type).__name__} | None = None,"""
                 )
         init_strings.append("):")
         for col_name in columns.keys():
-            init_strings.append(f"{tab}self.{col_name} = {col_name}")
+            init_strings.append(f"{TAB}self.{col_name} = {col_name}")
         if len(dropdowns) > 0:
             import_strings.append(f"from ...dropdowns import {', '.join(dropdowns)}")
         if name_template != NameTemplate():
@@ -141,7 +143,7 @@ def generate_all_entity_schema_files(
         for col_name, col in columns.items():
             if col.dropdown_link:
                 init_strings.append(
-                    tab
+                    TAB
                     + dropdown_name_to_classname_map[col.dropdown_link]
                     + f".validate({col_name})"
                 )
@@ -149,7 +151,7 @@ def generate_all_entity_schema_files(
         columns_string = "\n".join(column_strings)
         relationship_string = "\n".join(relationship_strings)
         import_string = "\n".join(list(set(import_strings)))
-        init_string = f"\n{tab}".join(init_strings) if len(columns) > 0 else ""
+        init_string = f"\n{TAB}".join(init_strings) if len(columns) > 0 else ""
         full_content = f"""{import_string}
 
 

@@ -7,6 +7,7 @@ from liminal.dropdowns.generate_files import generate_all_dropdown_files
 from liminal.entity_schemas.generate_files import generate_all_entity_schema_files
 from liminal.migrate.components import execute_operations, get_full_migration_operations
 from liminal.migrate.revisions_timeline import RevisionsTimeline
+from liminal.results_schemas.generate_files import generate_all_results_schema_files
 
 
 def generate_all_files(benchling_service: BenchlingService, write_path: Path) -> None:
@@ -23,6 +24,7 @@ def generate_all_files(benchling_service: BenchlingService, write_path: Path) ->
     """
     generate_all_dropdown_files(benchling_service, write_path)
     generate_all_entity_schema_files(benchling_service, write_path)
+    generate_all_results_schema_files(benchling_service, write_path)
 
 
 def autogenerate_revision_file(
