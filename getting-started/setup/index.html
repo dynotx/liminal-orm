@@ -92,7 +92,7 @@
             
   <!-- the following line is displayed in the announcement bar -->
 <!-- keep length under 164 characters (less HTML tags) to fit on 1280px desktop window -->
-New Liminal ORM release, v3.0.0 out now! See <a href="/liminal-orm/release-notes/#v300">release notes</a> for more details.
+New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href="/liminal-orm/release-notes/#v400">release notes</a> for more details.
 
 <button class="md-banner__button md-icon" aria-label="Don't show this again" id="close-banner">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -602,6 +602,27 @@ New Liminal ORM release, v3.0.0 out now! See <a href="/liminal-orm/release-notes
   
   
     <li class="md-nav__item">
+      <a href="../synchronizing-results-schemas/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Synchronizing results schemas
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../tutorials/" class="md-nav__link">
         
   
@@ -736,6 +757,27 @@ New Liminal ORM release, v3.0.0 out now! See <a href="/liminal-orm/release-notes
   
   <span class="md-ellipsis">
     Entity schemas
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/results-schemas/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Results schemas
   </span>
   
 
@@ -1158,7 +1200,7 @@ New Liminal ORM release, v3.0.0 out now! See <a href="/liminal-orm/release-notes
 </div>
 </li>
 <li>
-<p>If your Benchling tenant has pre-existing schemas, run <code>liminal generate-files &lt;benchling_tenant_name&gt; -p [&lt;write_path&gt;]</code> to populate the root directory with your schema files from the given Benchling tenant. Your file structure should now look like this:</p>
+<p>If your Benchling tenant has pre-existing schemas, run <code>liminal generate-files &lt;benchling_tenant_name&gt; -p [&lt;write_path&gt;]</code> to populate the root directory with your dropdown, entity schema, and results schema files from the given Benchling tenant. Your file structure should now look like this:</p>
 <pre><code>pizzahouse/
     liminal/
         env.py
@@ -1167,6 +1209,8 @@ New Liminal ORM release, v3.0.0 out now! See <a href="/liminal-orm/release-notes
     dropdowns/
         ...
     entity_schemas/
+        ...
+    results_schemas/
         ...
 </code></pre>
 <div class="admonition tip">
@@ -1178,6 +1222,7 @@ New Liminal ORM release, v3.0.0 out now! See <a href="/liminal-orm/release-notes
 <p>Add your schema imports to the env.py file. For example:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">pizzahouse.dropdowns</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">pizzahouse.entity_schemas</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">pizzahouse.results_schemas</span> <span class="kn">import</span> <span class="o">*</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>

@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://dynotx.github.io/liminal-orm/reference/validation/">
       
       
-        <link rel="prev" href="../entity-schemas/">
+        <link rel="prev" href="../results-schemas/">
       
       
         <link rel="next" href="../revision-file/">
@@ -97,7 +97,7 @@
             
   <!-- the following line is displayed in the announcement bar -->
 <!-- keep length under 164 characters (less HTML tags) to fit on 1280px desktop window -->
-New Liminal ORM release, v3.0.0 out now! See <a href="/liminal-orm/release-notes/#v300">release notes</a> for more details.
+New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href="/liminal-orm/release-notes/#v400">release notes</a> for more details.
 
 <button class="md-banner__button md-icon" aria-label="Don't show this again" id="close-banner">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -594,6 +594,27 @@ New Liminal ORM release, v3.0.0 out now! See <a href="/liminal-orm/release-notes
   
   
     <li class="md-nav__item">
+      <a href="../../getting-started/synchronizing-results-schemas/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Synchronizing results schemas
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../getting-started/tutorials/" class="md-nav__link">
         
   
@@ -746,6 +767,27 @@ New Liminal ORM release, v3.0.0 out now! See <a href="/liminal-orm/release-notes
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../results-schemas/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Results schemas
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -848,13 +890,13 @@ New Liminal ORM release, v3.0.0 out now! See <a href="/liminal-orm/release-notes
 </li>
       
         <li class="md-nav__item">
-  <a href="#benchlingvalidatorreport-classhttpsgithubcomdynotxliminal-ormblobmainliminalvalidationinitpyl13" class="md-nav__link">
+  <a href="#benchlingvalidatorreport-class" class="md-nav__link">
     <span class="md-ellipsis">
-      BenchlingValidatorReport: [class](https://github.com/dynotx/liminal-orm/blob/main/liminal/validation/init.py#L13
+      BenchlingValidatorReport: class
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="BenchlingValidatorReport: [class](https://github.com/dynotx/liminal-orm/blob/main/liminal/validation/init.py#L13">
+    <nav class="md-nav" aria-label="BenchlingValidatorReport: class">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1299,13 +1341,13 @@ New Liminal ORM release, v3.0.0 out now! See <a href="/liminal-orm/release-notes
 </li>
       
         <li class="md-nav__item">
-  <a href="#benchlingvalidatorreport-classhttpsgithubcomdynotxliminal-ormblobmainliminalvalidationinitpyl13" class="md-nav__link">
+  <a href="#benchlingvalidatorreport-class" class="md-nav__link">
     <span class="md-ellipsis">
-      BenchlingValidatorReport: [class](https://github.com/dynotx/liminal-orm/blob/main/liminal/validation/init.py#L13
+      BenchlingValidatorReport: class
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="BenchlingValidatorReport: [class](https://github.com/dynotx/liminal-orm/blob/main/liminal/validation/init.py#L13">
+    <nav class="md-nav" aria-label="BenchlingValidatorReport: class">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1367,15 +1409,15 @@ New Liminal ORM release, v3.0.0 out now! See <a href="/liminal-orm/release-notes
 
   <h1>Validation</h1>
 
-<p>When using Benchling to store essential data, it is important to validate the data to ensure accuracy and consistency. Liminal provides an easy way to define "validators" on entity schemas that ensure entities adhere to your defined business logic. These validators can be run easily by calling the <code>validate()</code> method on the entity schema.</p>
+<p>When using Benchling to store essential data, it is important to validate the data to ensure accuracy and consistency. Liminal provides an easy way to define "validators" on entity and results schemas that ensure entities adhere to your defined business logic. These validators can be run easily by calling the <code>validate()</code> method on the entity or results schema class.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Warehouse access is required to run validators.</p>
 </div>
 <h2 id="defining-a-liminal-validator-decorator">Defining a Liminal Validator <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/validation/__init__.py#L61">decorator</a></h2>
-<p>Any functions decorated with <code>liminal_validator</code> are detected as validators for the entity schema.
-Each validator returns a <code>BenchlingValidatorReport</code> object per entity it is run on, with either <code>valid=True</code> or <code>valid=False</code>.
-If no errors are raised when it is run on an entity, the report will be valid. If an error is raised, the report will be invalid.</p>
+<p>Any functions decorated with <code>liminal_validator</code> are detected as validators for the entity or results schema class.
+Each validator returns a <code>BenchlingValidatorReport</code> object per entity/result it is run on, with either <code>valid=True</code> or <code>valid=False</code>.
+If no errors are raised when it is run on an entity/result, the report will be valid. If an error is raised, the report will be invalid.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">liminal.validation</span> <span class="kn">import</span> <span class="n">ValidationSeverity</span><span class="p">,</span> <span class="n">liminal_validator</span>
 
 <span class="k">class</span> <span class="nc">Pizza</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">,</span> <span class="n">CustomEntityMixin</span><span class="p">):</span>
@@ -1400,7 +1442,7 @@ If no errors are raised when it is run on an entity, the report will be valid. I
 </li>
 </ul>
 <h2 id="running-validation">Running Validation</h2>
-<p>To run validation using Liminal, call the <code>validate()</code> method on the entity schema:</p>
+<p>To run validation using Liminal, call the <code>validate()</code> method on the schema class:</p>
 <div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">BenchlingSession</span><span class="p">(</span><span class="n">benchling_connection</span><span class="p">,</span> <span class="n">with_db</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
     <span class="n">reports</span> <span class="o">=</span> <span class="n">Pizza</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">only_invalid</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
@@ -1433,7 +1475,7 @@ If no errors are raised when it is run on an entity, the report will be valid. I
 <p>List of reports from running all validators on all entities returned from the query.</p>
 </li>
 </ul>
-<h2 id="benchlingvalidatorreport-classhttpsgithubcomdynotxliminal-ormblobmainliminalvalidationinitpyl13">BenchlingValidatorReport: [class](https://github.com/dynotx/liminal-orm/blob/main/liminal/validation/<strong>init</strong>.py#L13</h2>
+<h2 id="benchlingvalidatorreport-class">BenchlingValidatorReport: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/validation/__init__.py#L13">class</a></h2>
 <p>These reports are filled out by the <code>liminal_validator</code> decorator behind the scenes.</p>
 <h3 id="parameters_2">Parameters</h3>
 <ul>
@@ -1554,7 +1596,7 @@ These columns are found on all tables in the benchling warehouse database.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../entity-schemas/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Entity schemas">
+          <a href="../results-schemas/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Results schemas">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1564,7 +1606,7 @@ These columns are found on all tables in the benchling warehouse database.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Entity schemas
+                Results schemas
               </div>
             </div>
           </a>

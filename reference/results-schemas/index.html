@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://dynotx.github.io/liminal-orm/getting-started/tutorials/">
+        <link rel="canonical" href="https://dynotx.github.io/liminal-orm/reference/results-schemas/">
       
       
-        <link rel="prev" href="../synchronizing-results-schemas/">
+        <link rel="prev" href="../entity-schemas/">
       
       
-        <link rel="next" href="../../reference/benchling-connection/">
+        <link rel="next" href="../validation/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Tutorials - Liminal ORM</title>
+        <title>Results schemas - Liminal ORM</title>
       
     
     
@@ -83,6 +83,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#results-schema-class" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -139,7 +144,7 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Tutorials
+              Results schemas
             
           </span>
         </div>
@@ -262,13 +267,11 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../prerequisites/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../getting-started/prerequisites/" class="md-tabs__link">
           
   
   Getting Started
@@ -282,11 +285,13 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../reference/benchling-connection/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../benchling-connection/" class="md-tabs__link">
           
   
   Reference
@@ -443,28 +448,23 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
       
   
   
-    
   
   
-  
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -475,7 +475,7 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Getting Started
@@ -489,7 +489,7 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
   
   
     <li class="md-nav__item">
-      <a href="../prerequisites/" class="md-nav__link">
+      <a href="../../getting-started/prerequisites/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -510,7 +510,7 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
   
   
     <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
+      <a href="../../getting-started/installation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -531,7 +531,7 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
   
   
     <li class="md-nav__item">
-      <a href="../setup/" class="md-nav__link">
+      <a href="../../getting-started/setup/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -552,7 +552,7 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
   
   
     <li class="md-nav__item">
-      <a href="../first-migration/" class="md-nav__link">
+      <a href="../../getting-started/first-migration/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -573,7 +573,7 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
   
   
     <li class="md-nav__item">
-      <a href="../downgrading/" class="md-nav__link">
+      <a href="../../getting-started/downgrading/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -594,11 +594,166 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
   
   
     <li class="md-nav__item">
-      <a href="../synchronizing-results-schemas/" class="md-nav__link">
+      <a href="../../getting-started/synchronizing-results-schemas/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Synchronizing results schemas
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/tutorials/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tutorials
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../benchling-connection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Benchling connection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../benchling-session/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Benchling session
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dropdowns/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dropdowns
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../entity-schemas/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Entity schemas
   </span>
   
 
@@ -622,158 +777,18 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
       
       
       
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  <span class="md-ellipsis">
-    Tutorials
-  </span>
-  
-
-      </a>
-      
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
-        
+        <label class="md-nav__link md-nav__link--active" for="__toc">
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
   
   <span class="md-ellipsis">
-    Reference
+    Results schemas
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            Reference
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/benchling-connection/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Benchling connection
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/benchling-session/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Benchling session
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/dropdowns/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Dropdowns
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/entity-schemas/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Entity schemas
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/results-schemas/" class="md-nav__link">
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -782,6 +797,99 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#results-schema-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Results Schema: class
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-access-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Access &amp; Validation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Components
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#schema-properties-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Schema Properties: class
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Schema Properties: class">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#column-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Column: class
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relationships-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relationships: module
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -794,7 +902,7 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
   
   
     <li class="md-nav__item">
-      <a href="../../reference/validation/" class="md-nav__link">
+      <a href="../validation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -815,7 +923,7 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
   
   
     <li class="md-nav__item">
-      <a href="../../reference/revision-file/" class="md-nav__link">
+      <a href="../revision-file/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -836,7 +944,7 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
   
   
     <li class="md-nav__item">
-      <a href="../../reference/operations/" class="md-nav__link">
+      <a href="../operations/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1139,6 +1247,89 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
   
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#results-schema-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Results Schema: class
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-access-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Access &amp; Validation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Components
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#schema-properties-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Schema Properties: class
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Schema Properties: class">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#column-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Column: class
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relationships-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relationships: module
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1156,9 +1347,75 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
   
 
 
-  <h1>Tutorials</h1>
+  <h1>Results schemas</h1>
 
-<p>🚧 Video tutorial coming soon! 🚧</p>
+<h2 id="results-schema-class">Results Schema: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/base_results_model.py">class</a></h2>
+<p>Below is an example of a custom results schema defined in code. All Liminal results schema classes inherit from Liminal's <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/base_results_model.py">BaseResultsModel</a> and uses <a href="https://www.sqlalchemy.org/">SQLAlchemy</a> behind the scenes to create an ORM.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is important to note that currently, Liminal does not support migrations for results schemas. The recommended workflow is to run <code>liminal generate-files &lt;benchling_tenant_name&gt; -rs</code> to generate the results schema files. This will generate any new results schema files from your Benchling tenant, allowing you to use them in your codebase.</p>
+<p>One of the main properties of results schemas is that once there is data stored within a results schema, the schema itself cannot be changed. This makes it much less frequent of an occurrence to need to update results schemas over time. Because of this, migrations for results are at a lower development priority. Reach out if this would be a valuable feature for you in order to upgrade its priority!</p>
+</div>
+<p>The properties defined in the <code>ResultsSchemaProperties</code> object and <code>Column</code> objects
+correspond with the properties shown on the Benchling website. This is how Liminal defines your Benchling results schema in code.</p>
+<p>Below, we will go through the different components of defining a results schema class.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">Column</span> <span class="k">as</span> <span class="n">SqlColumn</span>
+
+<span class="kn">from</span> <span class="nn">liminal.enums</span> <span class="kn">import</span> <span class="n">BenchlingFieldType</span>
+<span class="kn">from</span> <span class="nn">liminal.orm.base_results_model</span> <span class="kn">import</span> <span class="n">BaseResultsModel</span>
+<span class="kn">from</span> <span class="nn">liminal.orm.column</span> <span class="kn">import</span> <span class="n">Column</span>
+<span class="kn">from</span> <span class="nn">liminal.orm.results_schema_properties</span> <span class="kn">import</span> <span class="n">ResultsSchemaProperties</span>
+
+
+<span class="k">class</span> <span class="nc">PizzaCookingProcess</span><span class="p">(</span><span class="n">BaseResultsModel</span><span class="p">):</span>
+    <span class="n">__schema_properties__</span> <span class="o">=</span> <span class="n">ResultsSchemaProperties</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Pizza Cooking Process&quot;</span><span class="p">,</span> <span class="n">warehouse_name</span><span class="o">=</span><span class="s2">&quot;pizza_cooking_process&quot;</span><span class="p">)</span>
+
+    <span class="n">pizza</span><span class="p">:</span> <span class="n">SqlColumn</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;pizza&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">BenchlingFieldType</span><span class="o">.</span><span class="n">ENTITY_LINK</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">cooking_method</span><span class="p">:</span> <span class="n">SqlColumn</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cooking_method&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">BenchlingFieldType</span><span class="o">.</span><span class="n">TEXT</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">expected_cooking_time</span><span class="p">:</span> <span class="n">SqlColumn</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;expected_cooking_time&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">BenchlingFieldType</span><span class="o">.</span><span class="n">DECIMAL</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pizza</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">cooking_method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">expected_cooking_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pizza</span> <span class="o">=</span> <span class="n">pizza</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cooking_method</span> <span class="o">=</span> <span class="n">cooking_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expected_cooking_time</span> <span class="o">=</span> <span class="n">expected_cooking_time</span>
+</code></pre></div>
+<h2 id="data-access-validation">Data Access &amp; Validation</h2>
+<p>If you have warehouse access, you can access data from results schemas by using <a href="https://docs.sqlalchemy.org/en/14/orm/queryguide.html">SQLAlchemy's standard query interface</a> or the built in base class functions Liminal provides.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">..pizza_cooking_process</span> <span class="kn">import</span> <span class="n">PizzaCookingProcess</span>
+
+<span class="c1"># Standard SQLAlchemy query</span>
+<span class="k">with</span> <span class="n">BenchlingService</span><span class="p">(</span><span class="n">benchling_connection</span><span class="p">,</span> <span class="n">with_db</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+    <span class="n">all_results</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">PizzaCookingProcess</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+<span class="c1"># Liminal base class functions</span>
+<span class="k">with</span> <span class="n">BenchlingService</span><span class="p">(</span><span class="n">benchling_connection</span><span class="p">,</span> <span class="n">with_db</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+    <span class="n">all_results</span> <span class="o">=</span> <span class="n">PizzaCookingProcess</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+
+    <span class="n">all_results_df</span> <span class="o">=</span> <span class="n">PizzaCookingProcess</span><span class="o">.</span><span class="n">df</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+</code></pre></div>
+<p>With warehouse access, you can also create custom validation rules and run them very easily through Liminal's validation framework (see docs <a href="../validation/">here</a>).</p>
+<h2 id="components">Components</h2>
+<h3 id="schema-properties-class">Schema Properties: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/results_schema_properties.py">class</a></h3>
+<h4 id="parameters">Parameters</h4>
+<ul>
+<li>
+<p><strong>name: str</strong></p>
+<p>The name of the results schema. Must be unique across all results schemas.</p>
+</li>
+<li>
+<p><strong>warehouse_name: str</strong></p>
+<p>The warehouse name of the results schema. Must be unique across all results schemas.</p>
+</li>
+</ul>
+<h3 id="column-class">Column: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/column.py">class</a></h3>
+<p>Same as entity schemas, results schemas use the same <code>Column</code> class. Refer to the <a href="../entity-schemas/#column">Columns</a> section within the entity schema reference page for more information on how to define columns.</p>
+<h3 id="relationships-module">Relationships: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/orm/relationship.py">module</a></h3>
+<p>Same as entity schemas, results schemas can have relationships. Refer to the <a href="../entity-schemas/#relationships">Relationships</a> section within the entity schema reference page for more information on how to define SQLAlchemy relationships.</p>
 
 
 
@@ -1201,7 +1458,7 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../synchronizing-results-schemas/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Synchronizing results schemas">
+          <a href="../entity-schemas/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Entity schemas">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1211,20 +1468,20 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
                 Previous
               </span>
               <div class="md-ellipsis">
-                Synchronizing results schemas
+                Entity schemas
               </div>
             </div>
           </a>
         
         
           
-          <a href="../../reference/benchling-connection/" class="md-footer__link md-footer__link--next" aria-label="Next: Benchling connection">
+          <a href="../validation/" class="md-footer__link md-footer__link--next" aria-label="Next: Validation">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Benchling connection
+                Validation
               </div>
             </div>
             <div class="md-footer__button md-icon">
