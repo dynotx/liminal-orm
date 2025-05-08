@@ -37,12 +37,14 @@ def generate_all_dropdown_files(
         dropdown_values = [option.name for option in dropdown_options.options]
         options_list = str(dropdown_values).replace("'", '"')
         classname = to_pascal_case(dropdown_name)
+        dropdown_id = dropdown_options.id
         dropdown_content = f"""
 from liminal.base.base_dropdown import BaseDropdown
 
 
 class {classname}(BaseDropdown):
     __benchling_name__ = "{dropdown_name}"
+    __id__ = "{dropdown_id}"
     __allowed_values__ = {options_list}
 """
         filename = to_snake_case(dropdown_name) + ".py"

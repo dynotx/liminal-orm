@@ -16,6 +16,7 @@ class ResultsSchemaProperties(BaseModel):
     """
 
     name: str
+    id: str
     warehouse_name: str
 
     def __repr__(self) -> str:

@@ -48,6 +48,7 @@ class SchemaProperties(BaseSchemaProperties):
     """
 
     name: str
+    id: str
     warehouse_name: str
     prefix: str
     entity_type: BenchlingEntityType

@@ -21,6 +21,8 @@ class BenchlingFieldType(StrEnum):
     MIXTURE_LINK = "mixture_link"
     STORAGE_LINK = "storage_link"
     TEXT = "text"
+    JSON = "json"
+    BOOLEAN = "boolean"
 
     @classmethod
     def get_non_multi_select_types(cls) -> list[str]:

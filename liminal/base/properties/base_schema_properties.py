@@ -78,6 +78,7 @@ class BaseSchemaProperties(BaseModel):
     """
 
     name: str | None = None
+    id: str | None = None
     warehouse_name: str | None = None
     prefix: str | None = None
     entity_type: BenchlingEntityType | None = None

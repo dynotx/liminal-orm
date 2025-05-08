@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import JSON, DateTime, Float, Integer, String
+from sqlalchemy import JSON, DateTime, Float, Integer, String, Boolean
 from sqlalchemy.sql.type_api import TypeEngine
 
 from liminal.enums import (
@@ -32,6 +32,8 @@ def convert_benchling_type_to_python_type(benchling_type: BenchlingFieldType) ->
         BenchlingFieldType.STORAGE_LINK: str,
         BenchlingFieldType.PART_LINK: str,
         BenchlingFieldType.TEXT: str,
+        BenchlingFieldType.JSON: dict[str, Any],
+        BenchlingFieldType.BOOLEAN: bool,
     }
     if benchling_type in benchling_to_python_type_map:
         return benchling_to_python_type_map[benchling_type]
@@ -60,6 +62,8 @@ def convert_benchling_type_to_sql_alchemy_type(
         BenchlingFieldType.PART_LINK: String,
         BenchlingFieldType.MIXTURE_LINK: String,
         BenchlingFieldType.TEXT: String,
+        BenchlingFieldType.JSON: JSON,
+        BenchlingFieldType.BOOLEAN: Boolean,
     }
     if benchling_type in benchling_to_sql_alchemy_type_map:
         return benchling_to_sql_alchemy_type_map[benchling_type]
@@ -103,6 +107,8 @@ def convert_field_type_to_api_field_type(
         BenchlingFieldType.DROPDOWN: (BenchlingAPIFieldType.SELECTOR, None),
         BenchlingFieldType.STORAGE_LINK: (BenchlingAPIFieldType.STORABLE_LINK, None),
         BenchlingFieldType.TEXT: (BenchlingAPIFieldType.STRING, None),
+        BenchlingFieldType.JSON: (BenchlingAPIFieldType.JSON, None),
+        BenchlingFieldType.BOOLEAN: (BenchlingAPIFieldType.BOOLEAN, None),
     }
     if field_type in conversion_map:
         return conversion_map[field_type]
@@ -147,6 +153,8 @@ def convert_api_field_type_to_field_type(
         (BenchlingAPIFieldType.SELECTOR, None): BenchlingFieldType.DROPDOWN,
         (BenchlingAPIFieldType.STORABLE_LINK, None): BenchlingFieldType.STORAGE_LINK,
         (BenchlingAPIFieldType.STRING, None): BenchlingFieldType.TEXT,
+        (BenchlingAPIFieldType.JSON, None): BenchlingFieldType.JSON,
+        (BenchlingAPIFieldType.BOOLEAN, None): BenchlingFieldType.BOOLEAN,
     }
     if (field_type, folder_item_type) in conversion_map:
         return conversion_map[(field_type, folder_item_type)]

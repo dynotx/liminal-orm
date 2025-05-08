@@ -74,8 +74,10 @@ def convert_tag_schema_to_internal_schema(
     return (
         SchemaProperties(
             name=tag_schema.name,
+            id=tag_schema.id,
             prefix=tag_schema.prefix,
             warehouse_name=tag_schema.sqlIdentifier,
+            schema_id=tag_schema.id,
             entity_type=entity_type,
             mixture_schema_config=MixtureSchemaConfig(
                 allowMeasuredIngredients=tag_schema.mixtureSchemaConfig.allowMeasuredIngredients,
