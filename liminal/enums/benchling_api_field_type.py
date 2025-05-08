@@ -18,3 +18,5 @@ class BenchlingAPIFieldType(StrEnum):
     SELECTOR = "ft_selector"
     STORABLE_LINK = "ft_storable_link"
     STRING = "ft_string"
+    JSON = "ft_json"
+    BOOLEAN = "ft_boolean"
