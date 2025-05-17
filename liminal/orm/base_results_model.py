@@ -12,6 +12,7 @@ from sqlalchemy.orm import Query, RelationshipProperty, Session, relationship
 from sqlalchemy.orm.decl_api import declared_attr
 
 from liminal.base.base_validation_filters import BaseValidatorFilters
+from liminal.connection.benchling_service import BenchlingService
 from liminal.orm.base import Base
 from liminal.orm.base_tables.user import User
 from liminal.orm.results_schema_properties import ResultsSchemaProperties
@@ -82,6 +83,36 @@ class BaseResultsModel(Generic[T], Base):
         if base_filters.creator_full_names:
             query = query.filter(User.name.in_(base_filters.creator_full_names))
         return query
+
+    @classmethod
+    def get_id(cls, benchling_service: BenchlingService) -> str:
+        """Connects to Benchling and returns the id of the results schema using the __schema_properties__.name.
+
+        Parameters
+        ----------
+        benchling_service : BenchlingService
+            The Benchling service to use.
+
+        Returns
+        -------
+        str
+            The id of the results schema.
+        """
+        all_schemas = [
+            s
+            for loe in benchling_service.schemas.list_assay_result_schemas()
+            for s in loe
+        ]
+        schemas_found_by_name = [
+            s for s in all_schemas if s.name == cls.__schema_properties__.name
+        ]
+        if len(schemas_found_by_name) == 0:
+            raise ValueError(
+                f"No results schema found with name '{cls.__schema_properties__.name}'."
+            )
+        else:
+            schema = schemas_found_by_name[0]
+            return schema.id
 
     @classmethod
     def all(cls, session: Session) -> list[T]:
