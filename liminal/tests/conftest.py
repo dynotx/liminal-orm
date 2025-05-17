@@ -122,6 +122,7 @@ def mock_benchling_schema(
 ) -> list[tuple[SchemaProperties, NameTemplate, dict[str, Props]]]:
     schema_props = SchemaProperties(
         name="Mock Entity",
+        id="mock_entity_id",
         warehouse_name="mock_entity",
         prefix="MockEntity",
         entity_type=BenchlingEntityType.CUSTOM_ENTITY,
@@ -247,6 +248,7 @@ def mock_benchling_schema_one(
 ) -> list[tuple[SchemaProperties, NameTemplate, dict[str, Props]]]:
     schema_props = SchemaProperties(
         name="Mock Entity One",
+        id="mock_entity_id_one",
         warehouse_name="mock_entity_one",
         prefix="MockEntityOne",
         entity_type=BenchlingEntityType.CUSTOM_ENTITY,
@@ -314,6 +316,7 @@ def mock_benchling_schema_archived() -> (
 ):
     schema_props = SchemaProperties(
         name="Mock Entity Small",
+        id="mock_entity_id_small",
         warehouse_name="mock_entity_small",
         prefix="MockEntitySmall",
         entity_type=BenchlingEntityType.CUSTOM_ENTITY,
@@ -349,6 +352,7 @@ def mock_benchling_subclass(mock_benchling_dropdown) -> list[type[BaseModel]]:  
     class MockEntity(BaseModel):
         __schema_properties__ = SchemaProperties(
             name="Mock Entity",
+            id="mock_entity_id",
             warehouse_name="mock_entity",
             prefix="MockEntity",
             entity_type=BenchlingEntityType.CUSTOM_ENTITY,
@@ -437,6 +441,7 @@ def mock_benchling_subclass_small() -> list[type[BaseModel]]:
     class MockEntitySmall(BaseModel):
         __schema_properties__ = SchemaProperties(
             name="Mock Entity Small",
+            id="mock_entity_id_small",
             warehouse_name="mock_entity_small",
             prefix="MockEntitySmall",
             entity_type=BenchlingEntityType.CUSTOM_ENTITY,
@@ -454,6 +459,7 @@ def mock_benchling_subclasses(mock_benchling_dropdown) -> list[type[BaseModel]]:
     class MockEntityTwo(BaseModel):
         __schema_properties__ = SchemaProperties(
             name="Mock Entity Two",
+            id="mock_entity_id_two",
             warehouse_name="mock_entity_two_wh",
             prefix="MockEntityTwo",
             entity_type=BenchlingEntityType.CUSTOM_ENTITY,
@@ -476,6 +482,7 @@ def mock_benchling_subclasses(mock_benchling_dropdown) -> list[type[BaseModel]]:
     class MockEntityOne(BaseModel):
         __schema_properties__ = SchemaProperties(
             name="Mock Entity One",
+            id="mock_entity_id_one",
             warehouse_name="mock_entity_one",
             prefix="MockEntityOne",
             entity_type=BenchlingEntityType.CUSTOM_ENTITY,

@@ -22,6 +22,7 @@ def get_converted_results_schemas(
     for schema in results_schemas:
         schema_properties = ResultsSchemaProperties(
             name=schema.name,
+            id=schema.id,
             warehouse_name=schema.sqlIdentifier,
         )
         field_properties_dict = {}
