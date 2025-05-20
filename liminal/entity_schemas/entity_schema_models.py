@@ -163,7 +163,7 @@ class CreateEntitySchemaModel(BaseModel):
     labelingStrategies: list[str] | None = None
     constraint: EntitySchemaConstraint | None = None
     showResidues: bool | None = None
-
+    isContainable: bool | None = None
     @classmethod
     def from_benchling_props(
         cls,
@@ -200,6 +200,7 @@ class CreateEntitySchemaModel(BaseModel):
             constraint=EntitySchemaConstraint.from_constraint_fields(
                 benchling_props.constraint_fields
             ),
+            isContainable=benchling_props.is_containable,
             fields=[
                 CreateEntitySchemaFieldModel.from_benchling_props(
                     field_props, benchling_service

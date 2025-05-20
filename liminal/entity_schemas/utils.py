@@ -89,6 +89,7 @@ def convert_tag_schema_to_internal_schema(
                 for strategy in tag_schema.labelingStrategies
             ),
             constraint_fields=constraint_fields,
+            is_containable=tag_schema.isContainable,
             _archived=tag_schema.archiveRecord is not None,
             use_registry_id_as_label=tag_schema.useOrganizationCollectionAliasForDisplayLabel,
             include_registry_id_in_chips=tag_schema.includeRegistryIdInChips,
