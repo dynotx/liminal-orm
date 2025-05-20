@@ -1,6 +1,8 @@
 from abc import ABC
 from typing import Any
 
+from liminal.connection.benchling_service import BenchlingService
+
 
 class BaseDropdown(ABC):
     """_summary_
@@ -34,6 +36,30 @@ class BaseDropdown(ABC):
             )
         cls._existing_benchling_names.add(cls.__benchling_name__)
         return super().__new__(cls, **kwargs)
+
+    @classmethod
+    def get_id(cls, benchling_service: BenchlingService) -> str:
+        """Connects to Benchling and returns the id of the dropdown using the __benchling_name__.
+
+        Parameters
+        ----------
+        benchling_service : BenchlingService
+            The Benchling service to use.
+
+        Returns
+        -------
+        str
+            The id of the dropdown.
+        """
+        all_dropdowns = [d for lod in benchling_service.dropdowns.list() for d in lod]
+        dropdowns_found_by_name = [
+            d for d in all_dropdowns if d.name == cls.__benchling_name__
+        ]
+        if len(dropdowns_found_by_name) == 0:
+            raise ValueError(f"No dropdowns found with name '{cls.__benchling_name__}'")
+        else:
+            dropdown = dropdowns_found_by_name[0]
+            return dropdown.id
 
     @classmethod
     def validate(cls, *values: str | None) -> None:
