@@ -1293,21 +1293,19 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
 <p>Fork the Liminal repository by clicking the "Fork" button on the top right corner of the repository page. Follow the instructions here: <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo">Fork a repo</a>. After forking, sync your fork with the upstream repository to keep it up-to-date.</p>
 </li>
 <li>
-<p>Ensure your Python environment is setup correctly. We recommend using <a href="https://github.com/pyenv/pyenv">pyenv</a> to manage python versions.</p>
-</li>
-<li>
-<p>Install Poetry</p>
+<p>Install UV</p>
 </li>
 </ol>
-<p>Use the <a href="https://python-poetry.org/docs/#installing-with-pipx">Poetry Installation guide</a></p>
+<p>Use the <a href="https://docs.astral.sh/uv/getting-started/installation/">UV Installation guide</a></p>
 <ol>
 <li>
-<p>Install Liminal dependencies</p>
-<p><code>poetry install --all-extras</code></p>
+<p>Install python and create a virtual environment with uv</p>
+<p><code>uv venv</code></p>
+<p>Supported python versions of Liminal can be found in pyproject.toml. Liminal development is recommnded to be done in version 3.10.8, as specified in the .python-version file.</p>
 </li>
 <li>
-<p>Ensure python version matches Liminal's supported version</p>
-<p>Supported python versions of Liminal can be found in pyproject.toml. We recommend using <a href="https://github.com/pyenv/pyenv">pyenv</a> to manage python versions.</p>
+<p>Install Liminal dependencies</p>
+<p><code>uv sync</code></p>
 </li>
 <li>
 <p>Start developing :)</p>

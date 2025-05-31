@@ -1222,11 +1222,12 @@ New Liminal ORM release, v4.0.0 out now. Results schemas are here!! See <a href=
 <p><strong>Benchling Admin Account</strong>: Liminal builds on top of Benchling's LIMS system. You will need access and credentials to an admin account for your Benchling tenant(s). Liminal needs credentials with full admin priveleges in order to manipulate Benchling schemas through their API.</p>
 </li>
 <li>
-<p><strong>SSO optional</strong>: A requirement for Liminal's migration service to work is for your Benchling tenant to have SSO optional or disabled. At the moment, a part of Liminal's API connection requires the admin email and password and is unable to be authenticated when SSO is required. You can message Benchling support to request that your tenant be configured to be SSO optional or disabled.</p>
+<p><strong>SSO optional</strong>: A requirement for Liminal's migration service to work is for your Benchling tenant to have SSO optional (or disabled). At the moment, a part of Liminal's API connection requires an admin email and password login (non-SSO). You can message Benchling support to request that your tenant be configured to be SSO optional (or disabled).</p>
 </li>
-<li>
-<p><strong>Python</strong>: Liminal is built using Python. You will need Python 3.9 or later installed on your machine.</p>
-</li>
+</ol>
+<p>Note that as a Benchling admin, you can enforce SSO for all users and create only a single non-SSO user for Liminal to use. This is what we recommend to maintain the highest level of security.</p>
+<ol>
+<li><strong>Python</strong>: Liminal is built using Python. You will need Python 3.9 or later installed on your machine.</li>
 </ol>
 <h3 id="notes">Notes</h3>
 <ul>
