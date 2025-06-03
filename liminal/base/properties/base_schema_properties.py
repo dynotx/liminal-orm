@@ -73,6 +73,8 @@ class BaseSchemaProperties(BaseModel):
         - amino_acids_exact_match: only supported for amino acid sequence entity types. hasUniqueResidues=True, areUniqueResiduesCaseSensitive=True
     show_bases_in_expanded_view : bool | None
         Whether the bases should be shown in the expanded view of the entity.
+    is_containable : bool | None
+        Whether the schema is containable.
     _archived : bool | None
         Whether the schema is archived in Benchling.
     """
@@ -87,6 +89,7 @@ class BaseSchemaProperties(BaseModel):
     include_registry_id_in_chips: bool | None = None
     constraint_fields: set[str] | None = None
     show_bases_in_expanded_view: bool | None = None
+    is_containable: bool | None = None
     _archived: bool | None = None
 
     def __init__(self, **data: Any):
