@@ -12,7 +12,7 @@
     from liminal.connection import BenchlingConnection, TenantConfigFlags
 
         # It is highly recommended to use a secrets manager to store your credentials.
-        connection = BenchlingConnection(
+        prod_connection = BenchlingConnection(
             tenant_name="pizzahouse-prod",
             tenant_alias="prod",
             api_client_id="my-secret-api-client-id",
@@ -21,7 +21,11 @@
             internal_api_admin_email="my-secret-internal-api-admin-email",
             internal_api_admin_password="my-secret-internal-api-admin-password",
             config_flags=TenantConfigFlags(...)
-    )
+        )
+
+        staging_connection = BenchlingConnection(...)
+
+        ...
     ```
 
     * **Required**: The `api_client_id` and `api_client_secret` are used to connect to Benchling's SDK. For more information, see the [Benchling API documentation](https://docs.benchling.com/docs/getting-started-benchling-apps#calling-the-api-as-an-app).
@@ -32,7 +36,7 @@
 
     !!! tip
 
-        If you have multiple Benchling tenants you'd like to synchronize, you can define multiple Benchling connections in the `env.py` file by creating multiple `BenchlingConnection` objects.
+        If you have multiple Benchling tenants you'd like to synchronize, you can define multiple Benchling connections in the `env.py` file by defining multiple `BenchlingConnection` objects.
 
 4. If your Benchling tenant has pre-existing schemas, run `liminal generate-files <benchling_tenant_name> -p [<write_path>]` to populate the root directory with your dropdown, entity schema, and results schema files from the given Benchling tenant. Your file structure should now look like this:
 

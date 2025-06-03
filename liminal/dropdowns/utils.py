@@ -1,3 +1,4 @@
+from functools import lru_cache
 from typing import Any
 
 import requests
@@ -6,7 +7,6 @@ from benchling_sdk.models import Dropdown, DropdownOption, DropdownSummary
 from pydantic import BaseModel
 
 from liminal.connection import BenchlingService
-from liminal.orm.base_model import BaseModel as BenchlingBaseModel
 
 
 class ArchiveRecord(BaseModel):
@@ -22,6 +22,7 @@ def get_benchling_dropdown_id_name_map(
     return {d.id: d.name for d in get_benchling_dropdown_summaries(benchling_service)}
 
 
+@lru_cache
 def get_benchling_dropdown_summaries(
     benchling_service: BenchlingService,
 ) -> list[DropdownSummary]:
@@ -110,6 +111,8 @@ def dropdown_exists_in_benchling(
 
 
 def get_schemas_with_dropdown(dropdown_name: str) -> list[str]:
+    from liminal.orm.base_model import BaseModel as BenchlingBaseModel
+
     schemas_with_dropdown = []
     for model in BenchlingBaseModel.get_all_subclasses():
         for props_dict in [

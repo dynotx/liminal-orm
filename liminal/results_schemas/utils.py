@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 from benchling_api_client.v2.stable.models.assay_result_schema import AssayResultSchema
 
 from liminal.base.properties.base_field_properties import BaseFieldProperties
@@ -35,14 +37,10 @@ def get_converted_results_schemas(
     return results_schemas_list
 
 
-def get_results_schemas_dict(
+@lru_cache
+def get_benchling_results_schemas(
     benchling_service: BenchlingService,
-) -> dict[str, AssayResultSchema]:
-    """This function gets all Results Schema schemas using the Benchling API and returns a dictionary of the schemas by their system name."""
-    flattened_schemas = [
-        s
-        for schemas in list(benchling_service.schemas.list_assay_result_schemas())
-        for s in schemas
+) -> list[AssayResultSchema]:
+    return [
+        s for loe in benchling_service.schemas.list_assay_result_schemas() for s in loe
     ]
-    schemas_dict = {s.system_name: s for s in flattened_schemas}
-    return schemas_dict

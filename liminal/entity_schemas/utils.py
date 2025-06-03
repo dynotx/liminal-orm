@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 from benchling_sdk.models import EntitySchema
 
 from liminal.base.properties.base_field_properties import BaseFieldProperties
@@ -137,6 +139,7 @@ def convert_tag_schema_field_to_field_properties(
     )
 
 
+@lru_cache
 def get_benchling_entity_schemas(
     benchling_service: BenchlingService,
 ) -> list[EntitySchema]:
