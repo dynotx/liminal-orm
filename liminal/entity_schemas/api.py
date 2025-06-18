@@ -93,3 +93,46 @@ def set_tag_schema_name_template(
         if not response.ok:
             raise Exception("Failed to set tag schema name template:", response.content)
         return response.json()
+
+
+def add_fieldset_to_schema(
+    benchling_service: BenchlingService, entity_schema_id: str, payload: dict[str, Any]
+) -> dict[str, Any]:
+    """
+    Add a fieldset to a schema.
+    """
+    with requests.Session() as session:
+        response = session.post(
+            f"https://{benchling_service.benchling_tenant}.benchling.com/1/api/schemas/{entity_schema_id}/fieldsets",
+            data=json.dumps(payload),
+            headers=benchling_service.custom_post_headers,
+            cookies=benchling_service.custom_post_cookies,
+        )
+        if not response.ok:
+            raise Exception("Failed to add fieldset to schema:", response.content)
+        return response.json()
+
+
+def delete_fieldset_from_schema(
+    benchling_service: BenchlingService,
+    entity_schema_id: str,
+    fieldset_id: str,
+    schema_prefix_replacement: str,
+) -> dict[str, Any]:
+    """
+    Delete a fieldset from a schema and set new schema prefix.
+    """
+    with requests.Session() as session:
+        queued_response = session.delete(
+            f"https://{benchling_service.benchling_tenant}.benchling.com/1/api/schemas/{entity_schema_id}/fieldsets/{fieldset_id}",
+            data=json.dumps({"schemaPrefixReplacement": schema_prefix_replacement}),
+            headers=benchling_service.custom_post_headers,
+            cookies=benchling_service.custom_post_cookies,
+        )
+        if not queued_response.ok:
+            raise Exception(
+                "Failed to delete fieldset from schema:", queued_response.content
+            )
+        return await_queued_response(
+            queued_response.json()["status_url"], benchling_service
+        )

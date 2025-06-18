@@ -1,0 +1,82 @@
+{
+    "headers": {
+        ":authority": "dynotest.benchling.com",
+        ":method": "POST",
+        ":path": "/graphql",
+        ":scheme": "https",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br, zstd",
+        "accept-language": "en-US,en;q=0.9",
+        "baggage": "sentry-environment=production,sentry-release=28710e28c415b0388d6a4812ef9f591440b49ee2,sentry-public_key=52ccb568028e444d91a62848531d87c2,sentry-trace_id=db677895936b40d8b1448b30e1348375",
+        "cache-control": "no-cache",
+        "content-length": "4590",
+        "content-type": "application/json",
+        "origin": "https://dynotest.benchling.com",
+        "pragma": "no-cache",
+        "priority": "u=1, i",
+        "referer": "https://dynotest.benchling.com/fieldsets/intrfc_Zf4PVBWX",
+        "sec-ch-ua": "\"Chromium\";v=\"136\", \"Google Chrome\";v=\"136\", \"Not.A/Brand\";v=\"99\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"macOS\"",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin",
+        "sentry-trace": "db677895936b40d8b1448b30e1348375-b43fe76d34e41591",
+        "traceparent": "00-00000000000000002d301cc0f4090672-7635f824ad1142bc-01",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+        "x-client-api-version": "2025-05-29",
+        "x-client-release": "28710e28c415b0388d6a4812ef9f591440b49ee2",
+        "x-datadog-origin": "rum",
+        "x-datadog-parent-id": "8517987106647261884",
+        "x-datadog-sampling-priority": "1",
+        "x-datadog-trace-id": "3256134145642399346",
+        "x-page-load-id": "f7d26546-c3f5-4739-b3c4-b8b07dbcf3a4"
+    },
+    "cookies": {
+        "apt.uid": "AP-XUDLXQ5IZAPD-2-1736201690364-65367142.0.2.71dbe27a-1492-42c3-ade7-c1c24ab9486a",
+        "_vwo_uuid_v2": "D7D014DDB9833A4F8E933039E3D577E3B|f6e2fd9dea0aaa44ba84688c9efff1b4",
+        "_vwo_uuid": "D7D014DDB9833A4F8E933039E3D577E3B",
+        "_vwo_ds": "3%3At_0%2Ca_0%3A0%241738012012%3A37.85737266%3A%3A%3A%3A0",
+        "_mkto_trk": "id:668-YXH-576&token:_mch-benchling.com-fe63d3f99846667b66d49d18ecb798d3",
+        "_hjSessionUser_980707": "eyJpZCI6IjI0MWU3MzFhLTM1NjQtNTNhMy1hMmI0LTRiMDFiMzM2NzViZSIsImNyZWF0ZWQiOjE3MzgwMTIwMTQwMzcsImV4aXN0aW5nIjpmYWxzZX0=",
+        "__adroll_fpc": "d94046fa7ec1a5c53e529b0ae3a007e4-1738012014209",
+        "rm_VmkQ5MRTLXqZyCVzkDXE": "{%22$uid%22:%22194a996ba9f-56e5cfa0-36b8-4c03-92ac-65a17d793bdb%22}",
+        "_ga": "GA1.1.775678628.1736196480",
+        "_vis_opt_s": "4%7C",
+        "_gcl_au": "1.1.1027062874.1746107508",
+        "_clck": "kiswoq%7C2%7Cfvj%7C0%7C1853",
+        "_uetvid": "04b1be40f0e111edaca1338d6f766529",
+        "_ga_BRQMQWV4FJ": "GS1.1.1746107508.11.1.1746107833.60.0.0",
+        "_ga_3M6XJD4PXS": "GS2.1.s1749221048$o23$g0$t1749221182$j60$l0$h0",
+        "_ga_MHWMSXSQ5T": "GS2.1.s1749814737$o27$g0$t1749814737$j60$l0$h0",
+        "_ga_CTN9Y05487": "GS2.1.s1749814737$o27$g0$t1749814737$j60$l0$h0",
+        "apt.sid": "AP-XUDLXQ5IZAPD-2-1749815576105-97536625",
+        "session": ".eJxVkDFvwyAUhP8La-PUGIyNpa4dWkXJ1hE94JHQYogMjpRW_e8lilS18913ursvos64zBAxFjI5CBk3BGKK1zmtWXlLJmINtU5I0whBbcNd5xo5QttwPfZ06KUctSEbYvLiVEkfGCvDhs5K3tpu6AGl4QzYYJxhllGqudBCt7IfgFUuQC4KTPEXVMXPSCY6cDnSfuTthmTM2ad4b7KH58f9w8oPfjy8dK8XFzx88mSRvXVi1-5O7CJcb-O7aZ_IXzbg77iCEWJRedU2zeBvZe01poK5bDVGcwo-HrcmzTVgXUKF6zXeeVyqM_pl9qWxUB_zcHNkXJTFgEcoqLAGBjLFNYT_0q1FuZ7xrn3_ABhrfLc.aEwSIA.0ZwTR9Gk66xmYjKOoh81UHzedkc",
+        "_dd_s": "rum=1&id=72f60fb2-671c-4feb-90d8-ed4747c5f978&created=1749815800802&expire=1749816784977"
+    }
+}
+
+[
+    {
+        "operationName": "SchemaInterfaceEditorQuery",
+        "variables": {},
+        "extensions": {
+            "persistedQuery": {
+                "queryHash": "321cea9921597550336dab8b854efe2524d5b8142144b90c8ee56e8df269bb38"
+            }
+        },
+        "query": "query SchemaInterfaceEditorQuery @skipAudit @engComponent(name: SCHEMAS) {\n  currentTenantOrganizations {\n    ... on OrganizationNode {\n      ...OrganizationDefaultSchemaCollaboratorsConfiguration\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment OrganizationDefaultSchemaCollaboratorsConfiguration on OrganizationNode {\n  id\n  handle\n  name\n  schemaCollaborationDefaultConfigurations {\n    id\n    schemaType\n    defaultSchemaCollaborations {\n      party {\n        ... on PartyInterface {\n          id\n          name\n          handle\n          __typename\n        }\n        __typename\n      }\n      policy {\n        id\n        __typename\n      }\n      teamRole\n      organizationRole\n      __typename\n    }\n    __typename\n  }\n  __typename\n}\n"
+    },
+    {
+        "operationName": "SchemaInterfaceQuery",
+        "variables": {
+            "id": "intrfc_Zf4PVBWX"
+        },
+        "extensions": {
+            "persistedQuery": {
+                "queryHash": "97be04599b691047484301e8e879e71b50b6ba53b0474848a51c30cf2bd87242"
+            }
+        },
+        "query": "query SchemaInterfaceQuery($id: StrictString!) @skipAudit @engComponent(name: SCHEMAS) {\n  schemaInterface(id: $id) {\n    ... on SchemaInterfaceNode {\n      id\n      name\n      organization {\n        id\n        name\n        urlIdentifier\n        __typename\n      }\n      sqlIdentifier\n      ... on PoliceableInterface {\n        id\n        permissions {\n          ...SchemaPermissionsGraphQL\n          __typename\n        }\n        __typename\n      }\n      schemas {\n        ...TagSchemaGraphQL\n        __typename\n      }\n      fields {\n        id\n        apiId\n        systemName\n        displayName\n        fieldType\n        isRequired\n        isMulti\n        isComputed\n        schemaFieldSelectorId\n        requiredLinkJson\n        __typename\n      }\n      baseBioentityType {\n        folderItemType\n        sequenceType\n        __typename\n      }\n      constraint {\n        id\n        fieldsJson\n        status\n        uniqueResidues\n        areUniqueResiduesCaseSensitive\n        uniqueCanonicalSmiles\n        source {\n          id\n          name\n          __typename\n        }\n        __typename\n      }\n      labelingStrategies\n      prefix\n      nameTemplates {\n        linkedItemId\n        templateType\n        shouldOrderPartsBySequence\n        nameTemplateParts {\n          datetimeFormat\n          fieldId\n          text\n          type\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    ...HasArchiveRecordGraphQL\n    __typename\n  }\n}\n\nfragment TagSchemaGraphQL on TagSchemaNode {\n  id\n  allFieldsJson\n  authParentOption\n  batchSchema {\n    id\n    __typename\n  }\n  childEntitySchemas {\n    iconId\n    id\n    name\n    folderItemType\n    sqlIdentifier\n    sequenceType\n    shouldCreateAsOligo\n    archiveRecord {\n      purpose\n      __typename\n    }\n    __typename\n  }\n  constraint {\n    ...TagSchemaConstraintGraphQL\n    __typename\n  }\n  containableType\n  fieldsJson\n  folderItemType\n  hoistedTagSchemaGraphsJson\n  iconId\n  includeRegistryIdInChips\n  isContainable\n  labelingStrategies\n  mixtureSchemaConfig {\n    allowMeasuredIngredients\n    componentLotStorageEnabled\n    componentLotTextEnabled\n    __typename\n  }\n  name\n  nameTemplateFields\n  nameTemplateParts {\n    datetimeFormat\n    fieldId\n    text\n    type\n    __typename\n  }\n  prefix\n  registry {\n    id\n    __typename\n  }\n  sequenceType\n  shouldCreateAsOligo\n  shouldOrderNamePartsBySequence\n  showResidues\n  sqlIdentifier\n  useOrganizationCollectionAliasForDisplayLabel\n  useRandomOrgAlias\n  permissions {\n    ...SchemaPermissionsGraphQL\n    __typename\n  }\n  archiveRecord {\n    purpose\n    __typename\n  }\n  __typename\n}\n\nfragment TagSchemaConstraintGraphQL on TagSchemaConstraintNode {\n  id\n  areUniqueResiduesCaseSensitive\n  fieldsJson\n  status\n  uniqueResidues\n  uniqueCanonicalSmiles\n  source {\n    id\n    name\n    __typename\n  }\n  __typename\n}\n\nfragment SchemaPermissionsGraphQL on PermissionsNode {\n  admin\n  appendable\n  archivable\n  definitionDeletable\n  definitionEditable\n  definitionListable\n  objectsCreatable\n  objectsRegisterable\n  readable\n  unarchivable\n  writable\n  __typename\n}\n\nfragment HasArchiveRecordGraphQL on HasArchiveRecordInterface {\n  archiveRecord {\n    purpose\n    __typename\n  }\n  __typename\n}\n"
+    }
+]
