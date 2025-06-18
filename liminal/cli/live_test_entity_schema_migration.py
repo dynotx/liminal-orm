@@ -79,7 +79,6 @@ def mock_entity_schema_full_migration(
     update_schema_properties = BaseSchemaProperties(
         name=f"{test_model_wh_name}_arch",
         prefix=f"{test_model_wh_name}_arch",
-        entity_type=BenchlingEntityType.AA_SEQUENCE,
         naming_strategies=[
             BenchlingNamingStrategy.IDS_FROM_NAMES,
             BenchlingNamingStrategy.NEW_IDS,
