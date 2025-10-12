@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 import warnings
 from pathlib import Path
-
+from typing import Any
 import typer
-from click import Context
 from rich import print
 from typer.core import TyperGroup
 
@@ -25,7 +24,7 @@ from liminal.migrate.revisions_timeline import RevisionsTimeline
 
 
 class OrderCommands(TyperGroup):
-    def list_commands(self, ctx: Context) -> list[str]:
+    def list_commands(self, *args: Any) -> list[str]:
         """Return list of commands in the order the commands are defined."""
         return list(self.commands)
 
