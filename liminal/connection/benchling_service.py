@@ -230,15 +230,18 @@ class BenchlingService(Benchling):
             if f.systemName == REMOTE_REVISION_ID_FIELD_WH_NAME
         ]
         if len(revision_id_fields) == 1:
-            # liminal_remote schema found, revision_id field found. Update revision_id field on it with given revision_id.
-            from liminal.entity_schemas.operations import UpdateEntitySchemaField
-
             revision_id_field = revision_id_fields[0]
-            UpdateEntitySchemaField(
-                liminal_schema.sqlIdentifier,
-                revision_id_field.systemName,
-                BaseFieldProperties(name=revision_id),
-            ).execute(self)
+            if revision_id_field.name == revision_id:
+                return
+            else:
+                # liminal_remote schema found, revision_id field found. Update revision_id field on it with given revision_id.
+                from liminal.entity_schemas.operations import UpdateEntitySchemaField
+
+                UpdateEntitySchemaField(
+                    liminal_schema.sqlIdentifier,
+                    revision_id_field.systemName,
+                    BaseFieldProperties(name=revision_id),
+                ).execute(self)
         else:
             raise ValueError(
                 f"Error finding field on {REMOTE_LIMINAL_SCHEMA_NAME} schema with warehouse_name {REMOTE_REVISION_ID_FIELD_WH_NAME}. Check schema fields to ensure this field exists and is defined according to documentation."
