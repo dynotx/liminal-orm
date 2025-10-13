@@ -742,6 +742,7 @@ source = { editable = "." }
 dependencies = [
     { name = "benchling-sdk" },
     { name = "bs4" },
+    { name = "click" },
     { name = "lxml" },
     { name = "numpy" },
     { name = "pandas" },
@@ -772,6 +773,7 @@ dev = [
 requires-dist = [
     { name = "benchling-sdk", specifier = ">=1.21.2,<2" },
     { name = "bs4", specifier = ">=0.0.2,<0.0.3" },
+    { name = "click", specifier = ">=8.0.0,<8.2.0" },
     { name = "lxml", specifier = ">=5.3.0,<6" },
     { name = "numpy", specifier = ">=1.23.5,<2" },
     { name = "pandas", specifier = ">=1.5.3,<2" },
