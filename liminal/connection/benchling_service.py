@@ -236,7 +236,7 @@ class BenchlingService(Benchling):
             else:
                 # liminal_remote schema found, revision_id field found. Update revision_id field on it with given revision_id.
                 from liminal.entity_schemas.operations import UpdateEntitySchemaField
-                
+
                 UpdateEntitySchemaField(
                     liminal_schema.sqlIdentifier,
                     revision_id_field.systemName,
