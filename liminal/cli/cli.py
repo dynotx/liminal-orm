@@ -182,18 +182,15 @@ def revision(
     benchling_connection = read_local_liminal_dir(LIMINAL_DIR_PATH, benchling_tenant)
     benchling_service = BenchlingService(benchling_connection, use_internal_api=True)
     revisions_timeline = RevisionsTimeline(VERSIONS_DIR_PATH)
-    try:
+    is_init_revision = revisions_timeline.is_only_init_revision()
+    if is_init_revision:
+        current_revision_id = revisions_timeline.get_latest_revision().id
+        benchling_service.upsert_remote_revision_id(current_revision_id)
+        print(
+            f"[dim]Set revision_id to {current_revision_id} within 'liminal_remote' schema."
+        )
+    else:
         current_revision_id = benchling_service.get_remote_revision_id()
-    except Exception as e:
-        is_init_revision = revisions_timeline.is_only_init_revision()
-        if is_init_revision:
-            current_revision_id = revisions_timeline.get_latest_revision().id
-            benchling_service.upsert_remote_revision_id(current_revision_id)
-            print(
-                f"[dim]Set revision_id to {current_revision_id} within 'liminal_remote' schema."
-            )
-        else:
-            raise e
     autogenerate_revision_file(
         benchling_service,
         revisions_timeline,
