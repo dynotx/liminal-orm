@@ -66,6 +66,15 @@ class RevisionsTimeline:
             )
         return revisions[0]
 
+    def is_only_init_revision(self) -> bool:
+        """Checks if the latest revision is the initial init revision.
+        The initial init revision is the first revision in the timeline and has the description "Initial init revision".
+        """
+        return (
+            len(self.revisions_map) == 1
+            and self.get_latest_revision().description == "Initial init revision"
+        )
+
     def get_nth_revision(self, revision_id: str, steps: int) -> Revision:
         """Gets the nth revision from the provided revision id in the direction specified by steps.
 

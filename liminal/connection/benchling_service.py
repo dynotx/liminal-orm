@@ -182,8 +182,6 @@ class BenchlingService(Benchling):
         """Updates or inserts a remote Liminal schema into your tenant with the given revision_id stored in the name of a field.
         If the 'liminal_remote' schema is found, check and make sure a field with warehouse_name 'revision_id' is present. If both are present, update the revision_id stored within the name.
         If no schema is found, create the liminal_remote entity schema.
-        Upsert is needed to migrate users from using the CURRENT_REVISION_ID stored in the env.py file smoothly to storing in Benchling itself.
-
         Parameters
         ----------
         revision_id : str
@@ -221,8 +219,8 @@ class BenchlingService(Benchling):
                     )
                 ],
             ).execute(self)
-            LOGGER.warning(
-                f"Created {REMOTE_LIMINAL_SCHEMA_NAME} schema for tracking the remote revision id. Please delete the revision_id variable tracked in your env.py to complete the migration to tracking the tenant revision_id in Benchling instead of locally."
+            LOGGER.info(
+                f"Created {REMOTE_LIMINAL_SCHEMA_NAME} schema for tracking the remote revision id."
             )
             return
         # liminal_remote schema found. Check if revision_id field exists on it.

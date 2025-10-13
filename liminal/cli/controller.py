@@ -47,7 +47,7 @@ def generate_all_files(
 
 def autogenerate_revision_file(
     benchling_service: BenchlingService,
-    write_dir_path: Path,
+    revisions_timeline: RevisionsTimeline,
     description: str,
     current_revision_id: str,
     compare: bool = True,
@@ -61,31 +61,34 @@ def autogenerate_revision_file(
     ----------
     benchling_service : BenchlingService
         The Benchling service object that is connected to a specified Benchling tenant.
-    write_dir_path : Path
-        The directory path where the revision file will be written to.
+    revisions_timeline : RevisionsTimeline
+        The revisions timeline object.
     description : str
         A description of the revision being generated. This will also be included in the file name.
+    current_revision_id : str
+        The current revision id.
+    compare : bool
+        Whether to compare the locally defined schemas to the given Benchling tenant.
     """
-    revision_timeline = RevisionsTimeline(write_dir_path)
-    if current_revision_id not in revision_timeline.revisions_map.keys():
+    if current_revision_id not in revisions_timeline.revisions_map.keys():
         raise Exception(
-            f"Your target Benchling tenant is currently at revision_id {current_revision_id}. This does not exist within your revision timeline in any of your revision files. Ensure your current revision_id for your tenant is correct. The current local head revision is {revision_timeline.get_latest_revision().id}"
+            f"Your target Benchling tenant is currently at revision_id {current_revision_id}. This does not exist within your revision timeline in any of your revision files. Ensure your current revision_id for your tenant is correct. The current local head revision is {revisions_timeline.get_latest_revision().id}"
         )
-    if current_revision_id != revision_timeline.get_latest_revision().id:
+    if current_revision_id != revisions_timeline.get_latest_revision().id:
         raise Exception(
-            f"Your target Benchling tenant is currently at revision_id {current_revision_id}, which is not up to date with the local head revision ({revision_timeline.get_latest_revision().id}). Please upgrade your tenant to the latest revision before generating a new revision."
+            f"Your target Benchling tenant is currently at revision_id {current_revision_id}, which is not up to date with the local head revision ({revisions_timeline.get_latest_revision().id}). Please upgrade your tenant to the latest revision before generating a new revision."
         )
     if compare:
         compare_ops = get_full_migration_operations(benchling_service)
     else:
         compare_ops = []
-    write_path = revision_timeline.write_new_revision(description, compare_ops)
+    write_path = revisions_timeline.write_new_revision(description, compare_ops)
     print(f"[bold green]Revision file generated at {write_path}")
 
 
 def upgrade_benchling_tenant(
     benchling_service: BenchlingService,
-    versions_dir_path: Path,
+    revisions_timeline: RevisionsTimeline,
     current_revision_id: str,
     upgrade_descriptor: str,
 ) -> str:
@@ -97,8 +100,8 @@ def upgrade_benchling_tenant(
     ----------
     benchling_service : BenchlingService
         The Benchling service object that is connected to a specified Benchling tenant.
-    versions_dir_path : Path
-        The directory path where the revision files are stored.
+    revisions_timeline : RevisionsTimeline
+        The revisions timeline object.
     current_revision_id : str
         The current revision id.
     upgrade_descriptor : str
@@ -109,10 +112,9 @@ def upgrade_benchling_tenant(
     str
         The target revision id.
     """
-    revisions_timeline = RevisionsTimeline(versions_dir_path)
     if current_revision_id not in revisions_timeline.revisions_map.keys():
         raise Exception(
-            f"CURRENT_REVISION_ID in liminal/env.py ({current_revision_id}) is invalid and not found in any of the revision file names."
+            f"current remote revision_id ({current_revision_id}) is invalid and not found in any of the revision file names."
         )
     revision_id = None
     if upgrade_descriptor == "head":
@@ -167,7 +169,7 @@ def upgrade_benchling_tenant(
 
 def downgrade_benchling_tenant(
     benchling_service: BenchlingService,
-    versions_dir_path: Path,
+    revisions_timeline: RevisionsTimeline,
     current_revision_id: str,
     downgrade_str: str,
 ) -> str:
@@ -191,10 +193,9 @@ def downgrade_benchling_tenant(
     str
         The target revision id.
     """
-    revisions_timeline = RevisionsTimeline(versions_dir_path)
     if current_revision_id not in revisions_timeline.revisions_map.keys():
         raise Exception(
-            f"CURRENT_REVISION_ID in liminal/env.py ({current_revision_id}) is invalid and not found in any of the revision file names."
+            f"current remote revision_id ({current_revision_id}) is invalid and not found in any of the revision file names."
         )
     revision_id = None
     if downgrade_str.startswith("-"):
