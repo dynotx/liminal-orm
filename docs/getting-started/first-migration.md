@@ -63,7 +63,7 @@
     If the migration fails mid way through, do not attempt to run the full upgrade again. This will re-run the same operations that were already run which is unsafe. Instead, you can comment out the operations
     that have already been run in the `upgrade()` function and run `liminal upgrade` again. This will ensure that only the operations that have not yet been run get applied. Alternatively, you can comment out the mirrored operations not run yet in the `downgrade()` function and run `liminal downgrade` to revert the changes so that you can try again. (More information on downgrades on the next page!)
 
-6. You can see what revision_id your Benchling tenant is on by running `liminal current <benchling_tenant_name>`. This is stored remotely within a generated *_liminal_remote* in Benchling.
+6. You can see what revision_id your Benchling tenant is on by running `liminal current <benchling_tenant_name>`. This is stored remotely in your Benchling tenant within a generated *liminal_remote* entity schema.
 
     !!! tip
         You can see the local latest revision_id by running `liminal head <benchling_tenant_name>`.
