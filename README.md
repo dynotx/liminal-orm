@@ -5,7 +5,7 @@
 [![CI](https://github.com/dynotx/liminal-orm/actions/workflows/liminal.yml/badge.svg)](https://github.com/dynotx/liminal-orm/actions/workflows/liminal.yml)
 [![Downloads](https://static.pepy.tech/personalized-badge/liminal-orm?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads)](https://pepy.tech/project/liminal-orm)
 
-Liminal ORM<sup>1</sup> is an open-source Python package that builds on [Benchling's](https://www.benchling.com/) LIMS<sup>2</sup> platform and provides a simple, code-first approach for synchronizing and managing your Benchling schemas. Check out the [**full documentation here**](https://dynotx.github.io/liminal-orm/) and join our [**Slack community here**](https://join.slack.com/t/liminalorm/shared_invite/zt-2ujrp07s3-bctook4e~cAjn1LgOLVY~Q)!
+Liminal ORM<sup>1</sup> is an open-source Python package that builds on [Benchling's](https://www.benchling.com/) LIMS<sup>2</sup> platform and provides a simple, code-first approach for synchronizing and managing your Benchling schemas. Check out the [**full documentation here**](https://dynotx.github.io/liminal-orm/) and join our [**Slack community here**](https://join.slack.com/t/liminalorm/shared_invite/zt-3fu79tf06-oqL1000p8BAOG6B3yOOXNA)!
 
 Liminal provides an ORM framework using [SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) along with a schema migration service inspired by [Alembic](https://alembic.sqlalchemy.org/en/latest/). This allows you to define your Benchling schemas in code and create a *single source of truth* that synchronizes between your upstream Benchling tenant(s) and downstream dependencies. By creating a standard interface and through using one-line CLI<sup>3</sup> commands, Liminal enables a code-first approach for managing Benchling tenants and accessing Benchling data. With the schemas defined in code, you can also take advantage of the additional capabilities that the Liminal toolkit provides. This includes:
 
@@ -15,7 +15,7 @@ Liminal provides an ORM framework using [SQLAlchemy](https://github.com/sqlalche
 - CI/CD integration with GitHub Actions to ensure that your Benchling schemas and code are always in sync.
 - And more based on community contributions/feedback :)
 
-If you are a Benchling user, try out Liminal by following the [**Quick Start Guide**](https://dynotx.github.io/liminal-orm/getting-started/prerequisites/)! Reach out in the [Slack community](https://join.slack.com/t/liminalorm/shared_invite/zt-2ujrp07s3-bctook4e~cAjn1LgOLVY~Q) (preferred method) with any questions or to simply introduce yourself! If there is something blocking you from using Liminal or you're having trouble setting Liminal up, please share in [Issues](https://github.com/dynotx/liminal-orm/issues) or reach out directly (info below).
+If you are a Benchling user, try out Liminal by following the [**Quick Start Guide**](https://dynotx.github.io/liminal-orm/getting-started/prerequisites/)! Reach out in the [Slack community](https://join.slack.com/t/liminalorm/shared_invite/zt-3fu79tf06-oqL1000p8BAOG6B3yOOXNA) (preferred method) with any questions or to simply introduce yourself! If there is something blocking you from using Liminal or you're having trouble setting Liminal up, please share in [Issues](https://github.com/dynotx/liminal-orm/issues) or reach out directly (info below).
 
 Benchling is an industry standard cloud platform for life sciences R&D. Liminal builds on top of Benchling's platform and assumes that you already have a Benchling tenant set up and have (or have access to) an admin user account. If not, learn more about getting started with Benchling [here](https://www.benchling.com/explore-benchling)!
 
@@ -101,7 +101,7 @@ Liminal ORM is distributed under the [Apache License, Version 2.0](./LICENSE.md)
 
 ## [Direct Contact](#direct-contact)
 
-- Liminal Community Slack group: [Join here](https://join.slack.com/t/liminalorm/shared_invite/zt-2ujrp07s3-bctook4e~cAjn1LgOLVY~Q)
+- Liminal Community Slack group: [Join here](https://join.slack.com/t/liminalorm/shared_invite/zt-3fu79tf06-oqL1000p8BAOG6B3yOOXNA)
 - Email: <opensource@dynotx.com>
 - LinkedIn: [Nirmit Damania](https://www.linkedin.com/in/nirmit-damania/)
 
