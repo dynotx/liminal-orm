@@ -71,7 +71,9 @@ class BenchlingService(Benchling):
             super().__init__(
                 url=url, auth_method=auth_method, retry_strategy=retry_strategy
             )
-            LOGGER.info(f"Tenant {connection.tenant_name}: Connected to Benchling API.")
+            LOGGER.debug(
+                f"Tenant {connection.tenant_name}: Connected to Benchling API."
+            )
         self.use_db = use_db
         if use_db:
             if connection.warehouse_connection_string:
@@ -79,7 +81,7 @@ class BenchlingService(Benchling):
                     connection.warehouse_connection_string
                 )
                 configure_mappers()
-                LOGGER.info(
+                LOGGER.debug(
                     f"Tenant {connection.tenant_name}: Connected to Benchling read-only Postgres warehouse."
                 )
             else:
@@ -105,7 +107,7 @@ class BenchlingService(Benchling):
                     "Referer": f"https://{connection.tenant_name}.benchling.com/",
                     "Content-Type": "application/json",
                 }
-                LOGGER.info(
+                LOGGER.debug(
                     f"Tenant {connection.tenant_name}: Connected to Benchling internal API."
                 )
             else:
