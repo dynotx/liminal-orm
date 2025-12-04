@@ -198,7 +198,7 @@ class CreateEntitySchemaModel(BaseModel):
             labelingStrategies=[s.value for s in benchling_props.naming_strategies],
             showResidues=benchling_props.show_bases_in_expanded_view,
             constraint=EntitySchemaConstraint.from_constraint_fields(
-                benchling_props.constraint_fields
+                benchling_props.constraint_fields, benchling_service
             ),
             fields=[
                 CreateEntitySchemaFieldModel.from_benchling_props(
