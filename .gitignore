@@ -18,3 +18,5 @@ wheels/
 
 # for local testing
 /test_liminal
+
+.history

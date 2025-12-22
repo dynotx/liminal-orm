@@ -9,7 +9,7 @@ dependencies = [
     "benchling-sdk>=1.21.2,<2",
     "bs4>=0.0.2,<0.0.3",
     "numpy>=1.23.5,<2",
-    "pandas>=1.5.3,<2",
+    "pandas>=1.5.3,<3",
     "pydantic>=2,<=2.11",
     "requests>=2.32.3,<3",
     "rich>=13.9.2,<14",
