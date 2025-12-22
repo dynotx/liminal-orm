@@ -776,7 +776,7 @@ requires-dist = [
     { name = "click", specifier = ">=8.0.0,<8.2.0" },
     { name = "lxml", specifier = ">=5.3.0,<6" },
     { name = "numpy", specifier = ">=1.23.5,<2" },
-    { name = "pandas", specifier = ">=1.5.3" },
+    { name = "pandas", specifier = ">=1.5.3,<3" },
     { name = "psycopg2-binary", specifier = ">=2.9.10,<3" },
     { name = "pydantic", specifier = ">=2,<=2.11" },
     { name = "requests", specifier = ">=2.32.3,<3" },
