@@ -140,6 +140,7 @@ class UpdateTagSchemaModel(BaseModel):
     includeRegistryIdInChips: bool | None = None
     useOrganizationCollectionAliasForDisplayLabel: bool | None = None
     constraint: TagSchemaConstraint | None = None
+    isContainable: bool | None = None
 
 
 class CreateTagSchemaFieldModel(BaseModel):
@@ -534,6 +535,9 @@ class TagSchemaModel(BaseModel):
         assert type(set_sql_identifier) is str
         self.sqlIdentifier = set_sql_identifier
         self.name = update_props.name if "name" in update_diff_names else self.name
+        self.isContainable = (
+            update_props.is_containable if "is_containable" in update_diff_names else self.isContainable
+        )
         return self
 
     def update_name_template(
