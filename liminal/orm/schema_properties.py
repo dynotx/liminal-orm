@@ -27,15 +27,15 @@ class SchemaProperties(BaseSchemaProperties):
         The prefix to use for the schema.
     entity_type : BenchlingEntityType
         The entity type of the schema.
-    naming_strategies : set[BenchlingNamingStrategy]
-        The naming strategies of the schema.
-    mixture_schema_config : MixtureSchemaConfig | None
+    naming_strategies : set[BenchlingNamingStrategy] = {BenchlingNamingStrategy.NEW_IDS, BenchlingNamingStrategy.IDS_FROM_NAMES, BenchlingNamingStrategy.REPLACE_NAME_WITH_ID}
+        The naming strategies of the schema. If left empty, the default is set to Benchling's default initial naming strategies.
+    mixture_schema_config : MixtureSchemaConfig | None = None
         The mixture schema config of the schema.
-    use_registry_id_as_label : bool | None = None
+    use_registry_id_as_label : bool | None = False
         Flag for configuring the chip label for entities. Determines if the chip will use the Registry ID as the main label for items.
-    include_registry_id_in_chips : bool | None = None
+    include_registry_id_in_chips : bool | None = False
         Flag for configuring the chip label for entities. Determines if the chip will include the Registry ID in the chip label.
-    constraint_fields : set[str]
+    constraint_fields : set[str] = set()
         Set of constraints for field values for the schema. Must be a set of warehouse column names. This specifies that their entity field values must be a unique combination within an entity.
         The following sequence constraints are also supported:
         - bases: only supported for nucleotide sequence entity types. hasUniqueResidues=True
@@ -43,7 +43,7 @@ class SchemaProperties(BaseSchemaProperties):
         - amino_acids_exact_match: only supported for amino acid sequence entity types. hasUniqueResidues=True, areUniqueResiduesCaseSensitive=True
     show_bases_in_expanded_view : bool | None = None
         Whether the bases should be shown in the expanded view of the entity.
-    _archived : bool | None
+    _archived : bool = False
         Whether the schema is archived in Benchling.
     """
 
@@ -51,7 +51,11 @@ class SchemaProperties(BaseSchemaProperties):
     warehouse_name: str
     prefix: str
     entity_type: BenchlingEntityType
-    naming_strategies: set[BenchlingNamingStrategy]
+    naming_strategies: set[BenchlingNamingStrategy] = {
+        BenchlingNamingStrategy.NEW_IDS,
+        BenchlingNamingStrategy.IDS_FROM_NAMES,
+        BenchlingNamingStrategy.REPLACE_NAME_WITH_ID,
+    }
     use_registry_id_as_label: bool | None = False
     include_registry_id_in_chips: bool | None = False
     mixture_schema_config: MixtureSchemaConfig | None = None
@@ -82,10 +86,6 @@ class SchemaProperties(BaseSchemaProperties):
         if not self.entity_type.is_sequence() and self.show_bases_in_expanded_view:
             raise ValueError(
                 "show_bases_in_expanded_view can only be set for sequence entities."
-            )
-        if self.naming_strategies and len(self.naming_strategies) == 0:
-            raise ValueError(
-                "Schema must have at least 1 registry naming option enabled"
             )
         is_valid_wh_name(self.warehouse_name)
         is_valid_prefix(self.prefix)

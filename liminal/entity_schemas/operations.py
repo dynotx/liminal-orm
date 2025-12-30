@@ -346,12 +346,6 @@ class CreateEntitySchemaField(BaseOperation):
                     self.wh_schema_name, self._wh_field_name, self.index
                 ).execute(benchling_service)
             else:
-                print(self.field_props)
-                print(
-                    convert_tag_schema_field_to_field_properties(
-                        field, dropdowns_map, unit_id_to_name_map
-                    )
-                )
                 raise ValueError(
                     f"Field {self._wh_field_name} on entity schema {self.wh_schema_name} is different in code versus Benchling."
                 )

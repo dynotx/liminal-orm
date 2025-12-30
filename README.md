@@ -2,7 +2,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/liminal-orm.svg)](https://pypi.org/project/liminal-orm/)
 [![License](https://img.shields.io/github/license/dynotx/liminal-orm)](https://github.com/dynotx/liminal-orm/blob/main/LICENSE.md)
-[![CI](https://github.com/dynotx/liminal-orm/actions/workflows/liminal.yml/badge.svg)](https://github.com/dynotx/liminal-orm/actions/workflows/liminal.yml)
+[![CI](https://github.com/dynotx/liminal-orm/actions/workflows/cicd.yml/badge.svg)](https://github.com/dynotx/liminal-orm/actions/workflows/cicd.yml)
 [![Downloads](https://static.pepy.tech/personalized-badge/liminal-orm?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads)](https://pepy.tech/project/liminal-orm)
 
 Liminal ORM<sup>1</sup> is an open-source Python package that builds on [Benchling's](https://www.benchling.com/) LIMS<sup>2</sup> platform and provides a simple, code-first approach for synchronizing and managing your Benchling schemas. Check out the [**full documentation here**](https://dynotx.github.io/liminal-orm/) and join our [**Slack community here**](https://join.slack.com/t/liminalorm/shared_invite/zt-3fu79tf06-oqL1000p8BAOG6B3yOOXNA)!
