@@ -1,4 +1,3 @@
-from functools import lru_cache
 from typing import Any
 
 import requests
@@ -22,7 +21,6 @@ def get_benchling_dropdown_id_name_map(
     return {d.id: d.name for d in get_benchling_dropdown_summaries(benchling_service)}
 
 
-@lru_cache
 def get_benchling_dropdown_summaries(
     benchling_service: BenchlingService,
 ) -> list[DropdownSummary]:
