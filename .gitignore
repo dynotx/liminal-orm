@@ -14,9 +14,9 @@ wheels/
 **/*.ipynb
 
 # mkdocs documentation
-/site
+site/
 
 # for local testing
-/test_liminal
+test_liminal/
 
 .history

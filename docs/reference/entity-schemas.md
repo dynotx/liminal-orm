@@ -27,11 +27,7 @@ class Pizza(BaseModel, CustomEntityMixin):
         warehouse_name="pizza",
         prefix="PI",
         entity_type=BenchlingEntityType.CUSTOM_ENTITY,
-        naming_strategies={
-            BenchlingNamingStrategy.REPLACE_NAME_WITH_ID,
-            BenchlingNamingStrategy.IDS_FROM_NAMES,
-            BenchlingNamingStrategy.NEW_IDS,
-        },
+        naming_strategies={BenchlingNamingStrategy.NEW_IDS},
         mixture_schema_config=None,
     )
     __name_template__ = NameTemplate(parts=[TextPart(value="Pizza"), RegistryIdentifierNumberPart()])
@@ -115,23 +111,25 @@ All Liminal entity schema classes must inherit from one of the mixins in the [mi
 
     The type of entity schema. Type must be one of the values from the [BenchlingEntityType](https://github.com/dynotx/liminal-orm/blob/main/liminal/enums/benchling_entity_type.py) enum.
 
-- **naming_strategies: set[BenchlingNamingStrategy]**
+- **naming_strategies: set[BenchlingNamingStrategy] = {BenchlingNamingStrategy.NEW_IDS, BenchlingNamingStrategy.IDS_FROM_NAMES, BenchlingNamingStrategy.REPLACE_NAME_WITH_ID}**
 
     The naming strategies for the entity schema. Must be a set of values from the [BenchlingNamingStrategy](https://github.com/dynotx/liminal-orm/blob/main/liminal/enums/benchling_naming_strategy.py) enum.
 
-- **mixture_schema_config: MixtureSchemaConfig | None**
+    The default set is based on Benchling's default naming strategies they set when creating a new entity schema through their UI.
+
+- **mixture_schema_config: MixtureSchemaConfig | None = None**
 
     The mixture schema configuration for the entity schema. Must be defined as a [MixtureSchemaConfig](https://github.com/dynotx/liminal-orm/blob/main/liminal/base/properties/base_schema_properties.py) object.
 
-- **use_registry_id_as_label: bool | None = None**
+- **use_registry_id_as_label: bool | None = False**
 
     Flag for configuring the chip label for entities. Determines if the chip will use the Registry ID as the main label for items.
 
-- **include_registry_id_in_chips: bool | None = None**
+- **include_registry_id_in_chips: bool | None = False**
 
     Flag for configuring the chip label for entities. Determines if the chip will include the Registry ID in the chip label.
 
-- **constraint_fields: set[str] | None**
+- **constraint_fields: set[str] | None = set()**
 
     Set of constraints for field values for the schema. Must be a set of warehouse column names. This specifies that their entity field values must be a unique combination within an entity.
     The following sequence constraints are also supported:
@@ -143,7 +141,7 @@ All Liminal entity schema classes must inherit from one of the mixins in the [mi
 
     Whether the bases should be shown in the expanded view of the entity.
 
-- **_archived: bool | None = None**
+- **_archived: bool = False**
 
     Private attribute used to set the archived status of the schema.
 
