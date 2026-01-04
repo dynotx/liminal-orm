@@ -41,22 +41,23 @@ class TestCompareEntitySchemas:
 
             mock_get_benchling_entity_schemas.assert_called_once()
             mock_get_all_subclasses.assert_called()
-            assert len(invalid_models["mock_entity_two"]) == 2
+            assert len(invalid_models["mock_entity_two_wh"]) == 2
             assert isinstance(
-                invalid_models["mock_entity_two"][0].op, CreateEntitySchema
+                invalid_models["mock_entity_two_wh"][0].op, CreateEntitySchema
             )
             assert (
-                invalid_models["mock_entity_two"][0].op.schema_properties.name
+                invalid_models["mock_entity_two_wh"][0].op.schema_properties.name
                 == "Mock Entity Two"
             )
             assert [
-                f.warehouse_name for f in invalid_models["mock_entity_two"][0].op.fields
+                f.warehouse_name
+                for f in invalid_models["mock_entity_two_wh"][0].op.fields
             ] == ["parent_link_field"]
             assert isinstance(
-                invalid_models["mock_entity_two"][1].op, UpdateEntitySchema
+                invalid_models["mock_entity_two_wh"][1].op, UpdateEntitySchema
             )
             assert (
-                invalid_models["mock_entity_two"][1].op.update_props.warehouse_name
+                invalid_models["mock_entity_two_wh"][1].op.update_props.warehouse_name
                 == "mock_entity_two_wh"
             )
 
