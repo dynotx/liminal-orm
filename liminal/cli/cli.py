@@ -185,10 +185,10 @@ def revision(
     is_init_revision = revisions_timeline.is_only_init_revision()
     if is_init_revision:
         current_revision_id = revisions_timeline.get_latest_revision().id
-        benchling_service.upsert_remote_revision_id(current_revision_id)
-        print(
-            f"[dim]Set revision_id to {current_revision_id} within 'liminal_remote' schema."
-        )
+        if benchling_service.upsert_remote_revision_id(current_revision_id):
+            print(
+                f"[dim]Set revision_id to {current_revision_id} within 'liminal_remote' schema."
+            )
     else:
         current_revision_id = benchling_service.get_remote_revision_id()
     autogenerate_revision_file(
@@ -239,10 +239,10 @@ def upgrade(
     upgrade_revision_id = upgrade_benchling_tenant(
         benchling_service, revisions_timeline, current_revision_id, upgrade_descriptor
     )
-    benchling_service.upsert_remote_revision_id(upgrade_revision_id)
-    print(
-        f"[dim]Set revision_id to {upgrade_revision_id} within 'liminal_remote' schema."
-    )
+    if benchling_service.upsert_remote_revision_id(upgrade_revision_id):
+        print(
+            f"[dim]Set revision_id to {upgrade_revision_id} within 'liminal_remote' schema."
+        )
     print("[bold green]Migration complete")
 
 
@@ -267,10 +267,10 @@ def downgrade(
     downgrade_revision_id = downgrade_benchling_tenant(
         benchling_service, revisions_timeline, current_revision_id, downgrade_descriptor
     )
-    benchling_service.upsert_remote_revision_id(downgrade_revision_id)
-    print(
-        f"[dim]Set revision_id to {downgrade_revision_id} within 'liminal_remote' schema."
-    )
+    if benchling_service.upsert_remote_revision_id(downgrade_revision_id):
+        print(
+            f"[dim]Set revision_id to {downgrade_revision_id} within 'liminal_remote' schema."
+        )
     print("[bold green]Migration complete")
 
 

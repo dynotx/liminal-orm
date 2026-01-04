@@ -39,12 +39,12 @@ example_operation.validate()
 | Operation Class                | Description                                                                 | Order |
 |--------------------------------|-----------------------------------------------------------------------------|-------|
 | CreateEntitySchema             | Creates a new entity schema with specified fields.                          | 8     |
-| UpdateEntitySchema             | Updates the properties of an existing entity schema.                        | 9     |
-| UnarchiveEntitySchema          | Unarchives an archived entity schema.                                       | 10    |
-| CreateEntitySchemaField        | Creates a new field in an existing entity schema.                           | 11    |
-| UnarchiveEntitySchemaField     | Unarchives an archived field in an entity schema.                           | 12    |
-| UpdateEntitySchemaField        | Updates the properties of an existing field in an entity schema.            | 13    |
-| ArchiveEntitySchemaField       | Archives an existing field in an entity schema.                             | 14    |
-| UpdateEntitySchemaNameTemplate | Updates the name template of an existing entity schema.                     | 15    |
+| UnarchiveEntitySchema          | Unarchives an archived entity schema.                                       | 9     |
+| CreateEntitySchemaField        | Creates a new field in an existing entity schema.                           | 10    |
+| UpdateEntitySchemaNameTemplate | Updates the name template of an existing entity schema.                     | 11    |
+| UpdateEntitySchema             | Updates the properties of an existing entity schema.                        | 12    |
+| UnarchiveEntitySchemaField     | Unarchives an archived field in an entity schema.                           | 13    |
+| UpdateEntitySchemaField        | Updates the properties of an existing field in an entity schema.            | 14    |
+| ArchiveEntitySchemaField       | Archives an existing field in an entity schema.                             | 15    |
 | ReorderEntitySchemaFields      | Reorders the fields in an existing entity schema.                           | 16    |
 | ArchiveEntitySchema            | Archives an existing entity schema.                                         | 17    |

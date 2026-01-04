@@ -74,7 +74,7 @@ class CreateEntitySchema(BaseOperation):
         )
 
     def describe_operation(self) -> str:
-        return f"{self._validated_schema_properties.name}: Creating new entity schema with fields: {','.join([f.warehouse_name for f in self.fields if f.warehouse_name is not None])}."
+        return f"{self._validated_schema_properties.name}: Creating new entity schema with fields: {', '.join([f.warehouse_name for f in self.fields if f.warehouse_name is not None])}."
 
     def describe(self) -> str:
         return f"{self._validated_schema_properties.name}: Schema is defined in code but not in Benchling."

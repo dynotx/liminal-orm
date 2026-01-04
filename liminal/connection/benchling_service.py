@@ -178,10 +178,11 @@ class BenchlingService(Benchling):
                 f"Error finding field on {REMOTE_LIMINAL_SCHEMA_NAME} schema with warehouse_name {REMOTE_REVISION_ID_FIELD_WH_NAME}. Check schema fields to ensure this field exists and is defined according to documentation."
             )
 
-    def upsert_remote_revision_id(self, revision_id: str) -> None:
+    def upsert_remote_revision_id(self, revision_id: str) -> bool:
         """Updates or inserts a remote Liminal schema into your tenant with the given revision_id stored in the name of a field.
         If the 'liminal_remote' schema is found, check and make sure a field with warehouse_name 'revision_id' is present. If both are present, update the revision_id stored within the name.
         If no schema is found, create the liminal_remote entity schema.
+
         Parameters
         ----------
         revision_id : str
@@ -222,7 +223,7 @@ class BenchlingService(Benchling):
             LOGGER.info(
                 f"Created {REMOTE_LIMINAL_SCHEMA_NAME} schema for tracking the remote revision id."
             )
-            return
+            return True
         # liminal_remote schema found. Check if revision_id field exists on it.
         revision_id_fields = [
             f
@@ -232,7 +233,7 @@ class BenchlingService(Benchling):
         if len(revision_id_fields) == 1:
             revision_id_field = revision_id_fields[0]
             if revision_id_field.name == revision_id:
-                return
+                return False
             else:
                 # liminal_remote schema found, revision_id field found. Update revision_id field on it with given revision_id.
                 from liminal.entity_schemas.operations import UpdateEntitySchemaField
@@ -242,6 +243,7 @@ class BenchlingService(Benchling):
                     revision_id_field.systemName,
                     BaseFieldProperties(name=revision_id),
                 ).execute(self)
+                return True
         else:
             raise ValueError(
                 f"Error finding field on {REMOTE_LIMINAL_SCHEMA_NAME} schema with warehouse_name {REMOTE_REVISION_ID_FIELD_WH_NAME}. Check schema fields to ensure this field exists and is defined according to documentation."
