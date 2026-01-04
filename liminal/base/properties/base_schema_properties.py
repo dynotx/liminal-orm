@@ -95,6 +95,16 @@ class BaseSchemaProperties(BaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
+    def set_warehouse_name(self, value: str) -> BaseSchemaProperties:
+        self.warehouse_name = value
+        return self
+
+    def set_naming_strategies(
+        self, value: set[BenchlingNamingStrategy]
+    ) -> BaseSchemaProperties:
+        self.naming_strategies = value
+        return self
+
     def merge(self, new_props: BaseSchemaProperties) -> dict[str, Any]:
         """Creates a diff between the current schema properties and the new schema properties.
         Sets value to None if the values are equal, otherwise sets the value to the new value.

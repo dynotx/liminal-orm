@@ -287,21 +287,22 @@ def compare_entity_schemas(
                 for s in model.__schema_properties__.naming_strategies
                 if BenchlingNamingStrategy.is_template_based(s)
             }
-            model.__schema_properties__.naming_strategies = {
-                s
-                for s in model.__schema_properties__.naming_strategies
-                if not BenchlingNamingStrategy.is_template_based(s)
-            }
+            standard_naming_strategies = (
+                set(model.__schema_properties__.naming_strategies)
+                - template_based_naming_strategies
+            )
+            # If the only naming strategies are template based, temporarily set to NEW_IDS until this gets set in the UpdateEntitySchema operation.
+            # Validating that a schemas has at least one naming strategy is done upstream in BaseModel.
+            if len(standard_naming_strategies) == 0:
+                standard_naming_strategies = {BenchlingNamingStrategy.NEW_IDS}
             model_wh_name = model.__schema_properties__.warehouse_name
             benchling_given_wh_name = to_snake_case(model.__schema_properties__.name)
             ops.append(
                 CompareOperation(
                     op=CreateEntitySchema(
-                        BaseSchemaProperties(
-                            **model.__schema_properties__.set_warehouse_name(
-                                benchling_given_wh_name
-                            ).model_dump()
-                        ),
+                        BaseSchemaProperties(**model.__schema_properties__.model_dump())
+                        .set_warehouse_name(benchling_given_wh_name)
+                        .set_naming_strategies(standard_naming_strategies),
                         fields=field_props,
                     ),
                     reverse_op=ArchiveEntitySchema(benchling_given_wh_name),
@@ -313,10 +314,10 @@ def compare_entity_schemas(
                 new_schema_props.warehouse_name = model_wh_name
                 rollback_schema_props.warehouse_name = benchling_given_wh_name
             if template_based_naming_strategies:
-                new_schema_props.naming_strategies = template_based_naming_strategies
-                rollback_schema_props.naming_strategies = (
+                new_schema_props.naming_strategies = (
                     model.__schema_properties__.naming_strategies
                 )
+                rollback_schema_props.naming_strategies = standard_naming_strategies
             if new_schema_props.model_dump(exclude_unset=True) != {}:
                 ops.append(
                     CompareOperation(
@@ -354,7 +355,7 @@ def compare_entity_schemas(
                 ops.append(
                     CompareOperation(
                         op=UpdateEntitySchemaNameTemplate(
-                            model_wh_name,
+                            benchling_given_wh_name,
                             BaseNameTemplate(
                                 **benchling_given_name_template.merge(
                                     model.__name_template__
@@ -362,7 +363,7 @@ def compare_entity_schemas(
                             ),
                         ),
                         reverse_op=UpdateEntitySchemaNameTemplate(
-                            model_wh_name,
+                            benchling_given_wh_name,
                             BaseNameTemplate(
                                 **model.__name_template__.merge(
                                     benchling_given_name_template

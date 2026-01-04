@@ -94,7 +94,3 @@ class SchemaProperties(BaseSchemaProperties):
     def set_archived(self, value: bool) -> SchemaProperties:
         self._archived = value
         return self
-
-    def set_warehouse_name(self, value: str) -> SchemaProperties:
-        self.warehouse_name = value
-        return self
