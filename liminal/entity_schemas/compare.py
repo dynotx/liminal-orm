@@ -269,8 +269,6 @@ def compare_entity_schemas(
                     )
                 )
         # If the model is not found as the benchling schema, Create.
-        # Benchling api does not allow for setting a custom warehouse_name,
-        # so we need to run another UpdateEntitySchema to set the warehouse_name if it is different from the snakecase version of the model name.
         else:
             field_props = [
                 col.properties.set_warehouse_name(wh_name)
@@ -281,7 +279,12 @@ def compare_entity_schemas(
                 for p in field_props
                 if (p.tooltip and p.warehouse_name)
             }
-            field_props = [f.unset_tooltip() for f in field_props]
+            entity_links_to_update = {
+                p.warehouse_name: p.entity_link
+                for p in field_props
+                if (p.entity_link and p.warehouse_name)
+            }
+            field_props = [f.unset_tooltip().unset_entity_link() for f in field_props]
             template_based_naming_strategies = {
                 s
                 for s in model.__schema_properties__.naming_strategies
@@ -308,6 +311,10 @@ def compare_entity_schemas(
                     reverse_op=ArchiveEntitySchema(benchling_given_wh_name),
                 )
             )
+            # Benchling api does not allow for setting a custom warehouse_name.
+            # Benchling api also does not allow for setting the name template.
+            # Because of this, we need to run a separate UpdateEntitySchema to set the warehouse_name if it is different from the snakecase version of the model name.
+            # We also need to set the template based naming_strategies separately, since the name template must first be set.
             new_schema_props = BaseSchemaProperties()
             rollback_schema_props = BaseSchemaProperties()
             if model_wh_name != benchling_given_wh_name:
@@ -336,24 +343,34 @@ def compare_entity_schemas(
                 )
             # Benchling api also does not allow for setting of field tooltips
             # so we need to run another UpdateEntitySchemaField to set the tooltip after the schema is created
-            for wh_field_name, tooltip_value in tooltips_to_update.items():
+            # In order to avoid circular dependencies of entity_links, we also set the entity_link separatly in the case where two schemas are created that link to each other.
+            wh_field_names_to_update = set(entity_links_to_update.keys()).union(
+                set(tooltips_to_update.keys())
+            )
+            for wh_field_name in wh_field_names_to_update:
+                new_field_props = BaseFieldProperties()
+                rollback_field_props = BaseFieldProperties()
+                if entity_link_value := entity_links_to_update.get(wh_field_name):
+                    new_field_props.entity_link = entity_link_value
+                    rollback_field_props.entity_link = None
+                if tooltip_value := tooltips_to_update.get(wh_field_name):
+                    new_field_props.tooltip = tooltip_value
+                    rollback_field_props.tooltip = None
                 ops.append(
                     CompareOperation(
                         op=UpdateEntitySchemaField(
-                            model_wh_name,
-                            wh_field_name,
-                            BaseFieldProperties(tooltip=tooltip_value),
+                            model_wh_name, wh_field_name, new_field_props
                         ),
                         reverse_op=UpdateEntitySchemaField(
-                            model_wh_name,
-                            wh_field_name,
-                            BaseFieldProperties(tooltip=None),
+                            model_wh_name, wh_field_name, rollback_field_props
                         ),
                     )
                 )
             benchling_given_name_template = BaseNameTemplate(
                 parts=[], order_name_parts_by_sequence=False
             )
+            # Benchling api also does not allow for setting the name template when Creating an Entity Schema, since it is a different endpoint.
+            # Because of this, we need to run a separate UpdateEntitySchemaNameTemplate using the name template endpoint to set the name template on the newly created Entity Schema.
             if benchling_given_name_template != model.__name_template__:
                 ops.append(
                     CompareOperation(

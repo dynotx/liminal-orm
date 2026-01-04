@@ -69,6 +69,11 @@ class BaseFieldProperties(BaseModel):
             self.__pydantic_fields_set__.remove("tooltip")
         return self
 
+    def unset_entity_link(self) -> BaseFieldProperties:
+        if "entity_link" in self.__pydantic_fields_set__:
+            self.__pydantic_fields_set__.remove("entity_link")
+        return self
+
     def validate_column_definition(self, wh_name: str) -> bool:
         """If the Field Properties are meant to represent a column in Benchling,
         this will validate the properties and ensure that the entity_link and dropdowns are valid names that exist in our code.
