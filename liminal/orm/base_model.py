@@ -69,8 +69,8 @@ class BaseModel(Generic[T], Base):
             c[0]: c[1] for c in cls.__dict__.items() if isinstance(c[1], SqlColumn)
         }
         column_wh_names = set(model_columns.keys())
-        column_names = [c.name for c in model_columns.values()]
-        if column_names != set(column_names):
+        column_names = [c.properties.name for c in model_columns.values()]
+        if len(column_names) != len(set(column_names)):
             raise ValueError("Schema cannot have columns with duplicate Column names.")
 
         # Validate constraints
