@@ -165,7 +165,7 @@ def mock_benchling_schema(
             _archived=False,
         ),
         "string_field_tooltip": Props(
-            name="String Field Not Required",
+            name="String Field Not Required Tooltip",
             type=Type.TEXT,
             required=False,
             is_multi=False,
@@ -374,7 +374,7 @@ def mock_benchling_subclass(mock_benchling_dropdown) -> list[type[BaseModel]]:  
             is_multi=False,
         )
         string_field_tooltip: SqlColumn = Column(
-            name="String Field Not Required",
+            name="String Field Not Required Tooltip",
             type=Type.TEXT,
             required=False,
             is_multi=False,
