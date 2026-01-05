@@ -31,7 +31,7 @@ if TYPE_CHECKING:
 
 T = TypeVar("T", bound="BaseModel")
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 class BaseModel(Generic[T], Base):
@@ -65,16 +65,20 @@ class BaseModel(Generic[T], Base):
             raise ValueError(
                 f"Schema name '{cls.__schema_properties__.name}' is already used by another subclass."
             )
-        column_wh_names = [
-            c[0] for c in cls.__dict__.items() if isinstance(c[1], SqlColumn)
-        ]
+        model_columns = {
+            c[0]: c[1] for c in cls.__dict__.items() if isinstance(c[1], SqlColumn)
+        }
+        column_wh_names = set(model_columns.keys())
+        column_names = [c.name for c in model_columns.values()]
+        if column_names != set(column_names):
+            raise ValueError("Schema cannot have columns with duplicate Column names.")
+
         # Validate constraints
         invalid_constraints = [
             c
             for c in cls.__schema_properties__.constraint_fields
             if c
-            not in set(column_wh_names)
-            | set(SequenceConstraint._value2member_map_.keys())
+            not in column_wh_names | set(SequenceConstraint._value2member_map_.keys())
         ]
         if invalid_constraints:
             raise ValueError(
@@ -217,7 +221,7 @@ class BaseModel(Generic[T], Base):
             )
             > 1
         ):
-            logger.warning(
+            LOGGER.warning(
                 f"{cls.__name__}: schema prefix '{cls.__schema_properties__.prefix}' is already used by another subclass. Please ensure fieldsets=True in BenchlingConnection you are updating/creating this schema."
             )
         for wh_name, field in properties.items():
@@ -395,7 +399,7 @@ class BaseModel(Generic[T], Base):
         table: list[T] = cls.apply_base_filters(
             cls.query(session), base_filters=base_filters
         ).all()
-        logger.info(f"Validating {len(table)} entities for {cls.__name__}...")
+        LOGGER.info(f"Validating {len(table)} entities for {cls.__name__}...")
         validator_functions = cls.get_validators()
         for entity in table:
             for validator_func in validator_functions:
