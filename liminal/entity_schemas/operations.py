@@ -87,7 +87,7 @@ class CreateEntitySchema(BaseOperation):
             != to_snake_case(self._validated_schema_properties.name)
         ):
             raise ValueError(
-                f"{self._validated_schema_properties.name}: Tenant config flag SCHEMAS_ENABLE_CHANGE_WAREHOUSE_NAME is required to set a custom schema warehouse name. Reach out to Benchling support to turn this config flag to True and then set the flag to True in BenchlingConnection.config_flags. Otherwise, define the schema warehouse_name in code to be the given Benchling warehouse name: {to_snake_case(self._validated_schema_properties.name)}."
+                f"{self.__class__.__name__} {self._validated_schema_properties.name}: Tenant config flag SCHEMAS_ENABLE_CHANGE_WAREHOUSE_NAME is required to set a custom schema warehouse name. Reach out to Benchling support to turn this config flag to True and then set the flag to True in BenchlingConnection.config_flags. Otherwise, define the schema warehouse_name in code to be the given Benchling warehouse name: {to_snake_case(self._validated_schema_properties.name)}."
             )
         for field in self.fields:
             if (
@@ -96,7 +96,7 @@ class CreateEntitySchema(BaseOperation):
                 not in get_unit_name_to_id_map(benchling_service).keys()
             ):
                 raise ValueError(
-                    f"{self._validated_schema_properties.warehouse_name}: On field {field.warehouse_name}, unit {field.unit_name} not found in Benchling Unit Dictionary as a valid unit. Please check the field definition or your Unit Dictionary."
+                    f"{self.__class__.__name__} {self._validated_schema_properties.warehouse_name}: On field {field.warehouse_name}, unit {field.unit_name} not found in Benchling Unit Dictionary as a valid unit. Please check the field definition or your Unit Dictionary."
                 )
 
     def _validate_create(self, benchling_service: BenchlingService) -> None:
@@ -236,7 +236,7 @@ class UpdateEntitySchema(BaseOperation):
             and self.update_props.warehouse_name is not None
         ):
             raise ValueError(
-                f"{self.wh_schema_name}: Tenant config flag SCHEMAS_ENABLE_CHANGE_WAREHOUSE_NAME is required to update the schema warehouse_name to a custom name. Reach out to Benchling support to turn this config flag to True and then set the flag to True in BenchlingConnection.config_flags."
+                f"{self.__class__.__name__} {self.wh_schema_name}: Tenant config flag SCHEMAS_ENABLE_CHANGE_WAREHOUSE_NAME is required to update the schema warehouse_name to a custom name. Reach out to Benchling support to turn this config flag to True and then set the flag to True in BenchlingConnection.config_flags."
             )
 
     def _validate(self, benchling_service: BenchlingService) -> TagSchemaModel:
@@ -387,15 +387,18 @@ class CreateEntitySchemaField(BaseOperation):
             and self.field_props.warehouse_name != to_snake_case(self._field_name)
         ):
             raise ValueError(
-                f"{self.wh_schema_name}: Tenant config flag SCHEMAS_ENABLE_CHANGE_WAREHOUSE_NAME is required to set a custom field warehouse name. Reach out to Benchling support to turn this config flag to True and then set the flag to True in BenchlingConnection.config_flags. Otherwise, define the field warehouse_name in code to be the given Benchling warehouse name: {to_snake_case(self._field_name)}."
+                f"{self.__class__.__name__} {self.wh_schema_name}: Tenant config flag SCHEMAS_ENABLE_CHANGE_WAREHOUSE_NAME is required to set a custom field warehouse name. Reach out to Benchling support to turn this config flag to True and then set the flag to True in BenchlingConnection.config_flags. Otherwise, define the field warehouse_name in code to be the given Benchling warehouse name: {to_snake_case(self._field_name)}."
             )
-        if (
-            self.field_props.unit_name
-            and self.field_props.unit_name
-            not in get_unit_name_to_id_map(benchling_service).keys()
-        ):
-            raise ValueError(
-                f"{self.wh_schema_name}: On field {self._wh_field_name}, unit {self.field_props.unit_name} not found in Benchling Unit Dictionary as a valid unit. Please check the field definition or your Unit Dictionary."
+        if self.field_props.unit_name:
+            if (
+                self.field_props.unit_name
+                not in get_unit_name_to_id_map(benchling_service).keys()
+            ):
+                raise ValueError(
+                    f"{self.__class__.__name__} {self.wh_schema_name}: On field {self._wh_field_name}, unit {self.field_props.unit_name} not found in Benchling Unit Dictionary as a valid unit. Please check the field definition or your Unit Dictionary."
+                )
+            LOGGER.warning(
+                f"{self.__class__.__name__} {self.wh_schema_name}: On field {self._wh_field_name}, updating unit name to {self.field_props.unit_name}. The unit of this field CANNOT be changed once it's been set."
             )
 
 
@@ -530,32 +533,40 @@ class UpdateEntitySchemaField(BaseOperation):
         return f"{self.wh_schema_name}: Entity schema field '{self.wh_field_name}' in Benchling is different than in code: {str(self.update_props)}."
 
     def validate(self, benchling_service: BenchlingService) -> None:
+        unit_no_change_message = f"{self.__class__.__name__} {self.wh_schema_name}: On field {self.wh_field_name}, updating unit name to {self.update_props.unit_name}. The unit of this field CANNOT be changed once it's been set."
         try:
             tag_schema = TagSchemaModel.get_one_cached(
                 benchling_service, self.wh_schema_name
             )
         except Exception:
-            return
+            if self.update_props.unit_name:
+                if (
+                    self.update_props.unit_name
+                    not in get_unit_name_to_id_map(benchling_service).keys()
+                ):
+                    raise ValueError(
+                        f"{self.__class__.__name__} {self.wh_schema_name}: On field {self.wh_field_name}, unit {self.update_props.unit_name} not found in Benchling Unit Dictionary as a valid unit. Please check the field definition or your Unit Dictionary."
+                    )
+                LOGGER.warning(unit_no_change_message)
+                return
         if (
             benchling_service.connection.config_flags.schemas_enable_change_warehouse_name
             is False
             and self.update_props.warehouse_name is not None
         ):
             raise ValueError(
-                f"{self.wh_schema_name}: Tenant config flag SCHEMAS_ENABLE_CHANGE_WAREHOUSE_NAME is required to update the field warehouse_name to a custom name. Reach out to Benchling support to turn this config flag to True and then set the flag to True in BenchlingConnection.config_flags."
+                f"{self.__class__.__name__} {self.wh_schema_name}: Tenant config flag SCHEMAS_ENABLE_CHANGE_WAREHOUSE_NAME is required to update the field warehouse_name to a custom name. Reach out to Benchling support to turn this config flag to True and then set the flag to True in BenchlingConnection.config_flags."
             )
         if "unit_name" in self.update_props.model_dump(exclude_unset=True):
-            no_change_message = f"{self.wh_schema_name}: On field {self.wh_field_name}, updating unit name to {self.update_props.unit_name}. The unit of this field CANNOT be changed once it's been set."
             if tag_schema.get_field(self.wh_field_name).unitApiIdentifier:
-                raise ValueError(no_change_message)
-            else:
-                LOGGER.warning(no_change_message)
+                raise ValueError(unit_no_change_message)
+            LOGGER.warning(unit_no_change_message)
             if (
                 self.update_props.unit_name
                 not in get_unit_name_to_id_map(benchling_service).keys()
             ):
                 raise ValueError(
-                    f"{self.wh_schema_name}: On field {self.wh_field_name}, unit {self.update_props.unit_name} not found in Benchling Unit Dictionary as a valid unit. Please check the field definition or your Unit Dictionary."
+                    f"{self.__class__.__name__} {self.wh_schema_name}: On field {self.wh_field_name}, unit {self.update_props.unit_name} not found in Benchling Unit Dictionary as a valid unit. Please check the field definition or your Unit Dictionary."
                 )
 
     def _validate(self, benchling_service: BenchlingService) -> TagSchemaModel:

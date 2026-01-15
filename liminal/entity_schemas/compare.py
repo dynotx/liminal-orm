@@ -284,7 +284,15 @@ def compare_entity_schemas(
                 for p in field_props
                 if (p.entity_link and p.warehouse_name)
             }
-            field_props = [f.unset_tooltip().unset_entity_link() for f in field_props]
+            unit_names_to_update = {
+                p.warehouse_name: p.unit_name
+                for p in field_props
+                if (p.unit_name and p.warehouse_name)
+            }
+            field_props = [
+                f.unset_tooltip().unset_entity_link().unset_unit_name()
+                for f in field_props
+            ]
             template_based_naming_strategies = {
                 s
                 for s in model.__schema_properties__.naming_strategies
@@ -345,7 +353,7 @@ def compare_entity_schemas(
             # so we need to run another UpdateEntitySchemaField to set the tooltip after the schema is created
             # In order to avoid circular dependencies of entity_links, we also set the entity_link separatly in the case where two schemas are created that link to each other.
             wh_field_names_to_update = set(entity_links_to_update.keys()).union(
-                set(tooltips_to_update.keys())
+                set(tooltips_to_update.keys()), set(unit_names_to_update.keys())
             )
             for wh_field_name in wh_field_names_to_update:
                 new_field_props = BaseFieldProperties()
@@ -356,6 +364,9 @@ def compare_entity_schemas(
                 if tooltip_value := tooltips_to_update.get(wh_field_name):
                     new_field_props.tooltip = tooltip_value
                     rollback_field_props.tooltip = None
+                if unit_name_value := unit_names_to_update.get(wh_field_name):
+                    new_field_props.unit_name = unit_name_value
+                    rollback_field_props.unit_name = None
                 ops.append(
                     CompareOperation(
                         op=UpdateEntitySchemaField(
