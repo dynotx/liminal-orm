@@ -64,6 +64,7 @@ def get_full_migration_operations(
 def execute_operations(
     benchling_service: BenchlingService, operations: list[BaseOperation]
 ) -> bool:
+    print("[bold italic]Validating operations...")
     """This runs the given operations. It validates the operations and then executes them."""
     for o in operations:
         o.validate(benchling_service)

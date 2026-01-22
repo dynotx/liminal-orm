@@ -398,7 +398,7 @@ class CreateEntitySchemaField(BaseOperation):
                     f"{self.__class__.__name__} {self.wh_schema_name}: On field {self._wh_field_name}, unit {self.field_props.unit_name} not found in Benchling Unit Dictionary as a valid unit. Please check the field definition or your Unit Dictionary."
                 )
             LOGGER.warning(
-                f"{self.__class__.__name__} {self.wh_schema_name}: On field {self._wh_field_name}, updating unit name to {self.field_props.unit_name}. The unit of this field CANNOT be changed once it's been set."
+                f"{self.__class__.__name__} {self.wh_schema_name}: Updating unit name to {self.field_props.unit_name} on field {self._wh_field_name}. The unit of this field CANNOT be changed once it's been set."
             )
 
 
@@ -533,7 +533,7 @@ class UpdateEntitySchemaField(BaseOperation):
         return f"{self.wh_schema_name}: Entity schema field '{self.wh_field_name}' in Benchling is different than in code: {str(self.update_props)}."
 
     def validate(self, benchling_service: BenchlingService) -> None:
-        unit_no_change_message = f"{self.__class__.__name__} {self.wh_schema_name}: On field {self.wh_field_name}, updating unit name to {self.update_props.unit_name}. The unit of this field CANNOT be changed once it's been set."
+        unit_no_change_message = f"{self.__class__.__name__} {self.wh_schema_name}: Updating unit name to {self.update_props.unit_name} on field {self.wh_field_name}. The unit of this field CANNOT be changed once it's been set."
         try:
             tag_schema = TagSchemaModel.get_one_cached(
                 benchling_service, self.wh_schema_name
