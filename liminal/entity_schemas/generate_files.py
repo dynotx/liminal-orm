@@ -96,9 +96,16 @@ def generate_all_entity_schema_files(
             "from liminal.orm.column import Column",
             "from liminal.orm.base_model import BaseModel",
             "from liminal.orm.schema_properties import SchemaProperties",
-            "from liminal.enums import BenchlingEntityType, BenchlingFieldType, BenchlingNamingStrategy",
             f"from liminal.orm.mixins import {get_entity_mixin(schema_properties.entity_type)}",
         ]
+        import_strings.append(
+            "from liminal.enums import BenchlingEntityType, BenchlingFieldType"
+        )
+        if "naming_strategies" in schema_properties.model_dump(
+            exclude_unset=True, exclude_defaults=True
+        ):
+            import_strings[-1] = import_strings[-1] + ", BenchlingNamingStrategy"
+
         init_strings = [f"{TAB}def __init__(", f"{TAB}self,"]
         column_strings = []
         dropdowns = []
@@ -116,7 +123,7 @@ def generate_all_entity_schema_files(
                     column_props_string += f"""dropdown={v},"""
                 else:
                     column_props_string += f"""{k}={v.__repr__()},"""
-            column_string = f"""{TAB}{col_name}: SqlColumn = Column({column_props_string.rstrip(',')})"""
+            column_string = f"""{TAB}{col_name}: SqlColumn = Column({column_props_string.rstrip(",")})"""
             column_strings.append(column_string)
             if col.required and col.type:
                 init_strings.append(
