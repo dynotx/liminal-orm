@@ -12,6 +12,7 @@ class BenchlingFieldType(StrEnum):
     DNA_SEQUENCE_LINK = "dna_sequence_link"
     PART_LINK = "part_link"
     TRANSLATION_LINK = "translation_link"
+    TRANSCRIPTION_LINK = "transcription_link"
     DROPDOWN = "dropdown"
     ENTITY_LINK = "entity_link"
     ENTRY_LINK = "entry_link"
