@@ -231,7 +231,6 @@ class BaseModel(Generic[T], Base):
                         s.__schema_properties__.warehouse_name
                         for s in cls.__base__.get_all_subclasses()
                     ]:
-                        breakpoint()
                         raise ValueError(
                             f"Field {wh_name}: could not find entity link {field.entity_link} as a warehouse name for any currently defined schemas."
                         )
