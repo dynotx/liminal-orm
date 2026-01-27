@@ -12,6 +12,7 @@ class BenchlingFieldType(StrEnum):
     DNA_SEQUENCE_LINK = "dna_sequence_link"
     PART_LINK = "part_link"
     TRANSLATION_LINK = "translation_link"
+    TRANSCRIPTION_LINK = "transcription_link"
     DROPDOWN = "dropdown"
     ENTITY_LINK = "entity_link"
     ENTRY_LINK = "entry_link"
@@ -37,7 +38,12 @@ class BenchlingFieldType(StrEnum):
 
     @classmethod
     def get_entity_link_types(cls) -> list[str]:
-        return [cls.ENTITY_LINK, cls.TRANSLATION_LINK, cls.PART_LINK]
+        return [
+            cls.ENTITY_LINK,
+            cls.TRANSLATION_LINK,
+            cls.TRANSCRIPTION_LINK,
+            cls.PART_LINK,
+        ]
 
     @classmethod
     def get_number_field_types(cls) -> list[str]:

@@ -24,6 +24,7 @@ def convert_benchling_type_to_python_type(benchling_type: BenchlingFieldType) ->
         BenchlingFieldType.DNA_SEQUENCE_LINK: str,
         BenchlingFieldType.AA_SEQUENCE_LINK: str,
         BenchlingFieldType.TRANSLATION_LINK: str,
+        BenchlingFieldType.TRANSCRIPTION_LINK: str,
         BenchlingFieldType.DROPDOWN: str,
         BenchlingFieldType.ENTITY_LINK: str,
         BenchlingFieldType.ENTRY_LINK: str,
@@ -54,6 +55,7 @@ def convert_benchling_type_to_sql_alchemy_type(
         BenchlingFieldType.DNA_SEQUENCE_LINK: String,
         BenchlingFieldType.AA_SEQUENCE_LINK: String,
         BenchlingFieldType.TRANSLATION_LINK: String,
+        BenchlingFieldType.TRANSCRIPTION_LINK: String,
         BenchlingFieldType.DROPDOWN: String,
         BenchlingFieldType.ENTITY_LINK: String,
         BenchlingFieldType.ENTRY_LINK: String,
@@ -98,6 +100,10 @@ def convert_field_type_to_api_field_type(
         BenchlingFieldType.PART_LINK: (BenchlingAPIFieldType.PART_LINK, None),
         BenchlingFieldType.TRANSLATION_LINK: (
             BenchlingAPIFieldType.TRANSLATION_LINK,
+            None,
+        ),
+        BenchlingFieldType.TRANSCRIPTION_LINK: (
+            BenchlingAPIFieldType.TRANSCRIPTION_LINK,
             None,
         ),
         BenchlingFieldType.ENTITY_LINK: (BenchlingAPIFieldType.FILE_LINK, None),
@@ -146,6 +152,10 @@ def convert_api_field_type_to_field_type(
             BenchlingAPIFieldType.TRANSLATION_LINK,
             None,
         ): BenchlingFieldType.TRANSLATION_LINK,
+        (
+            BenchlingAPIFieldType.TRANSCRIPTION_LINK,
+            None,
+        ): BenchlingFieldType.TRANSCRIPTION_LINK,
         (BenchlingAPIFieldType.FILE_LINK, None): BenchlingFieldType.ENTITY_LINK,
         (BenchlingAPIFieldType.FLOAT, None): BenchlingFieldType.DECIMAL,
         (BenchlingAPIFieldType.INTEGER, None): BenchlingFieldType.INTEGER,
