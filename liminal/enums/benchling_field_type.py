@@ -1,3 +1,4 @@
+from __future__ import annotations
 from liminal.base.str_enum import StrEnum
 
 
@@ -26,7 +27,23 @@ class BenchlingFieldType(StrEnum):
     BOOLEAN = "boolean"
 
     @classmethod
-    def get_non_multi_select_types(cls) -> list[str]:
+    def get_default_field_types(cls) -> list[BenchlingFieldType]:
+        return [
+            cls.TEXT,
+            cls.LONG_TEXT,
+            cls.INTEGER,
+            cls.DECIMAL,
+            cls.DATE,
+            cls.DATETIME,
+            cls.BOOLEAN,
+            cls.DROPDOWN,
+            cls.BLOB_LINK,
+            cls.ENTRY_LINK,
+            *cls.get_entity_types(),
+        ]
+
+    @classmethod
+    def get_non_multi_select_types(cls) -> list[BenchlingFieldType]:
         return [
             cls.TEXT,
             cls.LONG_TEXT,
@@ -37,7 +54,18 @@ class BenchlingFieldType(StrEnum):
         ]
 
     @classmethod
-    def get_entity_link_types(cls) -> list[str]:
+    def get_entity_types(cls) -> list[BenchlingFieldType]:
+        return [
+            cls.ENTITY_LINK,
+            cls.CUSTOM_ENTITY_LINK,
+            cls,
+            cls.AA_SEQUENCE_LINK,
+            cls.DNA_SEQUENCE_LINK,
+            cls.MIXTURE_LINK,
+        ]
+
+    @classmethod
+    def get_entity_link_types(cls) -> list[BenchlingFieldType]:
         return [
             cls.ENTITY_LINK,
             cls.TRANSLATION_LINK,
@@ -46,5 +74,5 @@ class BenchlingFieldType(StrEnum):
         ]
 
     @classmethod
-    def get_number_field_types(cls) -> list[str]:
+    def get_number_field_types(cls) -> list[BenchlingFieldType]:
         return [cls.INTEGER, cls.DECIMAL]

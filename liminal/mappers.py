@@ -243,3 +243,30 @@ def convert_entity_type_to_api_entity_type(
         return conversion_map[entity_type]
     else:
         raise ValueError(f"Entity type '{entity_type}' is not supported.")
+
+
+def entity_type_to_valid_field_types(
+    entity_type: BenchlingEntityType,
+) -> list[BenchlingFieldType]:
+    entity_type_to_valid_field_types_map: dict[
+        BenchlingEntityType, list[BenchlingFieldType]
+    ] = {
+        BenchlingEntityType.CUSTOM_ENTITY: [],
+        BenchlingEntityType.DNA_SEQUENCE: [
+            BenchlingFieldType.PART_LINK,
+            BenchlingFieldType.TRANSLATION_LINK,
+            BenchlingFieldType.TRANSCRIPTION_LINK,
+        ],
+        BenchlingEntityType.DNA_OLIGO: [],
+        BenchlingEntityType.RNA_OLIGO: [],
+        BenchlingEntityType.RNA_SEQUENCE: [
+            BenchlingFieldType.PART_LINK,
+            BenchlingFieldType.TRANSLATION_LINK,
+        ],
+        BenchlingEntityType.AA_SEQUENCE: [],
+        BenchlingEntityType.ENTRY: [],
+        BenchlingEntityType.MIXTURE: [],
+    }
+    for valid_field_types in entity_type_to_valid_field_types_map.values():
+        valid_field_types.extend(BenchlingFieldType.get_default_field_types())
+    return entity_type_to_valid_field_types_map[entity_type]
