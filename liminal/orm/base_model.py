@@ -226,6 +226,14 @@ class BaseModel(Generic[T], Base):
             )
         for wh_name, field in properties.items():
             try:
+                if field.entity_link:
+                    if field.entity_link not in [
+                        s.__schema_properties__.warehouse_name
+                        for s in cls.__base__.get_all_subclasses()
+                    ]:
+                        raise ValueError(
+                            f"Field {wh_name}: could not find entity link {field.entity_link} as a warehouse name for any currently defined schemas."
+                        )
                 if field.dropdown_link:
                     if field.dropdown_link not in [
                         d.__benchling_name__ for d in BaseDropdown.get_all_subclasses()
