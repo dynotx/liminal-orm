@@ -79,6 +79,10 @@ class BaseFieldProperties(BaseModel):
             self.__pydantic_fields_set__.remove("unit_name")
         return self
 
+    def set_type(self, new_type: BenchlingFieldType) -> BaseFieldProperties:
+        self.type = new_type
+        return self
+
     def validate_column_definition(self, wh_name: str) -> bool:
         """If the Field Properties are meant to represent a column in Benchling,
         this will validate the properties and ensure that the entity_link and dropdowns are valid names that exist in our code.

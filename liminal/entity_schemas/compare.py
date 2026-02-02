@@ -18,6 +18,7 @@ from liminal.entity_schemas.operations import (
     UpdateEntitySchemaNameTemplate,
 )
 from liminal.entity_schemas.utils import get_converted_tag_schemas
+from liminal.enums import BenchlingFieldType
 from liminal.enums.benchling_naming_strategy import BenchlingNamingStrategy
 from liminal.orm.base_model import BaseModel
 from liminal.orm.column import Column
@@ -284,6 +285,11 @@ def compare_entity_schemas(
                 for p in field_props
                 if (p.entity_link and p.warehouse_name)
             }
+            field_type_to_update = {
+                p.warehouse_name: p.type
+                for p in field_props
+                if (p.entity_link and p.warehouse_name)
+            }
             unit_names_to_update = {
                 p.warehouse_name: p.unit_name
                 for p in field_props
@@ -291,6 +297,10 @@ def compare_entity_schemas(
             }
             field_props = [
                 f.unset_tooltip().unset_entity_link().unset_unit_name()
+                for f in field_props
+            ]
+            field_props = [
+                f.set_type(BenchlingFieldType.ENTITY_LINK) if f.entity_link else f
                 for f in field_props
             ]
             template_based_naming_strategies = {
@@ -360,7 +370,11 @@ def compare_entity_schemas(
                 rollback_field_props = BaseFieldProperties()
                 if entity_link_value := entity_links_to_update.get(wh_field_name):
                     new_field_props.entity_link = entity_link_value
+                    new_field_props.type = new_field_props.type = (
+                        field_type_to_update.get(wh_field_name)
+                    )
                     rollback_field_props.entity_link = None
+                    rollback_field_props.type = BenchlingFieldType.ENTITY_LINK
                 if tooltip_value := tooltips_to_update.get(wh_field_name):
                     new_field_props.tooltip = tooltip_value
                     rollback_field_props.tooltip = None
