@@ -120,10 +120,10 @@ def generate_all_entity_schema_files(
             column_props_string = ""
             for k, v in column_props.items():
                 if k == "dropdown_link":
-                    column_props_string += f"""dropdown={v},"""
+                    column_props_string += f"""dropdown={v}, """
                 else:
-                    column_props_string += f"""{k}={v.__repr__()},"""
-            column_string = f"""{TAB}{col_name}: SqlColumn = Column({column_props_string.rstrip(",")})"""
+                    column_props_string += f"""{k}={v.__repr__()}, """
+            column_string = f"""{TAB}{col_name}: SqlColumn = Column({column_props_string.rstrip(", ")})"""
             column_strings.append(column_string)
             if col.required and col.type:
                 init_strings.append(

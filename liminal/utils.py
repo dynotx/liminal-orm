@@ -73,7 +73,7 @@ def is_valid_prefix(prefix: str) -> bool:
 
 
 @retry(
-    stop=stop_after_attempt(3),
+    stop=stop_after_attempt(5),
     retry=retry_if_exception_type(ValueError),
     reraise=True,
     wait=wait_fixed(2),

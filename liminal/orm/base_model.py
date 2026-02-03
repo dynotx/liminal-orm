@@ -18,6 +18,7 @@ from liminal.entity_schemas.utils import get_benchling_entity_schemas
 from liminal.enums import BenchlingNamingStrategy
 from liminal.enums.benchling_entity_type import BenchlingEntityType
 from liminal.enums.sequence_constraint import SequenceConstraint
+from liminal.mappers import entity_type_to_valid_field_types
 from liminal.orm.base import Base
 from liminal.orm.base_tables.user import User
 from liminal.orm.name_template import NameTemplate
@@ -65,6 +66,8 @@ class BaseModel(Generic[T], Base):
             raise ValueError(
                 f"Schema name '{cls.__schema_properties__.name}' is already used by another subclass."
             )
+
+        # Validate columns
         model_columns = {
             c[0]: c[1] for c in cls.__dict__.items() if isinstance(c[1], SqlColumn)
         }
@@ -72,6 +75,13 @@ class BaseModel(Generic[T], Base):
         column_names = [c.properties.name for c in model_columns.values()]
         if len(column_names) != len(set(column_names)):
             raise ValueError("Schema cannot have columns with duplicate Column names.")
+        for column in model_columns.values():
+            if column.properties.type not in entity_type_to_valid_field_types(
+                cls.__schema_properties__.entity_type
+            ):
+                raise ValueError(
+                    f"Schema has column `{column.properties.name}` with an invalid type. For schema entity_type `{cls.__schema_properties__.entity_type}`, column type must be one of: {entity_type_to_valid_field_types(cls.__schema_properties__.entity_type)}"
+                )
 
         # Validate constraints
         invalid_constraints = [

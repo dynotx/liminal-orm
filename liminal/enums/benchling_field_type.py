@@ -58,7 +58,6 @@ class BenchlingFieldType(StrEnum):
         return [
             cls.ENTITY_LINK,
             cls.CUSTOM_ENTITY_LINK,
-            cls,
             cls.AA_SEQUENCE_LINK,
             cls.DNA_SEQUENCE_LINK,
             cls.MIXTURE_LINK,

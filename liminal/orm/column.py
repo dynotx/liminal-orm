@@ -78,29 +78,35 @@ class Column(SqlColumn):
         nested_sql_type = convert_benchling_type_to_sql_alchemy_type(type)
         sqlalchemy_type = JSON if is_multi else nested_sql_type
         if dropdown and type != BenchlingFieldType.DROPDOWN:
-            raise ValueError("Dropdown can only be set if the field type is DROPDOWN.")
+            raise ValueError(
+                f"Column {name}: Dropdown can only be set if the field type is DROPDOWN."
+            )
         if dropdown is None and type == BenchlingFieldType.DROPDOWN:
-            raise ValueError("Dropdown must be set if the field type is DROPDOWN.")
+            raise ValueError(
+                f"Column {name}: Dropdown must be set if the field type is DROPDOWN."
+            )
         if unit_name and type not in BenchlingFieldType.get_number_field_types():
             raise ValueError(
-                f"Unit can only be set if the field type is one of {BenchlingFieldType.get_number_field_types()}."
+                f"Column {name}: Unit can only be set if the field type is one of {BenchlingFieldType.get_number_field_types()}."
             )
         if decimal_places and type not in BenchlingFieldType.DECIMAL:
             raise ValueError(
-                "Decimal places can only be set if the field type is DECIMAL."
+                f"Column {name}: Decimal places can only be set if the field type is DECIMAL."
             )
         if decimal_places and (decimal_places < 0 or decimal_places > 15):
-            raise ValueError("Decimal places must be between 0 and 15.")
+            raise ValueError(f"Column {name}: Decimal places must be between 0 and 15.")
         if entity_link and type not in BenchlingFieldType.get_entity_link_types():
             raise ValueError(
-                f"Entity link can only be set if the field type is one of {BenchlingFieldType.get_entity_link_types()}."
+                f"Column {name}: Entity link can only be set if the field type is one of {BenchlingFieldType.get_entity_link_types()}."
             )
         if parent_link and type not in BenchlingFieldType.get_entity_link_types():
             raise ValueError(
-                f"Parent link can only be set if the field type is one of {BenchlingFieldType.get_entity_link_types()}."
+                f"Column {name}: Parent link can only be set if the field type is one of {BenchlingFieldType.get_entity_link_types()}."
             )
         if type in BenchlingFieldType.get_non_multi_select_types() and is_multi is True:
-            raise ValueError(f"Field type {type} cannot have multi-value set as True.")
+            raise ValueError(
+                f"Column {name}: Field type {type} cannot have multi-value set as True."
+            )
         self.sqlalchemy_type = sqlalchemy_type
         foreign_key = None
         if type in BenchlingFieldType.get_entity_link_types() and entity_link:
