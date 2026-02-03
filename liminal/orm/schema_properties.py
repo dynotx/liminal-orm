@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from pydantic import model_validator
+from pydantic import Field, model_validator
 
 from liminal.base.properties.base_schema_properties import (
     BaseSchemaProperties,
@@ -59,7 +59,7 @@ class SchemaProperties(BaseSchemaProperties):
     use_registry_id_as_label: bool | None = False
     include_registry_id_in_chips: bool | None = False
     mixture_schema_config: MixtureSchemaConfig | None = None
-    constraint_fields: set[str] = set()
+    constraint_fields: set[str] = Field(default_factory=set)
     show_bases_in_expanded_view: bool | None = False
     _archived: bool = False
 
