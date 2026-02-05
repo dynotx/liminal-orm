@@ -93,7 +93,7 @@ class TagSchemaConstraint(BaseModel):
 
     areUniqueResiduesCaseSensitive: bool | None = None
     fields: list[TagSchemaFieldModel] | None = None
-    uniqueCanonicalSmilers: bool | None = None
+    uniqueCanonicalSmiles: bool | None = None
     uniqueResidues: bool | None = None
 
     @classmethod
@@ -118,7 +118,7 @@ class TagSchemaConstraint(BaseModel):
         return cls(
             fields=constraint_fields,
             uniqueResidues=uniqueResidues,
-            uniqueCanonicalSmilers=False,
+            uniqueCanonicalSmiles=False,
             areUniqueResiduesCaseSensitive=areUniqueResiduesCaseSensitive,
         )
 
