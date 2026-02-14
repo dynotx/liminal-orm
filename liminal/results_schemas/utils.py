@@ -12,7 +12,7 @@ from liminal.unit_dictionary.utils import get_unit_id_to_name_map
 
 
 def get_converted_results_schemas(
-    benchling_service: BenchlingService,
+    benchling_service: BenchlingService, include_archived: bool = False
 ) -> list[tuple[ResultsSchemaProperties, dict[str, BaseFieldProperties]]]:
     """This functions gets all Results Schema schemas from Benchling and converts them to our internal representation of a schema and its fields.
     It parses the Results Schema and creates ResultsSchemaProperties and a list of FieldProperties for each field in the schema.
@@ -21,6 +21,8 @@ def get_converted_results_schemas(
     dropdowns_map = get_benchling_dropdown_id_name_map(benchling_service)
     unit_id_to_name_map = get_unit_id_to_name_map(benchling_service)
     results_schemas_list = []
+    if not include_archived:
+        results_schemas = [s for s in results_schemas if not s.archiveRecord]
     for schema in results_schemas:
         schema_properties = ResultsSchemaProperties(
             name=schema.name,
