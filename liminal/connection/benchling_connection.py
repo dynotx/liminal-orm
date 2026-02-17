@@ -37,9 +37,14 @@ class BenchlingConnection(BaseModel):
     warehouse_connection_string: str | None = None
         The connection string for the warehouse.
     internal_api_admin_email: str | None = None
-        The email of the internal API admin.
+        The email of the internal API admin. If SSO is not enabled or not required on your Benchling tenant, this email is used to log in to Benchling, and give Liminal the authenticated internal API session cookie.
     internal_api_admin_password: str | None = None
-        The password of the internal API admin.
+        The password of the internal API admin. If SSO is not enabled or not required on your Benchling tenant, this password is used to log in to Benchling, and give Liminal the authenticated internal API session cookie.
+    chrome_profile_data_dir: str | None = ".liminal_chrome_data/"
+        The directory to store the Chrome profile data for playwright. If SSO is enabled and required on your Benchling tenant,
+        Liminal uses playwright so the user can log into Benchling in order to give Liminal the authenticated internal API session cookie.
+        This directory is used to store playwright's persistent context, allowing the user to set up a persistent chrome profile.
+        Set this to None in order to disable playwright's persistent context.
     fieldsets: bool = False
         Whether your Benchling tenant has access to fieldsets.
     config_flags: TenantConfigFlags = TenantConfigFlags()
@@ -54,6 +59,7 @@ class BenchlingConnection(BaseModel):
     warehouse_connection_string: str | None = None
     internal_api_admin_email: str | None = None
     internal_api_admin_password: str | None = None
+    chrome_profile_data_dir: str | None = "liminal/.liminal_chrome_data/"
     fieldsets: bool = False
     config_flags: TenantConfigFlags = TenantConfigFlags()
 

@@ -12,7 +12,7 @@ def _check_liminal_directory_initialized(liminal_dir_path: Path) -> None:
     """Raises an exception if the liminal directory does not exist at the given path."""
     if not liminal_dir_path.exists() or not liminal_dir_path.is_dir():
         raise Exception(
-            "Liminal directory not found at current working directory. Run `liminal init` or check your current working directory."
+            "/liminal directory not found at current working directory where `liminal` command was run. Run `liminal init` or ensure that your current working directory is where the /liminal environment is located."
         )
     else:
         if not (liminal_dir_path / "env.py").exists():
