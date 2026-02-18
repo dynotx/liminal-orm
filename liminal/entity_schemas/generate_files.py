@@ -3,7 +3,6 @@ from pathlib import Path
 
 from rich import print
 
-from liminal.base.base_dropdown import BaseDropdown
 from liminal.connection.benchling_service import BenchlingService
 from liminal.dropdowns.utils import get_benchling_dropdowns_dict
 from liminal.entity_schemas.utils import get_converted_tag_schemas
