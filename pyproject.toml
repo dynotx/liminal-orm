@@ -5,6 +5,15 @@ description = "An ORM and toolkit that builds on top of Benchling's platform to 
 authors = [{ name = "DynoTx Open Source", email = "opensource@dynotx.com" }]
 requires-python = ">=3.9,<4"
 readme = "README.md"
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
 dependencies = [
     "benchling-sdk>=1.21.2,<2",
     "bs4>=0.0.2,<0.0.3",
