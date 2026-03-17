@@ -217,10 +217,11 @@ class UpdateEntitySchema(BaseOperation):
 
     def execute(self, benchling_service: BenchlingService) -> dict[str, Any]:
         tag_schema = self._validate(benchling_service)
-        updated_tag_schema = tag_schema.update_schema_props(
-            self.update_props.model_dump(exclude_unset=True)
-        )
+        update_diff = self.update_props.model_dump(exclude_unset=True)
+        updated_tag_schema = tag_schema.update_schema_props(update_diff)
         update = UpdateTagSchemaModel(**updated_tag_schema.model_dump())
+        if "constraint_fields" not in update_diff:
+            update.constraint = None
         return update_tag_schema(benchling_service, tag_schema.id, update.model_dump())
 
     def describe_operation(self) -> str:
