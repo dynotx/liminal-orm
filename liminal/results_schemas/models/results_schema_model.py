@@ -15,7 +15,6 @@ class ResultsSchemaModel(BaseModel):
 
     allFields: list[TagSchemaFieldModel]
     archiveRecord: dict[str, str] | None
-    derivedParent: Any | None
     fields: list[TagSchemaFieldModel]
     id: str
     name: str | None
