@@ -532,6 +532,8 @@ class TagSchemaModel(BaseModel):
                         constraint_fields, sequence_constraint
                     )
                 )
+            else:
+                update_tag_schema_model.constraint = None
         if "prefix" in update_diff_names:
             update_tag_schema_model.prefix = update_props.prefix
         if "warehouse_name" in update_diff_names:
