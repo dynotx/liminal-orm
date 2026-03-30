@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 from typing import Any
 
 from playwright.async_api import async_playwright
@@ -32,6 +33,10 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 REMOTE_LIMINAL_SCHEMA_NAME = "liminal_remote"
 REMOTE_REVISION_ID_FIELD_WH_NAME = "revision_id"
+
+
+class SSODisabledError(ValueError):
+    pass
 
 
 class BenchlingService(Benchling):
@@ -90,37 +95,33 @@ class BenchlingService(Benchling):
                 )
         self.use_internal_api = use_internal_api
         if use_internal_api:
-            if (
-                connection.internal_api_admin_email
-                and connection.internal_api_admin_password
-            ):
-                try:
-                    authenticated_session = asyncio.get_event_loop().run_until_complete(
-                        self.autogenerate_auth(
-                            connection.tenant_name,
-                            connection.internal_api_admin_email,
-                            connection.internal_api_admin_password,
-                            connection.chrome_profile_data_dir,
-                        )
+            try:
+                authenticated_session = asyncio.get_event_loop().run_until_complete(
+                    self.autogenerate_auth(
+                        connection.tenant_name,
+                        connection.internal_api_admin_email,
+                        connection.internal_api_admin_password,
+                        connection.chrome_profile_data_dir,
                     )
-                except RuntimeError as e:
-                    raise RuntimeError(
-                        f"{e}. If you are running this in a Jupyter notebook, use `nest_asyncio.apply()` to allow the async playwright login to run."
-                    )
-                self.custom_post_cookies = {
-                    "session": authenticated_session,
-                }
-                self.custom_post_headers = {
-                    "Referer": f"https://{connection.tenant_name}.benchling.com/",
-                    "Content-Type": "application/json",
-                }
-                LOGGER.info(
-                    f"Tenant {connection.tenant_name}: Connected to Benchling internal API."
                 )
-            else:
-                raise ValueError(
-                    "use_internal_api is True but internal_api_admin_email and internal_api_admin_password not provided in BenchlingConnection."
+            except SSODisabledError as e:
+                raise SSODisabledError(
+                    f"{e} Please provide `internal_api_admin_email` and `internal_api_admin_password` in your BenchlingConnection."
                 )
+            except RuntimeError as e:
+                raise RuntimeError(
+                    f"{e}. If you are running this in a Jupyter notebook, use `nest_asyncio.apply()` to allow the async playwright login to run."
+                )
+            self.custom_post_cookies = {
+                "session": authenticated_session,
+            }
+            self.custom_post_headers = {
+                "Referer": f"https://{connection.tenant_name}.benchling.com/",
+                "Content-Type": "application/json",
+            }
+            LOGGER.info(
+                f"Tenant {connection.tenant_name}: Connected to Benchling internal API."
+            )
 
     @property
     def session(self) -> Session:
@@ -262,32 +263,38 @@ class BenchlingService(Benchling):
     async def autogenerate_auth(
         cls,
         benchling_tenant: str,
-        email: str,
-        password: str,
+        email: str | None = None,
+        password: str | None = None,
         chrome_profile_data_dir: str | None = None,
     ) -> str:
         with requests.Session() as session:
-            signin_page = session.get(
-                f"https://{benchling_tenant}.benchling.com/signin",
-                allow_redirects=False,
-            )
-            if signin_page.status_code == 302:
-                authenticated_session = (
-                    await cls.get_authenticated_session_sso_login_playwright(
-                        benchling_tenant, chrome_profile_data_dir
-                    )
+            if email and password:
+                signin_page = session.get(
+                    f"https://{benchling_tenant}.benchling.com/signin",
+                    allow_redirects=False,
                 )
-            elif signin_page.status_code == 200:
-                authenticated_session = (
-                    cls.get_authenticated_session_benchling_admin_login(
+                if signin_page.status_code == 200:
+                    return cls.get_authenticated_session_benchling_admin_login(
                         benchling_tenant, email, password
                     )
+
+            else:
+                signin_page = session.get(
+                    f"https://{benchling_tenant}.benchling.com/ext/saml/signin:begin",
+                    allow_redirects=False,
+                )
+                if signin_page.status_code == 403:
+                    raise SSODisabledError(
+                        f"admin_email and admin_password not provided when sso is turned off for Benchling tenant {benchling_tenant}."
+                    )
+            if signin_page.status_code == 302:
+                return await cls.get_authenticated_session_sso_login_playwright(
+                    benchling_tenant, chrome_profile_data_dir
                 )
             else:
                 raise ValueError(
                     f"Unexpected response: Status code {signin_page.status_code}: {signin_page.text}"
                 )
-        return authenticated_session
 
     @classmethod
     async def get_authenticated_session_sso_login_playwright(
@@ -299,7 +306,7 @@ class BenchlingService(Benchling):
                 context = await playwright.chromium.launch_persistent_context(
                     channel="chrome",
                     headless=False,
-                    user_data_dir=chrome_profile_data_dir,
+                    user_data_dir=os.path.expanduser(chrome_profile_data_dir),
                 )
             else:
                 browser = await playwright.chromium.launch(
@@ -315,7 +322,7 @@ class BenchlingService(Benchling):
                 )
             try:
                 await page.wait_for_url(
-                    f"**/{benchling_tenant}.benchling.com/**", timeout=120_000
+                    f"**/{benchling_tenant}.benchling.com/**", timeout=300_000
                 )
             except Exception:
                 raise TimeoutError(

@@ -67,10 +67,6 @@ def _read_local_env_file(
                 raise Exception(
                     "api_client_id and api_client_secret must be provided in BenchlingConnection in liminal/env.py. This is necessary for the migration service."
                 )
-            if not bc.internal_api_admin_email or not bc.internal_api_admin_password:
-                raise Exception(
-                    "internal_api_admin_email and internal_api_admin_password must be provided in BenchlingConnection in liminal/env.py. This is necessary for the migration service."
-                )
             return bc
     raise Exception(
         f"BenchlingConnection with tenant name or alias {benchling_tenant} not found in liminal/env.py. Please update the env.py file with a correctly defined BenchlingConnection."
