@@ -18,7 +18,6 @@ from liminal.entity_schemas.entity_schema_models import CreateEntitySchemaModel
 from liminal.entity_schemas.tag_schema_models import (
     CreateTagSchemaFieldModel,
     TagSchemaModel,
-    UpdateTagSchemaModel,
 )
 from liminal.entity_schemas.utils import (
     convert_tag_schema_field_to_field_properties,
@@ -217,11 +216,12 @@ class UpdateEntitySchema(BaseOperation):
 
     def execute(self, benchling_service: BenchlingService) -> dict[str, Any]:
         tag_schema = self._validate(benchling_service)
-        updated_tag_schema = tag_schema.update_schema_props(
+        update = tag_schema.to_update_tag_schema_model(
             self.update_props.model_dump(exclude_unset=True)
         )
-        update = UpdateTagSchemaModel(**updated_tag_schema.model_dump())
-        return update_tag_schema(benchling_service, tag_schema.id, update.model_dump())
+        return update_tag_schema(
+            benchling_service, tag_schema.id, update.model_dump(exclude_unset=True)
+        )
 
     def describe_operation(self) -> str:
         return f"{self.wh_schema_name}: Updating schema properties to: {str(self.update_props)}."

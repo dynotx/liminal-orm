@@ -473,28 +473,39 @@ class TagSchemaModel(BaseModel):
             part.to_name_template_part(self.fields) for part in self.nameTemplateParts
         ]
 
-    def update_schema_props(self, update_diff: dict[str, Any]) -> TagSchemaModel:
-        """Updates the schema properties given the schema properties defined in code."""
+    def to_update_tag_schema_model(
+        self, update_diff: dict[str, Any]
+    ) -> UpdateTagSchemaModel:
+        """Converts the tag schema model to an UpdateTagSchemaModel, with only the updated properties."""
         update_diff_names = list(update_diff.keys())
         update_props = BaseSchemaProperties(**update_diff)
+        update_tag_schema_model = UpdateTagSchemaModel()
         if update_props.entity_type and "entity_type" in update_diff_names:
             folder_item_type, sequence_type = convert_entity_type_to_api_entity_type(
                 update_props.entity_type
             )
-            self.folderItemType = folder_item_type
-            self.sequenceType = sequence_type
+            update_tag_schema_model.folderItemType = folder_item_type
+            update_tag_schema_model.sequenceType = sequence_type
         if "naming_strategies" in update_diff_names:
-            self.labelingStrategies = [o.value for o in update_props.naming_strategies]
+            update_tag_schema_model.labelingStrategies = [
+                o.value for o in update_props.naming_strategies
+            ]
         if "mixture_schema_config" in update_diff_names:
-            self.mixtureSchemaConfig = update_props.mixture_schema_config
+            update_tag_schema_model.mixtureSchemaConfig = (
+                update_props.mixture_schema_config
+            )
         if "use_registry_id_as_label" in update_diff_names:
-            self.useOrganizationCollectionAliasForDisplayLabel = (
+            update_tag_schema_model.useOrganizationCollectionAliasForDisplayLabel = (
                 update_props.use_registry_id_as_label
             )
         if "include_registry_id_in_chips" in update_diff_names:
-            self.includeRegistryIdInChips = update_props.include_registry_id_in_chips
+            update_tag_schema_model.includeRegistryIdInChips = (
+                update_props.include_registry_id_in_chips
+            )
         if "show_bases_in_expanded_view" in update_diff_names:
-            self.showResidues = update_props.show_bases_in_expanded_view
+            update_tag_schema_model.showResidues = (
+                update_props.show_bases_in_expanded_view
+            )
 
         if "constraint_fields" in update_diff_names:
             if update_props.constraint_fields:
@@ -516,25 +527,20 @@ class TagSchemaModel(BaseModel):
                     for f in self.fields
                     if f.systemName in update_props.constraint_fields
                 ]
-                self.constraint = TagSchemaConstraint.from_constraint_fields(
-                    constraint_fields, sequence_constraint
+                update_tag_schema_model.constraint = (
+                    TagSchemaConstraint.from_constraint_fields(
+                        constraint_fields, sequence_constraint
+                    )
                 )
             else:
-                self.constraint = None
-
-        self.prefix = (
-            update_props.prefix if "prefix" in update_diff_names else self.prefix
-        )
-
-        set_sql_identifier = (
-            update_props.warehouse_name
-            if "warehouse_name" in update_diff_names
-            else self.sqlIdentifier
-        )
-        assert type(set_sql_identifier) is str
-        self.sqlIdentifier = set_sql_identifier
-        self.name = update_props.name if "name" in update_diff_names else self.name
-        return self
+                update_tag_schema_model.constraint = None
+        if "prefix" in update_diff_names:
+            update_tag_schema_model.prefix = update_props.prefix
+        if "warehouse_name" in update_diff_names:
+            update_tag_schema_model.sqlIdentifier = update_props.warehouse_name
+        if "name" in update_diff_names:
+            update_tag_schema_model.name = update_props.name
+        return update_tag_schema_model
 
     def update_name_template(
         self, update_name_template: BaseNameTemplate
