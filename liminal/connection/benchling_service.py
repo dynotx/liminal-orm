@@ -322,7 +322,7 @@ class BenchlingService(Benchling):
                 )
             try:
                 await page.wait_for_url(
-                    f"**/{benchling_tenant}.benchling.com/**", timeout=300_000
+                    f"**/{benchling_tenant}.benchling.com/**", timeout=600_000
                 )
             except Exception:
                 raise TimeoutError(

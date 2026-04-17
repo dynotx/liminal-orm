@@ -44,7 +44,7 @@ class BenchlingConnection(BaseModel):
         The directory to store the Chrome profile data for playwright. If SSO is enabled and required on your Benchling tenant,
         Liminal uses playwright so the user can log into Benchling in order to give Liminal the authenticated internal API session cookie.
         This directory is used to store playwright's persistent context, allowing the user to set up a persistent chrome profile.
-        Set this to None in order to disable playwright's persistent context.
+        Set this to None in order to disable playwright's persistent context which enables automatic login.
     fieldsets: bool = False
         Whether your Benchling tenant has access to fieldsets.
     config_flags: TenantConfigFlags = TenantConfigFlags()

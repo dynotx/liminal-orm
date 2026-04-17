@@ -26,9 +26,9 @@
     ```
 
     * **Required**: The `api_client_id` and `api_client_secret` are used to connect to Benchling's SDK. For more information, see the [Benchling API documentation](https://docs.benchling.com/docs/getting-started-benchling-apps#calling-the-api-as-an-app).
-    * **Required**: If your tenant has SSO turned off, `internal_api_admin_email` and `internal_api_admin_password` are used to connect to Benchling's API for the migration service. This must be the email and password used to log in to an Admin account.
-    If your tenant has SSO set to optional or required, these properties are optional and Liminal will use playwright, which prompts the user to log in through a browser.
-    * Optional: The `warehouse_connection_string` is used to connect to Benchling's read-only warehouse. If you have access, set this as the connection string for the warehouse.
+    * **Required**: If your tenant has SSO set to optional or required, `internal_api_admin_email` and `internal_api_admin_password` are optional and Liminal will use playwright, which prompts the user to log in through a browser session that pops up automatically when Liminal is run.
+    If your tenant has SSO turned off, these properties are required to be set are are used to connect to Benchling's API for the migration service. This must be the email and password used to log in to an Admin account.
+    * Optional: The `warehouse_connection_string` is used to connect to Benchling's read-only warehouse. If you have warehouse access, set this as the connection string for the warehouse.
     * Optional: The `config_flags` parameter is used to set tenant-specific configuration flags. For more information, see the [BenchlingConnection](../reference/benchling-connection.md) reference.
         * Set `schemas_enable_change_warehouse_name` to `True` if you want to enable changing schema and field warehouse names.
 
