@@ -47,11 +47,11 @@ connection = BenchlingConnection(
 
     The password of the internal API admin. If SSO is not enabled or optional on your Benchling tenant, this password is used to log in to Benchling, and give Liminal the authenticated internal API session cookie.
 
-- **chrome_profile_data_dir: Optional[str] = "~/.liminal/playwright_chrome_data/"**
+- **playwright_data_dir: Optional[str] = "~/.liminal/playwright_chrome_data/"**
 
-    The directory to store the Chrome profile data for playwright. If SSO is enabled and required on your Benchling tenant,
+    The directory to store the playwright browser user data. If SSO is enabled and required on your Benchling tenant,
     Liminal uses playwright so the user can log into Benchling in order to give Liminal the authenticated internal API session cookie.
-    This directory is used to store playwright's persistent context, allowing the user to set up a persistent chrome profile.
+    This directory is used to store playwright's persistent context, allowing the user to set up a persistent Chrome user profile.
     Set this to None in order to disable playwright's persistent context which enables automatic login.
 
 - **fieldsets: bool = False**

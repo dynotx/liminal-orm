@@ -101,7 +101,7 @@ class BenchlingService(Benchling):
                         connection.tenant_name,
                         connection.internal_api_admin_email,
                         connection.internal_api_admin_password,
-                        connection.chrome_profile_data_dir,
+                        connection.playwright_data_dir,
                     )
                 )
             except SSODisabledError as e:
@@ -265,8 +265,11 @@ class BenchlingService(Benchling):
         benchling_tenant: str,
         email: str | None = None,
         password: str | None = None,
-        chrome_profile_data_dir: str | None = None,
+        playwright_data_dir: str | None = None,
     ) -> str:
+        """Logs in to Benchling using the admin email and password or playwright and returns the session cookie.
+        If email and password are not passed in or if SSO is set to required on the Benchling tenant, playwright is used to log in.
+        Otherwise, the admin email and password are used to log in."""
         with requests.Session() as session:
             if email and password:
                 signin_page = session.get(
@@ -289,7 +292,7 @@ class BenchlingService(Benchling):
                     )
             if signin_page.status_code == 302:
                 return await cls.get_authenticated_session_sso_login_playwright(
-                    benchling_tenant, chrome_profile_data_dir
+                    benchling_tenant, playwright_data_dir
                 )
             else:
                 raise ValueError(
@@ -298,15 +301,17 @@ class BenchlingService(Benchling):
 
     @classmethod
     async def get_authenticated_session_sso_login_playwright(
-        cls, benchling_tenant: str, chrome_profile_data_dir: str | None = None
+        cls, benchling_tenant: str, playwright_data_dir: str | None = None
     ) -> str:
+        """Logs in to Benchling using playwright and returns the session cookie.
+        This can be used when SSO is enabled and required on the Benchling tenant."""
         LOGGER.info(f"Log into your {benchling_tenant} Benchling tenant...")
         async with async_playwright() as playwright:
-            if chrome_profile_data_dir:
+            if playwright_data_dir:
                 context = await playwright.chromium.launch_persistent_context(
                     channel="chrome",
                     headless=False,
-                    user_data_dir=os.path.expanduser(chrome_profile_data_dir),
+                    user_data_dir=os.path.expanduser(playwright_data_dir),
                 )
             else:
                 browser = await playwright.chromium.launch(
@@ -347,6 +352,8 @@ class BenchlingService(Benchling):
     def get_authenticated_session_benchling_admin_login(
         cls, benchling_tenant: str, email: str, password: str
     ) -> str:
+        """Logs in to Benchling using the admin email and password and returns the session cookie.
+        This can be used when SSO is disabled or optional on the Benchling tenant."""
         with requests.Session() as session:
             homepage = session.get(f"https://{benchling_tenant}.benchling.com/signin")
             soup = BeautifulSoup(homepage.content, features="lxml")
