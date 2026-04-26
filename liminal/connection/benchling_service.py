@@ -1,6 +1,9 @@
+import asyncio
 import logging
+import os
 from typing import Any
 
+from playwright.async_api import async_playwright
 import requests
 from benchling_sdk.auth.client_credentials_oauth2 import ClientCredentialsOAuth2
 from benchling_sdk.benchling import Benchling
@@ -30,6 +33,10 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 REMOTE_LIMINAL_SCHEMA_NAME = "liminal_remote"
 REMOTE_REVISION_ID_FIELD_WH_NAME = "revision_id"
+
+
+class SSODisabledError(ValueError):
+    pass
 
 
 class BenchlingService(Benchling):
@@ -88,30 +95,33 @@ class BenchlingService(Benchling):
                 )
         self.use_internal_api = use_internal_api
         if use_internal_api:
-            if (
-                connection.internal_api_admin_email
-                and connection.internal_api_admin_password
-            ):
-                csrf_token, session = self.autogenerate_auth(
-                    connection.tenant_name,
-                    connection.internal_api_admin_email,
-                    connection.internal_api_admin_password,
+            try:
+                authenticated_session = asyncio.get_event_loop().run_until_complete(
+                    self.autogenerate_auth(
+                        connection.tenant_name,
+                        connection.internal_api_admin_email,
+                        connection.internal_api_admin_password,
+                        connection.playwright_data_dir,
+                    )
                 )
-                self.custom_post_cookies = {
-                    "session": session,
-                }
-                self.custom_post_headers = {
-                    "X-Csrftoken": csrf_token,
-                    "Referer": f"https://{connection.tenant_name}.benchling.com/",
-                    "Content-Type": "application/json",
-                }
-                LOGGER.info(
-                    f"Tenant {connection.tenant_name}: Connected to Benchling internal API."
+            except SSODisabledError as e:
+                raise SSODisabledError(
+                    f"{e} Please provide `internal_api_admin_email` and `internal_api_admin_password` in your BenchlingConnection."
                 )
-            else:
-                raise ValueError(
-                    "use_internal_api is True but internal_api_admin_email and internal_api_admin_password not provided in BenchlingConnection."
+            except RuntimeError as e:
+                raise RuntimeError(
+                    f"{e}. If you are running this in a Jupyter notebook, use `nest_asyncio.apply()` to allow the async playwright login to run."
                 )
+            self.custom_post_cookies = {
+                "session": authenticated_session,
+            }
+            self.custom_post_headers = {
+                "Referer": f"https://{connection.tenant_name}.benchling.com/",
+                "Content-Type": "application/json",
+            }
+            LOGGER.info(
+                f"Tenant {connection.tenant_name}: Connected to Benchling internal API."
+            )
 
     @property
     def session(self) -> Session:
@@ -250,15 +260,100 @@ class BenchlingService(Benchling):
             )
 
     @classmethod
+    async def autogenerate_auth(
+        cls,
+        benchling_tenant: str,
+        email: str | None = None,
+        password: str | None = None,
+        playwright_data_dir: str | None = None,
+    ) -> str:
+        """Logs in to Benchling using the admin email and password or playwright and returns the session cookie.
+        If email and password are not passed in or if SSO is set to required on the Benchling tenant, playwright is used to log in.
+        Otherwise, the admin email and password are used to log in."""
+        with requests.Session() as session:
+            if email and password:
+                signin_page = session.get(
+                    f"https://{benchling_tenant}.benchling.com/signin",
+                    allow_redirects=False,
+                )
+                if signin_page.status_code == 200:
+                    return cls.get_authenticated_session_benchling_admin_login(
+                        benchling_tenant, email, password
+                    )
+
+            else:
+                signin_page = session.get(
+                    f"https://{benchling_tenant}.benchling.com/ext/saml/signin:begin",
+                    allow_redirects=False,
+                )
+                if signin_page.status_code == 403:
+                    raise SSODisabledError(
+                        f"admin_email and admin_password not provided when sso is turned off for Benchling tenant {benchling_tenant}."
+                    )
+            if signin_page.status_code == 302:
+                return await cls.get_authenticated_session_sso_login_playwright(
+                    benchling_tenant, playwright_data_dir
+                )
+            else:
+                raise ValueError(
+                    f"Unexpected response: Status code {signin_page.status_code}: {signin_page.text}"
+                )
+
+    @classmethod
+    async def get_authenticated_session_sso_login_playwright(
+        cls, benchling_tenant: str, playwright_data_dir: str | None = None
+    ) -> str:
+        """Logs in to Benchling using playwright and returns the session cookie.
+        This can be used when SSO is enabled and required on the Benchling tenant."""
+        LOGGER.info(f"Log into your {benchling_tenant} Benchling tenant...")
+        async with async_playwright() as playwright:
+            if playwright_data_dir:
+                context = await playwright.chromium.launch_persistent_context(
+                    channel="chrome",
+                    headless=False,
+                    user_data_dir=os.path.expanduser(playwright_data_dir),
+                )
+            else:
+                browser = await playwright.chromium.launch(
+                    channel="chrome", headless=False
+                )
+                context = await browser.new_context()
+            page = await context.new_page()
+            try:
+                await page.goto(f"https://{benchling_tenant}.benchling.com")
+            except Exception:
+                raise ValueError(
+                    f"Error navigating to https://{benchling_tenant}.benchling.com"
+                )
+            try:
+                await page.wait_for_url(
+                    f"**/{benchling_tenant}.benchling.com/**", timeout=600_000
+                )
+            except Exception:
+                raise TimeoutError(
+                    f"Log in cancelled or timed out (2 min timeout). Did not detect SSO log in for https://{benchling_tenant}.benchling.com."
+                )
+
+            cookies = await context.cookies()
+            session_cookie = next(
+                (c["value"] for c in cookies if c["name"] == "session"), None
+            )
+            if not session_cookie:
+                raise ValueError("No session cookie found.")
+            return session_cookie
+
+    @classmethod
     @retry(
         stop=stop_after_attempt(3),
         retry=retry_if_exception_type(ValueError),
         wait=wait_exponential(multiplier=1, min=1, max=8),
         reraise=True,
     )
-    def autogenerate_auth(
+    def get_authenticated_session_benchling_admin_login(
         cls, benchling_tenant: str, email: str, password: str
-    ) -> tuple[str, str]:
+    ) -> str:
+        """Logs in to Benchling using the admin email and password and returns the session cookie.
+        This can be used when SSO is disabled or optional on the Benchling tenant."""
         with requests.Session() as session:
             homepage = session.get(f"https://{benchling_tenant}.benchling.com/signin")
             soup = BeautifulSoup(homepage.content, features="lxml")
@@ -286,6 +381,8 @@ class BenchlingService(Benchling):
                 raise ValueError(
                     f"Failed to sign in to Benchling: {signin_response.text}"
                 )
-            return csrf_token, signin_response.headers["Set-Cookie"].split("; Secure")[
-                0
-            ].removeprefix("session=")
+        return (
+            signin_response.headers["Set-Cookie"]
+            .split("; Secure")[0]
+            .removeprefix("session=")
+        )

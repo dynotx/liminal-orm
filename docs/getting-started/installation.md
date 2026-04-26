@@ -4,6 +4,12 @@ Install Liminal via pip:
 pip install liminal-orm
 ```
 
+Install Liminal via uv:
+
+```bash
+uv add liminal-orm
+```
+
 Install Liminal via github:
 
 ```bash
