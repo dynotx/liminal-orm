@@ -39,6 +39,7 @@ class BenchlingFieldType(StrEnum):
             cls.DROPDOWN,
             cls.BLOB_LINK,
             cls.ENTRY_LINK,
+            cls.STORAGE_LINK,
             *cls.get_entity_types(),
         ]
 

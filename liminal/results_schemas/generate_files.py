@@ -97,20 +97,24 @@ def generate_all_results_schema_files(
                 col.type in BenchlingFieldType.get_entity_link_types()
                 and col.entity_link is not None
             ):
-                if not col.is_multi:
-                    relationship_strings.append(
-                        f"""{TAB}{col_name}_entity = single_relationship("{entity_schemas_wh_name_to_classname[col.entity_link]}", {col_name})"""
-                    )
-                    import_strings.append(
-                        "from liminal.orm.relationship import single_relationship"
-                    )
-                else:
-                    relationship_strings.append(
-                        f"""{TAB}{col_name}_entities = multi_relationship("{entity_schemas_wh_name_to_classname[col.entity_link]}", {col_name})"""
-                    )
-                    import_strings.append(
-                        "from liminal.orm.relationship import multi_relationship"
-                    )
+                entity_classname = entity_schemas_wh_name_to_classname.get(
+                    col.entity_link
+                )
+                if entity_classname is not None:
+                    if not col.is_multi:
+                        relationship_strings.append(
+                            f"""{TAB}{col_name}_entity = single_relationship("{entity_classname}", {col_name})"""
+                        )
+                        import_strings.append(
+                            "from liminal.orm.relationship import single_relationship"
+                        )
+                    else:
+                        relationship_strings.append(
+                            f"""{TAB}{col_name}_entities = multi_relationship("{entity_classname}", {col_name})"""
+                        )
+                        import_strings.append(
+                            "from liminal.orm.relationship import multi_relationship"
+                        )
         for col_name, col in field_properties_dict.items():
             if not col.required and col.type:
                 init_strings.append(

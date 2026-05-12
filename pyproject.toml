@@ -1,6 +1,6 @@
 [project]
 name = "liminal-orm"
-version = "4.4.6"
+version = "4.4.9"
 description = "An ORM and toolkit that builds on top of Benchling's platform to keep your schemas and downstream code dependencies in sync."
 authors = [{ name = "DynoTx Open Source", email = "opensource@dynotx.com" }]
 requires-python = ">=3.9,<4"
@@ -10,7 +10,7 @@ dependencies = [
     "bs4>=0.0.2,<0.0.3",
     "numpy>=1.23.5,<2",
     "pandas>=1.5.3,<3",
-    "pydantic>=2,<=2.11",
+    "pydantic>=2,<=2.13",
     "requests>=2.32.3,<3",
     "rich>=13.9.2,<14",
     "sqlalchemy<2",
