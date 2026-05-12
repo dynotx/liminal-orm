@@ -91,6 +91,30 @@
     </div>
     <div data-md-component="announce">
       
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+            
+  <!-- the following line is displayed in the announcement bar -->
+<!-- keep length under 164 characters (less HTML tags) to fit on 1280px desktop window -->
+Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see release notes <a href="https://dynotx.github.io/liminal-orm/release-notes/#v450">here</a>).
+<button class="md-banner__button md-icon" aria-label="Don't show this again" id="close-banner">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z">
+        </path>
+    </svg>
+</button>
+
+<script>
+    document.getElementById('close-banner').addEventListener('click', function () {
+        this.parentElement.style.display = 'none';
+    });
+</script>
+
+          </div>
+          
+        </aside>
+      
     </div>
     
     
@@ -1231,6 +1255,7 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
+  
                   
 
   
@@ -1240,7 +1265,7 @@
   <h1>Benchling connection</h1>
 
 <h2 id="benchlingconnection-class">BenchlingConnection: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/connection/benchling_connection.py">class</a></h2>
-<p>The <code>BenchlingConnection</code> class is used to define the connection information for a particular Benchling tenant. The BenchlingConnection class is defined in your <code>env.py</code> file and it also used to create a BenchlingService object. In the <code>env.py</code> file, the api_client and internal_api parameters are required for the BenchlingConnection object in orderto be used in the migration service. The BenchlingService can be imported from the liminal pacakage and be used to connect to <a href="https://docs.benchling.com/docs/getting-started-with-the-sdk">Benchling's SDK</a>, internal API, and/or Postgres warehouse.</p>
+<p>The <code>BenchlingConnection</code> class is used to define the connection information for a particular Benchling tenant. The BenchlingConnection class is defined in your <code>env.py</code> file and it also used to create a BenchlingService object. In the <code>env.py</code> file, the api_client is required for the BenchlingConnection object in orderto be used in the migration service. The BenchlingService can be imported from the liminal pacakage and be used to connect to <a href="https://docs.benchling.com/docs/getting-started-with-the-sdk">Benchling's SDK</a>, internal API, and/or Postgres warehouse.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Example BenchlingConnection definition</span>
 <span class="kn">from</span> <span class="nn">liminal.connection</span> <span class="kn">import</span> <span class="n">BenchlingConnection</span><span class="p">,</span> <span class="n">TenantConfigFlags</span>
 
@@ -1251,8 +1276,6 @@
     <span class="n">api_client_id</span><span class="o">=</span><span class="s2">&quot;my-secret-api-client-id&quot;</span><span class="p">,</span>
     <span class="n">api_client_secret</span><span class="o">=</span><span class="s2">&quot;my-secret-api-client-secret&quot;</span><span class="p">,</span>
     <span class="n">warehouse_connection_string</span><span class="o">=</span><span class="s2">&quot;my-warehouse-connection-string&quot;</span><span class="p">,</span>
-    <span class="n">internal_api_admin_email</span><span class="o">=</span><span class="s2">&quot;my-secret-internal-api-admin-email&quot;</span><span class="p">,</span>
-    <span class="n">internal_api_admin_password</span><span class="o">=</span><span class="s2">&quot;my-secret-internal-api-admin-password&quot;</span><span class="p">,</span>
     <span class="n">config_flags</span><span class="o">=</span><span class="n">TenantConfigFlags</span><span class="p">()</span>
 <span class="p">)</span>
 </code></pre></div>
@@ -1280,11 +1303,18 @@
 </li>
 <li>
 <p><strong>internal_api_admin_email: Optional[str] = None</strong></p>
-<p>The email of the internal API admin.</p>
+<p>The email of the internal API admin. If SSO is not enabled or optional on your Benchling tenant, this email is used to log in to Benchling, and give Liminal the authenticated internal API session cookie.</p>
 </li>
 <li>
 <p><strong>internal_api_admin_password: Optional[str] = None</strong></p>
-<p>The password of the internal API admin.</p>
+<p>The password of the internal API admin. If SSO is not enabled or optional on your Benchling tenant, this password is used to log in to Benchling, and give Liminal the authenticated internal API session cookie.</p>
+</li>
+<li>
+<p><strong>playwright_data_dir: Optional[str] = "~/.liminal/playwright_chrome_data/"</strong></p>
+<p>The directory to store the playwright browser user data. If SSO is enabled and required on your Benchling tenant,
+Liminal uses playwright so the user can log into Benchling in order to give Liminal the user's authenticated internal API session cookie.
+This directory is used to store playwright's persistent context, allowing the user to set up a persistent Chrome user profile.
+Set this to None in order to disable playwright's persistent context which enables automatic login.</p>
 </li>
 <li>
 <p><strong>fieldsets: bool = False</strong></p>
@@ -1327,6 +1357,9 @@ Ask Benchling support to give you the full export of these flags.</p>
 
 
                 
+  <script src="/flarelytics/client.js"></script>
+  
+
               </article>
             </div>
           

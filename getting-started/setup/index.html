@@ -86,6 +86,30 @@
     </div>
     <div data-md-component="announce">
       
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+            
+  <!-- the following line is displayed in the announcement bar -->
+<!-- keep length under 164 characters (less HTML tags) to fit on 1280px desktop window -->
+Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see release notes <a href="https://dynotx.github.io/liminal-orm/release-notes/#v450">here</a>).
+<button class="md-banner__button md-icon" aria-label="Don't show this again" id="close-banner">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z">
+        </path>
+    </svg>
+</button>
+
+<script>
+    document.getElementById('close-banner').addEventListener('click', function () {
+        this.parentElement.style.display = 'none';
+    });
+</script>
+
+          </div>
+          
+        </aside>
+      
     </div>
     
     
@@ -1124,6 +1148,7 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
+  
                   
 
   
@@ -1145,18 +1170,15 @@
 </li>
 <li>
 <p>Populate the <code>env.py</code> file with your Benchling connection information, following the instructions in the file. For example:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">liminal.connection</span> <span class="kn">import</span> <span class="n">BenchlingConnection</span><span class="p">,</span> <span class="n">TenantConfigFlags</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">liminal.connection</span> <span class="kn">import</span> <span class="n">BenchlingConnection</span>
 
     <span class="c1"># It is highly recommended to use a secrets manager to store your credentials.</span>
     <span class="n">prod_connection</span> <span class="o">=</span> <span class="n">BenchlingConnection</span><span class="p">(</span>
-        <span class="n">tenant_name</span><span class="o">=</span><span class="s2">&quot;pizzahouse-prod&quot;</span><span class="p">,</span>
+        <span class="n">tenant_name</span><span class="o">=</span><span class="s2">&quot;pizzahouseprod&quot;</span><span class="p">,</span>
         <span class="n">tenant_alias</span><span class="o">=</span><span class="s2">&quot;prod&quot;</span><span class="p">,</span>
         <span class="n">api_client_id</span><span class="o">=</span><span class="s2">&quot;my-secret-api-client-id&quot;</span><span class="p">,</span>
         <span class="n">api_client_secret</span><span class="o">=</span><span class="s2">&quot;my-secret-api-client-secret&quot;</span><span class="p">,</span>
         <span class="n">warehouse_connection_string</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
-        <span class="n">internal_api_admin_email</span><span class="o">=</span><span class="s2">&quot;my-secret-internal-api-admin-email&quot;</span><span class="p">,</span>
-        <span class="n">internal_api_admin_password</span><span class="o">=</span><span class="s2">&quot;my-secret-internal-api-admin-password&quot;</span><span class="p">,</span>
-        <span class="n">config_flags</span><span class="o">=</span><span class="n">TenantConfigFlags</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
     <span class="p">)</span>
 
     <span class="n">staging_connection</span> <span class="o">=</span> <span class="n">BenchlingConnection</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
@@ -1165,8 +1187,9 @@
 </code></pre></div>
 <ul>
 <li><strong>Required</strong>: The <code>api_client_id</code> and <code>api_client_secret</code> are used to connect to Benchling's SDK. For more information, see the <a href="https://docs.benchling.com/docs/getting-started-benchling-apps#calling-the-api-as-an-app">Benchling API documentation</a>.</li>
-<li><strong>Required</strong>: The <code>internal_api_admin_email</code> and <code>internal_api_admin_password</code> are used to connect to Benchling's API for the migration service. This must be the email and password used to log in to an Admin account.</li>
-<li>Optional: The <code>warehouse_connection_string</code> is used to connect to Benchling's read-only warehouse. If you have access, set this as the connection string for the warehouse.</li>
+<li><strong>Required</strong>: If your tenant has SSO set to optional or required, Liminal will prompt the user to log in through a playwright browser session that pops up automatically when Liminal is run. This ensures Liminal uses the user's Benchling authentication.
+If your tenant has SSO turned off, <code>internal_api_admin_email</code> and <code>internal_api_admin_password</code> properties are required to be set and are used to connect to Benchling's API for the migration service. This must be the email and password used to log in to an Admin account.</li>
+<li>Optional: The <code>warehouse_connection_string</code> is used to connect to Benchling's read-only warehouse. If you have warehouse access, set this as the connection string for the warehouse.</li>
 <li>Optional: The <code>config_flags</code> parameter is used to set tenant-specific configuration flags. For more information, see the <a href="../../reference/benchling-connection/">BenchlingConnection</a> reference.<ul>
 <li>Set <code>schemas_enable_change_warehouse_name</code> to <code>True</code> if you want to enable changing schema and field warehouse names.</li>
 </ul>
@@ -1226,6 +1249,9 @@
 
 
                 
+  <script src="/flarelytics/client.js"></script>
+  
+
               </article>
             </div>
           
