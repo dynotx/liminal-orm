@@ -15,7 +15,7 @@ In your env.py file, internal_api_admin_email and internal_api_admin_password no
 ### Upgrade Steps (Optional)
 
 1.  If you have a Benchling tenant where SSO is required or optional and want to use the Playwright SSO login flow, remove the `internal_api_admin_email` and `internal_api_admin_password` properties from the BenchlingConnection class in your env.py file. 
-2. Run `liminal <benchling_tenant_name> current` to test. Reach out if you have any issues or questions!
+2. Run `liminal current <benchling_tenant_name>` to test. Reach out if you have any issues or questions!
 
 ## v4.0.0
 
