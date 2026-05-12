@@ -286,7 +286,7 @@ class BenchlingService(Benchling):
                     f"https://{benchling_tenant}.benchling.com/ext/saml/signin:begin",
                     allow_redirects=False,
                 )
-                if signin_page.status_code == 403:
+                if signin_page.status_code == 403 or signin_page.status_code == 400:
                     raise SSODisabledError(
                         f"admin_email and admin_password not provided when sso is turned off for Benchling tenant {benchling_tenant}."
                     )
