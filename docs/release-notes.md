@@ -1,5 +1,22 @@
 For full release notes, please visit the [GitHub Releases page](https://github.com/dynotx/liminal-orm/releases). Release versions follow [semantic versioning](https://semver.org/). This page will document migration steps needed for major and minor version changes.
 
+## v4.5.0
+
+[![github](https://img.shields.io/badge/github-v4.5.0-blue)](https://github.com/dynotx/liminal-orm/releases/tag/4.5.0) [![pypi](https://img.shields.io/pypi/v/liminal-orm/4.5.0.svg)](https://pypi.org/project/liminal-orm/4.5.0/)
+
+### 🗒️ Summary
+
+v4.5.0 release adds support for using Liminal with Benchling tenants where SSO is required or optional. When SSO is enabled, Liminal can authenticate access to Benchling’s internal API with the user's credentials. Liminal uses Playwright, a widely used Python package for automating modern browsers, web testing, and scripting.
+
+In your env.py file, internal_api_admin_email and internal_api_admin_password no longer need to be set in the BenchlingConnection class. If they are unset and SSO is required or optional in your Benchling tenant, Liminal will open a Playwright browser session and prompt the user to log into their SSO. After the user finishes logging in, Liminal will use the authenticated Benchling session to access Benchling’s internal API
+
+- PR [#203](https://github.com/dynotx/liminal-orm/pull/203): support for Benchling SSO authentication.
+
+### Upgrade Steps (Optional)
+
+1.  If you have a Benchling tenant where SSO is required or optional and want to use the Playwright SSO login flow, remove the `internal_api_admin_email` and `internal_api_admin_password` properties from the BenchlingConnection class in your env.py file. 
+2. Run `liminal <benchling_tenant_name> current` to test. Reach out if you have any issues or questions!
+
 ## v4.0.0
 
 [![github](https://img.shields.io/badge/github-v4.0.0-blue)](https://github.com/dynotx/liminal-orm/releases/tag/4.0.0) [![pypi](https://img.shields.io/pypi/v/liminal-orm/4.0.0.svg)](https://pypi.org/project/liminal-orm/4.0.0/)
