@@ -12,7 +12,7 @@ def _check_liminal_directory_initialized(liminal_dir_path: Path) -> None:
     """Raises an exception if the liminal directory does not exist at the given path."""
     if not liminal_dir_path.exists() or not liminal_dir_path.is_dir():
         raise Exception(
-            "Liminal directory not found at current working directory. Run `liminal init` or check your current working directory."
+            "/liminal directory not found at current working directory where `liminal` command was run. Run `liminal init` or ensure that your current working directory is where the /liminal environment is located."
         )
     else:
         if not (liminal_dir_path / "env.py").exists():
@@ -66,10 +66,6 @@ def _read_local_env_file(
             if not bc.api_client_id or not bc.api_client_secret:
                 raise Exception(
                     "api_client_id and api_client_secret must be provided in BenchlingConnection in liminal/env.py. This is necessary for the migration service."
-                )
-            if not bc.internal_api_admin_email or not bc.internal_api_admin_password:
-                raise Exception(
-                    "internal_api_admin_email and internal_api_admin_password must be provided in BenchlingConnection in liminal/env.py. This is necessary for the migration service."
                 )
             return bc
     raise Exception(
