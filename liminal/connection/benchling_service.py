@@ -4,7 +4,7 @@ import os
 from typing import Any
 from urllib.parse import urlparse
 
-from playwright.async_api import async_playwright
+from playwright.async_api import async_playwright, Request
 import requests
 from benchling_sdk.auth.client_credentials_oauth2 import ClientCredentialsOAuth2
 from benchling_sdk.benchling import Benchling
@@ -325,7 +325,7 @@ class BenchlingService(Benchling):
 
             headers = {}
 
-            async def async_get_request_headers(request):
+            async def async_get_request_headers(request: Request) -> None:
                 if urlparse(request.url).netloc == f"{benchling_tenant}.benchling.com":
                     headers.update(await request.all_headers())
 
