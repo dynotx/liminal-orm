@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 from playwright.async_api import async_playwright, Request
 import requests
 from benchling_sdk.auth.client_credentials_oauth2 import ClientCredentialsOAuth2
-from benchling_sdk.benchling import Benchling
+from benchling_sdk.benchling import Benchling, BenchlingApiClientDecorator
 from benchling_sdk.helpers.retry_helpers import RetryStrategy
 from bs4 import BeautifulSoup
 from sqlalchemy import create_engine
@@ -55,6 +55,10 @@ class BenchlingService(Benchling):
         Whether to connect to the Benchling Postgres database. Requires warehouse_connection_string from the connection object.
     use_internal_api: bool = False
         Whether to connect to the Benchling internal API. Requires internal_api_admin_email and internal_api_admin_password from the connection object.
+    client_decorator: BenchlingApiClientDecorator | None = None
+        An optional function that receives the default BenchlingApiClient and returns a
+        customized one. Forwarded to the Benchling SDK. A common use is raising the HTTP
+        timeout, which otherwise defaults to 10 seconds: ``lambda c: c.with_timeout(60)``.
     """
 
     def __init__(
@@ -63,6 +67,7 @@ class BenchlingService(Benchling):
         use_api: bool = True,
         use_db: bool = False,
         use_internal_api: bool = False,
+        client_decorator: BenchlingApiClientDecorator | None = None,
     ) -> None:
         self.connection = connection
         self._session: Session | None = None
@@ -77,7 +82,10 @@ class BenchlingService(Benchling):
             )
             url = f"https://{connection.tenant_name}.benchling.com"
             super().__init__(
-                url=url, auth_method=auth_method, retry_strategy=retry_strategy
+                url=url,
+                auth_method=auth_method,
+                retry_strategy=retry_strategy,
+                client_decorator=client_decorator,
             )
             LOGGER.info(f"Tenant {connection.tenant_name}: Connected to Benchling API.")
         self.use_db = use_db
