@@ -43,7 +43,6 @@ class SSODisabledError(ValueError):
 class BenchlingService(Benchling):
     """
     Class that creates a connection object that can be used to connect to Benchling's API, database, or internal API.
-    This inherits from LiminalBenchlingService, which takes in credentials and connects the specified services.
 
     Parameters
     ----------
