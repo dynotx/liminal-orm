@@ -1,6 +1,7 @@
 # [Liminal ORM](#liminal-orm)
 
 [![PyPI version](https://img.shields.io/pypi/v/liminal-orm.svg)](https://pypi.org/project/liminal-orm/)
+[![Versions](https://img.shields.io/pypi/pyversions/liminal-orm.svg)](https://github.com/dynotx/liminal-orm)
 [![License](https://img.shields.io/github/license/dynotx/liminal-orm)](https://github.com/dynotx/liminal-orm/blob/main/LICENSE.md)
 [![CI](https://github.com/dynotx/liminal-orm/actions/workflows/cicd.yml/badge.svg)](https://github.com/dynotx/liminal-orm/actions/workflows/cicd.yml)
 [![Downloads](https://static.pepy.tech/personalized-badge/liminal-orm?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads)](https://pepy.tech/project/liminal-orm)
