@@ -397,7 +397,7 @@ class BenchlingService(Benchling):
             )
             if not signin_response.ok:
                 raise ValueError(
-                    f"Failed to sign in to Benchling: {signin_response.text}"
+                    f"Failed to sign in to Benchling: {signin_response.reason}. Ensure your email and password are correct."
                 )
             if not signin_response.headers.get("Set-Cookie"):
                 raise ValueError(
