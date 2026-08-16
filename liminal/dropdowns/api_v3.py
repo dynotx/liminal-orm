@@ -5,7 +5,9 @@ from benchling_sdk.models import DropdownCreate, DropdownOption
 
 from liminal.connection import BenchlingService
 
-_DROPDOWN_API_PATH = "/api/v3/dropdowns"
+_DROPDOWN_API_PATH = "/api/v3/dropdown"
+
+EARLY_ACCESS_HEADER = {"EARLY-ACCESS": "true"}
 
 
 def _response_json(response: Any, operation: str) -> dict[str, Any]:
@@ -17,14 +19,24 @@ def _response_json(response: Any, operation: str) -> dict[str, Any]:
     return json.loads(response.content)
 
 
+def _convert_dropdown_option_to_v3(option: DropdownOption) -> dict[str, Any]:
+    v3_option_dict: dict[str, Any] = {"name": option.name}
+    if option.id is not None:
+        v3_option_dict["id"] = option.id
+        if option.archive_record is not None:
+            v3_option_dict["archiveReason"] = option.archive_record.purpose  # type: ignore
+            v3_option_dict["archived"] = True
+        else:
+            v3_option_dict["archived"] = False
+    return v3_option_dict
+
+
 def create_dropdown(
     benchling_service: BenchlingService, new_dropdown: DropdownCreate
 ) -> dict[str, Any]:
     """Create a dropdown."""
-    response = benchling_service.api.post_response(
-        url=_DROPDOWN_API_PATH, body=new_dropdown.to_dict()
-    )
-    return _response_json(response, "create dropdown")
+    dropdown = benchling_service.dropdowns.create(dropdown=new_dropdown)
+    return {dropdown.id: dropdown}
 
 
 def update_dropdown_name(
@@ -32,7 +44,9 @@ def update_dropdown_name(
 ) -> dict[str, Any]:
     """Rename a dropdown."""
     response = benchling_service.api.patch_response(
-        url=f"{_DROPDOWN_API_PATH}/{dropdown_id}", body={"name": new_name}
+        url=f"{_DROPDOWN_API_PATH}/{dropdown_id}",
+        body={"name": new_name},
+        additional_headers=EARLY_ACCESS_HEADER,
     )
     return _response_json(response, "update dropdown name")
 
@@ -43,7 +57,8 @@ def update_dropdown_options(
     """Replace a dropdown's ordered options."""
     response = benchling_service.api.patch_response(
         url=f"{_DROPDOWN_API_PATH}/{dropdown_id}",
-        body={"options": [option.to_dict() for option in options]},
+        body={"options": [_convert_dropdown_option_to_v3(o) for o in options]},
+        additional_headers=EARLY_ACCESS_HEADER,
     )
     return _response_json(response, "update dropdown options")
 
@@ -54,8 +69,10 @@ def archive_dropdown(
     reason: str = "Made in error",
 ) -> dict[str, Any]:
     """Archive a dropdown."""
-    response = benchling_service.api.post_response(
-        url=f"{_DROPDOWN_API_PATH}/{dropdown_id}:archive", body={"reason": reason}
+    response = benchling_service.api.patch_response(
+        url=f"{_DROPDOWN_API_PATH}/{dropdown_id}",
+        body={"archived": True, "archiveReason": reason},
+        additional_headers=EARLY_ACCESS_HEADER,
     )
     return _response_json(response, "archive dropdown")
 
@@ -64,34 +81,9 @@ def unarchive_dropdown(
     benchling_service: BenchlingService, dropdown_id: str
 ) -> dict[str, Any]:
     """Restore an archived dropdown."""
-    response = benchling_service.api.post_response(
-        url=f"{_DROPDOWN_API_PATH}/{dropdown_id}:unarchive"
+    response = benchling_service.api.patch_response(
+        url=f"{_DROPDOWN_API_PATH}/{dropdown_id}",
+        body={"archived": False},
+        additional_headers=EARLY_ACCESS_HEADER,
     )
     return _response_json(response, "unarchive dropdown")
-
-
-def archive_dropdown_options(
-    benchling_service: BenchlingService,
-    dropdown_id: str,
-    dropdown_option_ids: list[str],
-    reason: str = "Made in error",
-) -> dict[str, Any]:
-    """Archive options belonging to a dropdown."""
-    response = benchling_service.api.post_response(
-        url=f"{_DROPDOWN_API_PATH}/{dropdown_id}/options:archive",
-        body={"dropdownOptionIds": dropdown_option_ids, "reason": reason},
-    )
-    return _response_json(response, "archive dropdown options")
-
-
-def unarchive_dropdown_options(
-    benchling_service: BenchlingService,
-    dropdown_id: str,
-    dropdown_option_ids: list[str],
-) -> dict[str, Any]:
-    """Restore options belonging to a dropdown."""
-    response = benchling_service.api.post_response(
-        url=f"{_DROPDOWN_API_PATH}/{dropdown_id}/options:unarchive",
-        body={"dropdownOptionIds": dropdown_option_ids},
-    )
-    return _response_json(response, "unarchive dropdown options")
