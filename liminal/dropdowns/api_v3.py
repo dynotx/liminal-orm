@@ -31,6 +31,28 @@ def _convert_dropdown_option_to_v3(option: DropdownOption) -> dict[str, Any]:
     return v3_option_dict
 
 
+def list_dropdowns_v3(
+    benchling_service: BenchlingService,
+) -> list[dict[str, Any]]:
+    """Fetch dropdowns from the v3 API."""
+    response = benchling_service.api.get_response(
+        url="/api/v3/dropdown/items",
+        additional_headers=EARLY_ACCESS_HEADER,
+    )
+    return response.parsed.get("items", [])
+
+
+def list_dropdown_options_v3(
+    benchling_service: BenchlingService, dropdown_id: str
+) -> list[dict[str, Any]]:
+    """Fetch a dropdown's options from the v3 API."""
+    response = benchling_service.api.get_response(
+        url=f"{_DROPDOWN_API_PATH}/{dropdown_id}/options/items",
+        additional_headers=EARLY_ACCESS_HEADER,
+    )
+    return response.parsed.get("items", [])
+
+
 def create_dropdown(
     benchling_service: BenchlingService, new_dropdown: DropdownCreate
 ) -> dict[str, Any]:
