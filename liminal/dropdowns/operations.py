@@ -189,7 +189,7 @@ class CreateDropdownOption(BaseOperation):
             raise Exception(f"Failed to create dropdown option: {e}")
 
     def describe_operation(self) -> str:
-        return f"{self.dropdown_name}: Creating or unarchiving dropdown option '{self.option_to_add}' at index {self.index}."
+        return f"{self.dropdown_name}: Creating/Unarchiving dropdown option '{self.option_to_add}' at index {self.index}."
 
     def describe(self) -> str:
         return f"{self.dropdown_name}: Option '{self.option_to_add}' is not defined or is archived in Benchling but is defined in code."

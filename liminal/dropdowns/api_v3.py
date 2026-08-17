@@ -32,11 +32,12 @@ def _convert_dropdown_option_to_v3(option: DropdownOption) -> dict[str, Any]:
 
 
 def list_dropdowns_v3(
-    benchling_service: BenchlingService,
+    benchling_service: BenchlingService, include_archived: bool = True
 ) -> list[dict[str, Any]]:
     """Fetch dropdowns from the v3 API."""
+    url_suffix = "/items?archived.anyOf=true,false" if include_archived else "/items"
     response = benchling_service.api.get_response(
-        url="/api/v3/dropdown/items",
+        url=f"/api/v3/dropdown/{url_suffix}",
         additional_headers=EARLY_ACCESS_HEADER,
     )
     return response.parsed.get("items", [])
