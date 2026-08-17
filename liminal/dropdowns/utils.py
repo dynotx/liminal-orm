@@ -1,19 +1,11 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any
 
-from benchling_sdk.models import ArchiveRecord as BenchlingArchiveRecord
+from benchling_sdk.models import ArchiveRecord
 from benchling_sdk.models import Dropdown, DropdownOption, DropdownSummary
-from pydantic import BaseModel
 
 from liminal.connection import BenchlingService
 from liminal.dropdowns.api_v3 import list_dropdown_options_v3, list_dropdowns_v3
-
-
-class ArchiveRecord(BaseModel):
-    purpose: str
-
-    def to_dict(self) -> dict[str, Any]:
-        return self.model_dump()
 
 
 def get_benchling_dropdown_id_name_map(
@@ -71,14 +63,14 @@ def _convert_dropdown_from_v3(
     return Dropdown(
         id=dropdown["id"],
         name=dropdown["name"],
-        archive_record=BenchlingArchiveRecord(reason=dropdown["archiveReason"])
+        archive_record=ArchiveRecord(reason=dropdown["archiveReason"])
         if dropdown.get("archived", False)
         else None,
         options=[
             DropdownOption(
                 id=option["id"],
                 name=option["name"],
-                archive_record=BenchlingArchiveRecord(reason=option["archiveReason"])
+                archive_record=ArchiveRecord(reason=option["archiveReason"])
                 if option.get("archived", False)
                 else None,
             )

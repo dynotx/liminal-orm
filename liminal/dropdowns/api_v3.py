@@ -24,7 +24,7 @@ def _convert_dropdown_option_to_v3(option: DropdownOption) -> dict[str, Any]:
     if option.id is not None:
         v3_option_dict["id"] = option.id
         if option.archive_record is not None:
-            v3_option_dict["archiveReason"] = option.archive_record.purpose  # type: ignore
+            v3_option_dict["archiveReason"] = option.archive_record.reason
             v3_option_dict["archived"] = True
         else:
             v3_option_dict["archived"] = False

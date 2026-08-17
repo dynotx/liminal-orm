@@ -8,6 +8,7 @@ from benchling_sdk.models import (
     DropdownCreate,
     DropdownOption,
     DropdownOptionCreate,
+    ArchiveRecord,
 )
 
 from liminal.base.base_operation import BaseOperation
@@ -20,7 +21,6 @@ from liminal.dropdowns.api_v3 import (
     update_dropdown_options,
 )
 from liminal.dropdowns.utils import (
-    ArchiveRecord,
     dropdown_exists_in_benchling,
     get_benchling_dropdown_by_name,
     get_benchling_dropdown_summary_by_name,
@@ -219,7 +219,7 @@ class ArchiveDropdownOption(BaseOperation):
                     )
                     return {}
                 else:
-                    option.archive_record = ArchiveRecord(purpose="Made in error")  # type: ignore
+                    option.archive_record = ArchiveRecord(reason="Made in error")
                     option_archived = True
                     break
         if not option_archived:
