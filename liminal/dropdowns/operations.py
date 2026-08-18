@@ -27,7 +27,7 @@ from liminal.dropdowns.utils import (
     get_schemas_with_dropdown,
 )
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 class CreateDropdown(BaseOperation):
@@ -161,27 +161,32 @@ class CreateDropdownOption(BaseOperation):
         existing_option = next(
             (o for o in dropdown.options if o.name == self.option_to_add), None
         )
-        if existing_option is not None and existing_option.archive_record is None:
-            logger.info(
+
+        if existing_option is not None:
+            if existing_option.archive_record is not None:
+                print("Unarchiving option")
+                return UnarchiveDropdownOption(
+                    self.dropdown_name, self.option_to_add, self.index
+                ).execute(benchling_service)
+
+            LOGGER.info(
                 f"Option {self.option_to_add} on dropdown {self.dropdown_name} already exists and is active in Benchling. Execution will be skipped."
             )
             return {}
 
         active_options = [o for o in dropdown.options if o.archive_record is None]
         archived_options = [o for o in dropdown.options if o.archive_record is not None]
-        if existing_option is not None:
-            existing_option.archive_record = None
-            archived_options.remove(existing_option)
-            option_to_insert = existing_option
-        else:
-            option_to_insert = DropdownOption(
+        active_options.insert(
+            self.index,
+            DropdownOption(
                 name=self.option_to_add,
                 archive_record=None,
                 id=None,  # type: ignore
-            )
-        active_options.insert(self.index, option_to_insert)
+            ),
+        )
 
         try:
+            print("Adding dropdown option")
             return update_dropdown_options(
                 benchling_service, dropdown.id, active_options + archived_options
             )
@@ -195,8 +200,53 @@ class CreateDropdownOption(BaseOperation):
         return f"{self.dropdown_name}: Option '{self.option_to_add}' is not defined or is archived in Benchling but is defined in code."
 
 
+class UnarchiveDropdownOption(BaseOperation):
+    order: ClassVar[int] = 50
+
+    def __init__(
+        self,
+        dropdown_name: str,
+        option_to_unarchive: str,
+        index: int,
+    ) -> None:
+        self.dropdown_name = dropdown_name
+        self.option_to_unarchive = option_to_unarchive
+        self.index = index
+
+    def execute(self, benchling_service: BenchlingService) -> dict[str, Dropdown]:
+        dropdown = get_benchling_dropdown_by_name(benchling_service, self.dropdown_name)
+        option_to_unarchive = next(
+            (o for o in dropdown.options if o.name == self.option_to_unarchive), None
+        )
+        if option_to_unarchive is None:
+            raise ValueError(
+                f"Option {self.option_to_unarchive} on dropdown {self.dropdown_name} does not exist."
+            )
+        if option_to_unarchive.archive_record is None:
+            raise ValueError(
+                f"Option {self.option_to_unarchive} on dropdown {self.dropdown_name} is already active."
+            )
+        option_to_unarchive.archive_record = None
+        options_for_update: list[DropdownOption] = [
+            o for o in dropdown.options if o.name is not option_to_unarchive.name
+        ]
+        options_for_update.insert(self.index, option_to_unarchive)
+        try:
+            return update_dropdown_options(
+                benchling_service, dropdown.id, options_for_update
+            )
+        except Exception as e:
+            raise Exception(f"Failed to unarchive dropdown option: {e}")
+
+    def describe_operation(self) -> str:
+        return f"{self.dropdown_name}: Unarchiving dropdown option '{self.option_to_unarchive}' at index {self.index}."
+
+    def describe(self) -> str:
+        return f"{self.dropdown_name}: Option '{self.option_to_unarchive}' is archived in Benchling but is defined in code."
+
+
 class ArchiveDropdownOption(BaseOperation):
-    order: ClassVar[int] = 60
+    order: ClassVar[int] = 70
 
     def __init__(
         self,
@@ -214,7 +264,7 @@ class ArchiveDropdownOption(BaseOperation):
         for option in dropdown.options:
             if option.name == self.option_to_remove:
                 if option.archive_record is not None:
-                    logger.info(
+                    LOGGER.info(
                         f"Option {self.option_to_remove} on dropdown {self.dropdown_name} is already archived. Skipping archiving."
                     )
                     return {}
@@ -241,7 +291,7 @@ class ArchiveDropdownOption(BaseOperation):
 
 
 class UpdateDropdownOption(BaseOperation):
-    order: ClassVar[int] = 50
+    order: ClassVar[int] = 60
 
     def __init__(
         self, dropdown_name: str, old_option_name: str, new_option_name: str
@@ -287,7 +337,7 @@ class UpdateDropdownOption(BaseOperation):
 
 
 class ReorderDropdownOptions(BaseOperation):
-    order: ClassVar[int] = 70
+    order: ClassVar[int] = 80
 
     def __init__(self, dropdown_name: str, new_order: list[str]) -> None:
         self.dropdown_name = dropdown_name
