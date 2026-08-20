@@ -1,11 +1,10 @@
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any
 
 from benchling_sdk.models import ArchiveRecord
 from benchling_sdk.models import Dropdown, DropdownOption, DropdownSummary
 
 from liminal.connection import BenchlingService
-from liminal.dropdowns.api_v3 import list_dropdown_options_v3, list_dropdowns_v3
+from liminal.dropdowns.api_v3 import list_dropdowns_with_options_v3
 
 
 def get_benchling_dropdown_id_name_map(
@@ -47,12 +46,6 @@ def get_benchling_dropdown_by_name(
     return benchling_service.dropdowns.get_by_id(dropdown.id)
 
 
-def _fetch_dropdown_options(
-    benchling_service: BenchlingService, dropdown: dict[str, Any]
-) -> None:
-    dropdown["options"] = list_dropdown_options_v3(benchling_service, dropdown["id"])
-
-
 def _convert_dropdown_from_v3(
     dropdown: dict[str, Any], include_archived: bool
 ) -> Dropdown:
@@ -83,15 +76,7 @@ def get_benchling_dropdowns_dict(
     benchling_service: BenchlingService,
     include_archived: bool = False,
 ) -> dict[str, Dropdown]:
-    dropdowns = list_dropdowns_v3(benchling_service)
-
-    with ThreadPoolExecutor() as pool:
-        futures = [
-            pool.submit(_fetch_dropdown_options, benchling_service, dropdown)
-            for dropdown in dropdowns
-        ]
-        for future in as_completed(futures):
-            future.result()
+    dropdowns = list_dropdowns_with_options_v3(benchling_service)
 
     if not include_archived:
         dropdowns = [
