@@ -51,10 +51,16 @@ def generate_all_results_schema_files(
 
     for schema_properties, field_properties_dict in results_schemas:
         has_date = False
-        file_name = to_snake_case(schema_properties.warehouse_name) + ".py"
-        schema_name = to_pascal_case(schema_properties.warehouse_name)
+        warehouse_name = schema_properties.warehouse_name or to_snake_case(
+            schema_properties.name
+        )
+        schema_properties = schema_properties.model_copy(
+            update={"warehouse_name": warehouse_name}
+        )
+        file_name = to_snake_case(warehouse_name) + ".py"
+        schema_name = to_pascal_case(warehouse_name)
         init_file_imports.append(
-            f"from .{to_snake_case(schema_properties.warehouse_name)} import {schema_name}"
+            f"from .{to_snake_case(warehouse_name)} import {schema_name}"
         )
         import_strings = [
             "from sqlalchemy import Column as SqlColumn",

@@ -147,3 +147,9 @@ def get_benchling_entity_schemas(
         for schemas in benchling_service.schemas.list_entity_schemas()
         for s in schemas
     ]
+
+
+def get_benchling_entity_id_system_name_map(
+    benchling_service: BenchlingService,
+) -> dict[str, str]:
+    return {s.id: s.sqlIdentifier for s in get_benchling_entity_schemas(benchling_service)}
