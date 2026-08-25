@@ -6,6 +6,7 @@ from sqlalchemy.sql.type_api import TypeEngine
 
 from liminal.enums import (
     BenchlingAPIFieldType,
+    BenchlingEntitySchemaEndpoints,
     BenchlingEntityType,
     BenchlingFieldDefinitionType,
     BenchlingFieldType,
@@ -265,6 +266,26 @@ def convert_entity_type_to_api_entity_type(
             BenchlingFolderItemType.SEQUENCE,
             BenchlingSequenceType.RNA_OLIGO,
         ),
+    }
+    if entity_type in conversion_map:
+        return conversion_map[entity_type]
+    else:
+        raise ValueError(f"Entity type '{entity_type}' is not supported.")
+
+
+def convert_entity_type_to_entity_schema_endpoint(
+    entity_type: BenchlingEntityType,
+) -> BenchlingEntitySchemaEndpoints:
+    conversion_map = {
+        BenchlingEntityType.CUSTOM_ENTITY: BenchlingEntitySchemaEndpoints.CUSTOM_ENTITY,
+        BenchlingEntityType.DNA_SEQUENCE: BenchlingEntitySchemaEndpoints.DNA_SEQUENCE,
+        BenchlingEntityType.DNA_OLIGO: BenchlingEntitySchemaEndpoints.DNA_OLIGO,
+        BenchlingEntityType.RNA_OLIGO: BenchlingEntitySchemaEndpoints.RNA_OLIGO,
+        BenchlingEntityType.RNA_SEQUENCE: BenchlingEntitySchemaEndpoints.RNA_SEQUENCE,
+        BenchlingEntityType.AA_SEQUENCE: BenchlingEntitySchemaEndpoints.AA_SEQUENCE,
+        BenchlingEntityType.ENTRY: BenchlingEntitySchemaEndpoints.ENTRY,
+        BenchlingEntityType.MIXTURE: BenchlingEntitySchemaEndpoints.MIXTURE,
+        BenchlingEntityType.MOLECULE: BenchlingEntitySchemaEndpoints.MOLECULE,
     }
     if entity_type in conversion_map:
         return conversion_map[entity_type]

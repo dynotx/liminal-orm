@@ -1,4 +1,5 @@
 import json
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any
 
 from benchling_sdk.models import DropdownCreate, DropdownOption
@@ -52,6 +53,29 @@ def list_dropdown_options_v3(
         additional_headers=EARLY_ACCESS_HEADER,
     )
     return response.parsed.get("items", [])
+
+
+def _fetch_dropdown_options(
+    benchling_service: BenchlingService, dropdown: dict[str, Any]
+) -> None:
+    dropdown["options"] = list_dropdown_options_v3(benchling_service, dropdown["id"])
+
+
+def list_dropdowns_with_options_v3(
+    benchling_service: BenchlingService, include_archived: bool = True
+) -> list[dict[str, Any]]:
+    """Fetch all dropdowns from the v3 API, along with their options, fetched in parallel."""
+    dropdowns = list_dropdowns_v3(benchling_service, include_archived)
+
+    with ThreadPoolExecutor() as pool:
+        futures = [
+            pool.submit(_fetch_dropdown_options, benchling_service, dropdown)
+            for dropdown in dropdowns
+        ]
+        for future in as_completed(futures):
+            future.result()
+
+    return dropdowns
 
 
 def create_dropdown(
