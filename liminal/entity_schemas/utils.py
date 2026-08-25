@@ -16,6 +16,7 @@ from liminal.mappers import (
 from liminal.orm.name_template import NameTemplate
 from liminal.orm.schema_properties import MixtureSchemaConfig, SchemaProperties
 from liminal.unit_dictionary.utils import get_unit_id_to_name_map
+from liminal.entity_schemas.api_v3 import list_entity_schemas_v3
 
 
 def get_converted_tag_schemas(
@@ -149,7 +150,7 @@ def get_benchling_entity_schemas(
     ]
 
 
-def get_benchling_entity_id_system_name_map(
+def get_benchling_entity_schema_id_to_system_name_map(
     benchling_service: BenchlingService,
 ) -> dict[str, str]:
-    return {s.id: s.sqlIdentifier for s in get_benchling_entity_schemas(benchling_service)}
+    return {s["id"]: s["systemName"] for s in list_entity_schemas_v3(benchling_service)}

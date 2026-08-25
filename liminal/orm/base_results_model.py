@@ -52,7 +52,7 @@ class BaseResultsModel(Generic[T], Base):
     def __init_subclass__(cls, **kwargs: Any):
         super().__init_subclass__(**kwargs)
         warehouse_name = cls.__schema_properties__.warehouse_name
-        cls.__tablename__ = warehouse_name + "$raw"
+        cls.__tablename__ = warehouse_name + "$raw"  # type: ignore
 
     @classmethod
     def apply_base_filters(
