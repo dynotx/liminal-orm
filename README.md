@@ -44,8 +44,6 @@ If you or your organization use Liminal, please consider adding yourself or your
 
 Note: Liminal requires you to have (or have access to) an admin user account for your Benchling tenant. If you run into any issues, please reach out to us on the [Discussions](https://github.com/dynotx/liminal-orm/discussions/categories/q-a) forum and we'll be happy to help!
 
-Liminal supports standard CPython versions 3.10 through 3.14. Contributors use Python 3.12 as the default development version.
-
 Check out this [Quick Start Guide](https://dynotx.github.io/liminal-orm/getting-started/prerequisites/) to get you setup with Liminal!
 
 ## [Toolkit](#toolkit)
