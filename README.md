@@ -55,7 +55,6 @@ With your schemas defined in code, you can now take advantage of the additional 
     ```python
     from liminal.validation import ValidationSeverity, liminal_validator
 
-
     class Pizza(BaseModel, CustomEntityMixin):
         ...
 
@@ -65,7 +64,6 @@ With your schemas defined in code, you can now take advantage of the additional 
                 raise ValueError("Cook temp is required if cook time is set")
             if self.cook_time is None and self.cook_temp is not None:
                 raise ValueError("Cook time is required if cook temp is set")
-
 
     validation_reports = Pizza.validate(session)
     ```
