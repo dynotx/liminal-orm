@@ -80,10 +80,10 @@ jobs:
         with:
           enable-cache: true
 
-      - name: setup python ${{ matrix.python-version }}
+      - name: Setup Python 3.12
         uses: actions/setup-python@v7
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.12"
 
       - name: Install dependencies
         run: uv sync --locked --python "${{ matrix.python-version }}"
