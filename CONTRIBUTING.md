@@ -26,7 +26,7 @@ If you are interested in contributing to Liminal, please follow the steps below 
 
     `uv venv`
 
-    Supported Python versions can be found in `pyproject.toml`. Development is recommended with Python 3.12, as specified in `.python-version`.
+    Liminal supports Python versions 3.10 through 3.14 for package users. Development should use Python 3.12, as specified in the `.python-version` file.
 
 4. Install Liminal dependencies
 
