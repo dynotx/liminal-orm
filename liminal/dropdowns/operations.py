@@ -8,28 +8,26 @@ from benchling_sdk.models import (
     DropdownCreate,
     DropdownOption,
     DropdownOptionCreate,
+    ArchiveRecord,
 )
 
 from liminal.base.base_operation import BaseOperation
 from liminal.connection import BenchlingService
-from liminal.dropdowns.api import (
+from liminal.dropdowns.api_v3 import (
     archive_dropdown,
     create_dropdown,
-    resubmit_archive_dropdown_option,
-    resubmit_update_dropdown_option,
     unarchive_dropdown,
     update_dropdown_name,
     update_dropdown_options,
 )
 from liminal.dropdowns.utils import (
-    ArchiveRecord,
     dropdown_exists_in_benchling,
     get_benchling_dropdown_by_name,
     get_benchling_dropdown_summary_by_name,
     get_schemas_with_dropdown,
 )
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 class CreateDropdown(BaseOperation):
@@ -160,51 +158,95 @@ class CreateDropdownOption(BaseOperation):
 
     def execute(self, benchling_service: BenchlingService) -> dict[str, Dropdown]:
         dropdown = get_benchling_dropdown_by_name(benchling_service, self.dropdown_name)
-        options_for_update: list[DropdownOption] = [
-            o for o in dropdown.options if o.archive_record is None
-        ] + [o for o in dropdown.options if o.archive_record is not None]
         existing_option = next(
-            (
-                o
-                for o in options_for_update
-                if o.name == self.option_to_add and o.id is not None
-            ),
-            None,
+            (o for o in dropdown.options if o.name == self.option_to_add), None
         )
-        # If the option exists
-        if existing_option:
-            # If the option exists and is archived
+
+        if existing_option is not None:
             if existing_option.archive_record is not None:
-                existing_option.archive_record = None
-                options_for_update.remove(existing_option)
-                options_for_update.insert(self.index, existing_option)
-            # If the option exists and is active
-            else:
-                logger.info(
-                    f"Option {self.option_to_add} on dropdown {self.dropdown_name} already exists and is active in Benchling. Execution will be skipped."
-                )
-                return {}
-        # If the option does not exist
-        else:
-            options_for_update.insert(
-                self.index, DropdownOption(name=self.option_to_add)
+                print("Unarchiving option")
+                return UnarchiveDropdownOption(
+                    self.dropdown_name, self.option_to_add, self.index
+                ).execute(benchling_service)
+
+            LOGGER.info(
+                f"Option {self.option_to_add} on dropdown {self.dropdown_name} already exists and is active in Benchling. Execution will be skipped."
             )
+            return {}
+
+        active_options = [o for o in dropdown.options if o.archive_record is None]
+        archived_options = [o for o in dropdown.options if o.archive_record is not None]
+        active_options.insert(
+            self.index,
+            DropdownOption(
+                name=self.option_to_add,
+                archive_record=None,
+                id=None,  # type: ignore
+            ),
+        )
+
         try:
+            print("Adding dropdown option")
             return update_dropdown_options(
-                benchling_service, dropdown.id, options_for_update
+                benchling_service, dropdown.id, active_options + archived_options
             )
         except Exception as e:
             raise Exception(f"Failed to create dropdown option: {e}")
 
     def describe_operation(self) -> str:
-        return f"{self.dropdown_name}: Creating dropdown option '{self.option_to_add}' at index {self.index}."
+        return f"{self.dropdown_name}: Creating/Unarchiving dropdown option '{self.option_to_add}' at index {self.index}."
 
     def describe(self) -> str:
-        return f"{self.dropdown_name}: Option '{self.option_to_add}' is not defined in Benchling but is defined in code."
+        return f"{self.dropdown_name}: Option '{self.option_to_add}' is not defined or is archived in Benchling but is defined in code."
+
+
+class UnarchiveDropdownOption(BaseOperation):
+    order: ClassVar[int] = 50
+
+    def __init__(
+        self,
+        dropdown_name: str,
+        option_to_unarchive: str,
+        index: int,
+    ) -> None:
+        self.dropdown_name = dropdown_name
+        self.option_to_unarchive = option_to_unarchive
+        self.index = index
+
+    def execute(self, benchling_service: BenchlingService) -> dict[str, Dropdown]:
+        dropdown = get_benchling_dropdown_by_name(benchling_service, self.dropdown_name)
+        option_to_unarchive = next(
+            (o for o in dropdown.options if o.name == self.option_to_unarchive), None
+        )
+        if option_to_unarchive is None:
+            raise ValueError(
+                f"Option {self.option_to_unarchive} on dropdown {self.dropdown_name} does not exist."
+            )
+        if option_to_unarchive.archive_record is None:
+            raise ValueError(
+                f"Option {self.option_to_unarchive} on dropdown {self.dropdown_name} is already active."
+            )
+        option_to_unarchive.archive_record = None
+        options_for_update: list[DropdownOption] = [
+            o for o in dropdown.options if o.name is not option_to_unarchive.name
+        ]
+        options_for_update.insert(self.index, option_to_unarchive)
+        try:
+            return update_dropdown_options(
+                benchling_service, dropdown.id, options_for_update
+            )
+        except Exception as e:
+            raise Exception(f"Failed to unarchive dropdown option: {e}")
+
+    def describe_operation(self) -> str:
+        return f"{self.dropdown_name}: Unarchiving dropdown option '{self.option_to_unarchive}' at index {self.index}."
+
+    def describe(self) -> str:
+        return f"{self.dropdown_name}: Option '{self.option_to_unarchive}' is archived in Benchling but is defined in code."
 
 
 class ArchiveDropdownOption(BaseOperation):
-    order: ClassVar[int] = 60
+    order: ClassVar[int] = 70
 
     def __init__(
         self,
@@ -222,12 +264,12 @@ class ArchiveDropdownOption(BaseOperation):
         for option in dropdown.options:
             if option.name == self.option_to_remove:
                 if option.archive_record is not None:
-                    logger.info(
+                    LOGGER.info(
                         f"Option {self.option_to_remove} on dropdown {self.dropdown_name} is already archived. Skipping archiving."
                     )
                     return {}
                 else:
-                    option.archive_record = ArchiveRecord(purpose="Made in error")  # type: ignore
+                    option.archive_record = ArchiveRecord(reason="Made in error")
                     option_archived = True
                     break
         if not option_archived:
@@ -235,20 +277,9 @@ class ArchiveDropdownOption(BaseOperation):
                 f"Option {self.option_to_remove} on dropdown {self.dropdown_name} does not exist."
             )
         try:
-            resubmit_payload = update_dropdown_options(
+            return update_dropdown_options(
                 benchling_service, dropdown.id, dropdown.options
             )
-            if selector_option_to_update := resubmit_payload.get(
-                "schemaFieldSelectorOptionToUpdate"
-            ):
-                return resubmit_archive_dropdown_option(
-                    benchling_service,
-                    dropdown.id,
-                    self.option_to_remove,
-                    dropdown.options,
-                    selector_option_to_update,
-                )
-            return resubmit_payload
         except Exception as e:
             raise Exception(f"Failed to archive dropdown option: {e}")
 
@@ -260,7 +291,7 @@ class ArchiveDropdownOption(BaseOperation):
 
 
 class UpdateDropdownOption(BaseOperation):
-    order: ClassVar[int] = 50
+    order: ClassVar[int] = 60
 
     def __init__(
         self, dropdown_name: str, old_option_name: str, new_option_name: str
@@ -271,35 +302,30 @@ class UpdateDropdownOption(BaseOperation):
 
     def execute(self, benchling_service: BenchlingService) -> dict[str, Dropdown]:
         dropdown = get_benchling_dropdown_by_name(benchling_service, self.dropdown_name)
-        option_updated = False
-        for option in dropdown.options:
-            if option.name == self.old_option_name:
-                option.name = self.new_option_name
-                option_updated = True
-                break
-            if option.name == self.new_option_name:
-                raise ValueError(
-                    f"Option {self.new_option_name} on dropdown {self.dropdown_name} already exists and is {'archived' if option.archive_record is not None else 'active'} in Benchling."
-                )
-        if not option_updated:
+        old_option = next(
+            (o for o in dropdown.options if o.name == self.old_option_name), None
+        )
+        if old_option is None:
             raise ValueError(
                 f"Option {self.old_option_name} on dropdown {self.dropdown_name} does not exist."
             )
+        existing_new_option = next(
+            (o for o in dropdown.options if o.name == self.new_option_name), None
+        )
+        if existing_new_option is not None:
+            archived_or_active = (
+                "archived"
+                if existing_new_option.archive_record is not None
+                else "active"
+            )
+            raise ValueError(
+                f"Option {self.new_option_name} on dropdown {self.dropdown_name} already exists and is {archived_or_active} in Benchling."
+            )
+        old_option.name = self.new_option_name
         try:
-            resubmit_payload = update_dropdown_options(
+            return update_dropdown_options(
                 benchling_service, dropdown.id, dropdown.options
             )
-            if selector_option_to_update := resubmit_payload.get(
-                "schemaFieldSelectorOptionToUpdate"
-            ):
-                return resubmit_update_dropdown_option(
-                    benchling_service,
-                    dropdown.id,
-                    self.old_option_name,
-                    dropdown.options,
-                    selector_option_to_update,
-                )
-            return resubmit_payload
         except Exception as e:
             raise Exception(f"Failed to update dropdown option: {e}")
 
@@ -311,7 +337,7 @@ class UpdateDropdownOption(BaseOperation):
 
 
 class ReorderDropdownOptions(BaseOperation):
-    order: ClassVar[int] = 70
+    order: ClassVar[int] = 80
 
     def __init__(self, dropdown_name: str, new_order: list[str]) -> None:
         self.dropdown_name = dropdown_name
