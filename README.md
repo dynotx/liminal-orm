@@ -1,6 +1,7 @@
 # [Liminal ORM](#liminal-orm)
 
 [![PyPI version](https://img.shields.io/pypi/v/liminal-orm.svg)](https://pypi.org/project/liminal-orm/)
+[![Python versions](https://img.shields.io/pypi/pyversions/liminal-orm.svg)](https://pypi.org/project/liminal-orm/)
 [![License](https://img.shields.io/github/license/dynotx/liminal-orm)](https://github.com/dynotx/liminal-orm/blob/main/LICENSE.md)
 [![CI](https://github.com/dynotx/liminal-orm/actions/workflows/cicd.yml/badge.svg)](https://github.com/dynotx/liminal-orm/actions/workflows/cicd.yml)
 [![Downloads](https://static.pepy.tech/personalized-badge/liminal-orm?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads)](https://pepy.tech/project/liminal-orm)
@@ -42,6 +43,8 @@ If you or your organization use Liminal, please consider adding yourself or your
 ## [Getting Started](#getting-started)
 
 Note: Liminal requires you to have (or have access to) an admin user account for your Benchling tenant. If you run into any issues, please reach out to us on the [Discussions](https://github.com/dynotx/liminal-orm/discussions/categories/q-a) forum and we'll be happy to help!
+
+Liminal supports standard CPython versions 3.10 through 3.12. Contributors use Python 3.12 as the default development version.
 
 Check out this [Quick Start Guide](https://dynotx.github.io/liminal-orm/getting-started/prerequisites/) to get you setup with Liminal!
 
