@@ -1,6 +1,6 @@
 1. **Benchling Admin Account**: Liminal builds on top of Benchling's LIMS system. You will need access and credentials to an admin account for your Benchling tenant(s). Liminal needs admin priveleges in order to manipulate Benchling schemas through their API.
 
-2. **Python**: Liminal is built using Python. You will need Python 3.9 or later installed on your machine.
+2. **Python**: Liminal supports Python versions 3.10 through 3.12 for package users. Development should use Python 3.12, as specified in the `.python-version` file.
 
 ### Notes
 

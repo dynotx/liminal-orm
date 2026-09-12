@@ -1,6 +1,7 @@
 # [Liminal ORM](#liminal-orm)
 
 [![PyPI version](https://img.shields.io/pypi/v/liminal-orm.svg)](https://pypi.org/project/liminal-orm/)
+[![Python versions](https://img.shields.io/pypi/pyversions/liminal-orm.svg)](https://pypi.org/project/liminal-orm/)
 [![License](https://img.shields.io/github/license/dynotx/liminal-orm)](https://github.com/dynotx/liminal-orm/blob/main/LICENSE.md)
 [![CI](https://github.com/dynotx/liminal-orm/actions/workflows/cicd.yml/badge.svg)](https://github.com/dynotx/liminal-orm/actions/workflows/cicd.yml)
 [![Downloads](https://static.pepy.tech/personalized-badge/liminal-orm?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads)](https://pepy.tech/project/liminal-orm)
@@ -54,6 +55,7 @@ With your schemas defined in code, you can now take advantage of the additional 
     ```python
     from liminal.validation import ValidationSeverity, liminal_validator
 
+
     class Pizza(BaseModel, CustomEntityMixin):
         ...
 
@@ -63,6 +65,7 @@ With your schemas defined in code, you can now take advantage of the additional 
                 raise ValueError("Cook temp is required if cook time is set")
             if self.cook_time is None and self.cook_temp is not None:
                 raise ValueError("Cook time is required if cook temp is set")
+
 
     validation_reports = Pizza.validate(session)
     ```
