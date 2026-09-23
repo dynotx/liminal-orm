@@ -352,7 +352,8 @@ class BaseModel(Generic[T], Base):
             A pandas dataframe of all entities from the database.
         """
         query = cls.query(session)
-        return pd.read_sql(query.statement, session.connection())
+        result = session.connection().execute(query.statement)
+        return pd.DataFrame(result.fetchall(), columns=list(result.keys()))
 
     @classmethod
     def query(cls, session: Session) -> Query:
