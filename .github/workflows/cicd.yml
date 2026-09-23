@@ -25,7 +25,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --locked
 
       - name: Cache mypy
         uses: actions/cache@v6
@@ -36,11 +36,38 @@ jobs:
             ${{ runner.os }}-mypy-
 
       - name: pre-commit
-        run: |
-          uv run pre-commit run -a
+        run: uv run --locked pre-commit run -a
+
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.0.1
+        with:
+          enable-cache: true
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Build wheel
+        run: uv build --wheel
+
+      - name: Upload wheel
+        uses: actions/upload-artifact@v7
+        with:
+          name: wheel-${{ github.sha }}
+          path: dist/*.whl
+          if-no-files-found: error
 
   test:
+    needs: build
     strategy:
+      fail-fast: false
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
     runs-on: ubuntu-24.04
@@ -59,7 +86,20 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: uv sync --python "${{ matrix.python-version }}"
+        run: uv sync --locked --python "${{ matrix.python-version }}"
 
       - name: Run tests
-        run: uv run --python "${{ matrix.python-version }}" pytest liminal/
+        run: uv run --locked --python "${{ matrix.python-version }}" pytest liminal/
+
+      - name: Download wheel
+        uses: actions/download-artifact@v8
+        with:
+          name: wheel-${{ github.sha }}
+          path: dist
+
+      - name: Test clean wheel install
+        run: |
+          uv venv --clear .wheel-venv --python "${{ matrix.python-version }}"
+          uv pip install --python .wheel-venv/bin/python dist/*.whl
+          .wheel-venv/bin/python -I -c "import liminal"
+          .wheel-venv/bin/liminal --help
