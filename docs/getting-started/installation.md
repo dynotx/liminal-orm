@@ -1,3 +1,5 @@
+Liminal supports Python versions 3.10 through 3.12.
+
 Install Liminal via pip:
 
 ```bash
