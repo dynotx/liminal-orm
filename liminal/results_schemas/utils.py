@@ -33,20 +33,28 @@ def convert_result_schema_field_to_field_properties(
         else getattr(field.unit, "id", None)
     )
 
+    dropdown_link = None
+    if (
+        BenchlingFieldDefinitionType.is_dropdown_link(field.typename)
+        and link_definition_id
+    ):
+        dropdown_link = dropdowns_map.get(link_definition_id)
+
+    entity_link = None
+    if (
+        BenchlingFieldDefinitionType.is_entity_link(field.typename)
+        and link_definition_id
+    ):
+        entity_link = entity_schema_id_to_system_name_map.get(link_definition_id)
+
     return BaseFieldProperties(
         name=field.name,
         type=field_type,
         required=field.isRequired,
         is_multi=field.isMulti,
-        dropdown_link=dropdowns_map.get(link_definition_id)
-        if BenchlingFieldDefinitionType.is_dropdown_link(field.typename)
-        and link_definition_id
-        else None,
+        dropdown_link=dropdown_link,
         parent_link=field.isParent,
-        entity_link=entity_schema_id_to_system_name_map.get(link_definition_id)
-        if BenchlingFieldDefinitionType.is_entity_link(field.typename)
-        and link_definition_id
-        else None,
+        entity_link=entity_link,
         tooltip=field.description,
         _archived=field.archived,
         unit_name=unit_id_to_name_map.get(unit_id) if unit_id else None,
