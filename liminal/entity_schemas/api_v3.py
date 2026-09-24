@@ -4,17 +4,14 @@ from itertools import repeat
 from typing import Any
 
 from liminal.connection.benchling_service import BenchlingService
-from liminal.enums.benchling_entity_schema_endpoints import (
-    BenchlingEntitySchemaEndpoints,
-)
-from liminal.enums.benchling_entity_type import BenchlingEntityType
+from liminal.enums import BenchlingEntitySchemaEndpointType, BenchlingEntityType
 from liminal.mappers import convert_entity_type_to_entity_schema_endpoint
 
 EARLY_ACCESS_HEADER = {"EARLY-ACCESS": "true"}
 
 
 def _list_entity_schemas_for_endpoint_v3(
-    benchling_service: BenchlingService, endpoint: BenchlingEntitySchemaEndpoints
+    benchling_service: BenchlingService, endpoint: BenchlingEntitySchemaEndpointType
 ) -> list[dict[str, Any]]:
     """Fetch entity schemas from one v3 schema endpoint."""
     response = benchling_service.api.get_response(
@@ -36,7 +33,7 @@ def list_entity_schemas_v3(
             executor.map(
                 _list_entity_schemas_for_endpoint_v3,
                 repeat(benchling_service),
-                BenchlingEntitySchemaEndpoints,
+                BenchlingEntitySchemaEndpointType,
             )
         )
 

@@ -1,8 +1,8 @@
 from liminal.base.str_enum import StrEnum
 
 
-class BenchlingEntitySchemaEndpoints(StrEnum):
-    """This enum represents the different entity schema endpoints in Benchling."""
+class BenchlingEntitySchemaEndpointType(StrEnum):
+    """This enum represents the different entity schema endpoint types in Benchling."""
 
     CUSTOM_ENTITY = "custom-entity-schema"
     DNA_SEQUENCE = "dna-sequence-schema"

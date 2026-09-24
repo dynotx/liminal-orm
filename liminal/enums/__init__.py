@@ -1,7 +1,7 @@
 # flake8: noqa: F401
 from liminal.enums.benchling_api_field_type import BenchlingAPIFieldType
-from liminal.enums.benchling_entity_schema_endpoints import (
-    BenchlingEntitySchemaEndpoints,
+from liminal.enums.benchling_entity_schema_endpoint_type import (
+    BenchlingEntitySchemaEndpointType,
 )
 from liminal.enums.benchling_entity_type import BenchlingEntityType
 from liminal.enums.benchling_field_type import BenchlingFieldType
