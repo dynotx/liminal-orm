@@ -164,12 +164,14 @@ class CreateDropdownOption(BaseOperation):
 
         if existing_option is not None:
             if existing_option.archive_record is not None:
-                print("Unarchiving option")
+                LOGGER.warning(
+                    f"Unarchiving option {self.option_to_add} on dropdown {self.dropdown_name}"
+                )
                 return UnarchiveDropdownOption(
                     self.dropdown_name, self.option_to_add, self.index
                 ).execute(benchling_service)
 
-            LOGGER.info(
+            LOGGER.warning(
                 f"Option {self.option_to_add} on dropdown {self.dropdown_name} already exists and is active in Benchling. Execution will be skipped."
             )
             return {}
@@ -186,7 +188,9 @@ class CreateDropdownOption(BaseOperation):
         )
 
         try:
-            print("Adding dropdown option")
+            LOGGER.warning(
+                f"Creating dropdown option {self.option_to_add} to dropdown {self.dropdown_name}"
+            )
             return update_dropdown_options(
                 benchling_service, dropdown.id, active_options + archived_options
             )
@@ -264,7 +268,7 @@ class ArchiveDropdownOption(BaseOperation):
         for option in dropdown.options:
             if option.name == self.option_to_remove:
                 if option.archive_record is not None:
-                    LOGGER.info(
+                    LOGGER.warning(
                         f"Option {self.option_to_remove} on dropdown {self.dropdown_name} is already archived. Skipping archiving."
                     )
                     return {}
