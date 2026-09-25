@@ -679,7 +679,7 @@ wheels = [
 
 [[package]]
 name = "liminal-orm"
-version = "4.7.0a1"
+version = "4.7.0"
 source = { editable = "." }
 dependencies = [
     { name = "benchling-sdk" },
