@@ -8,6 +8,7 @@ from liminal.dropdowns.operations import (
     ArchiveDropdownOption,
     CreateDropdown,
     CreateDropdownOption,
+    UnarchiveDropdownOption,
     ReorderDropdownOptions,
     UnarchiveDropdown,
     UpdateDropdownName,

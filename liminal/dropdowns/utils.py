@@ -1,18 +1,10 @@
 from typing import Any
 
-import requests
-from benchling_sdk.models import ArchiveRecord as BenchlingArchiveRecord
+from benchling_sdk.models import ArchiveRecord
 from benchling_sdk.models import Dropdown, DropdownOption, DropdownSummary
-from pydantic import BaseModel
 
 from liminal.connection import BenchlingService
-
-
-class ArchiveRecord(BaseModel):
-    purpose: str
-
-    def to_dict(self) -> dict[str, Any]:
-        return self.model_dump()
+from liminal.dropdowns.api_v3 import list_dropdowns_with_options_v3
 
 
 def get_benchling_dropdown_id_name_map(
@@ -54,52 +46,47 @@ def get_benchling_dropdown_by_name(
     return benchling_service.dropdowns.get_by_id(dropdown.id)
 
 
+def _convert_dropdown_from_v3(
+    dropdown: dict[str, Any], include_archived: bool
+) -> Dropdown:
+    options = dropdown.get("options", [])
+    if not include_archived:
+        options = [option for option in options if not option.get("archived", False)]
+
+    return Dropdown(
+        id=dropdown["id"],
+        name=dropdown["name"],
+        archive_record=ArchiveRecord(reason=dropdown["archiveReason"])
+        if dropdown.get("archived", False)
+        else None,
+        options=[
+            DropdownOption(
+                id=option["id"],
+                name=option["name"],
+                archive_record=ArchiveRecord(reason=option["archiveReason"])
+                if option.get("archived", False)
+                else None,
+            )
+            for option in options
+        ],
+    )
+
+
 def get_benchling_dropdowns_dict(
     benchling_service: BenchlingService,
     include_archived: bool = False,
 ) -> dict[str, Dropdown]:
-    def _convert_dropdown_from_json(
-        d: dict[str, Any], include_archived: bool = False
-    ) -> Dropdown:
-        all_options = d["allSchemaFieldSelectorOptions"]
-        if not include_archived:
-            all_options = [o for o in all_options if not o["archiveRecord"]]
-        return Dropdown(
-            id=d["id"],
-            name=d["name"],
-            archive_record=BenchlingArchiveRecord(reason=d["archiveRecord"]["purpose"])
-            if d["archiveRecord"]
-            else None,
-            options=[
-                DropdownOption(
-                    name=o["name"],
-                    id=o["id"],
-                    archive_record=BenchlingArchiveRecord(
-                        reason=o["archiveRecord"]["purpose"]
-                    )
-                    if o["archiveRecord"]
-                    else None,
-                )
-                for o in all_options
-            ],
-        )
+    dropdowns = list_dropdowns_with_options_v3(benchling_service)
 
-    with requests.Session() as session:
-        request = session.get(
-            f"https://{benchling_service.benchling_tenant}.benchling.com/1/api/schema-field-selectors/?registryId={benchling_service.registry_id}",
-            headers=benchling_service.custom_post_headers,
-            cookies=benchling_service.custom_post_cookies,
-        )
-        all_dropdowns = request.json()["selectorsByRegistryId"][
-            benchling_service.registry_id
+    if not include_archived:
+        dropdowns = [
+            dropdown for dropdown in dropdowns if not dropdown.get("archived", False)
         ]
-        if not include_archived:
-            all_dropdowns = [d for d in all_dropdowns if not d["archiveRecord"]]
-    dropdowns = {
-        d["name"]: _convert_dropdown_from_json(d, include_archived)
-        for d in all_dropdowns
+
+    return {
+        dropdown["name"]: _convert_dropdown_from_v3(dropdown, include_archived)
+        for dropdown in dropdowns
     }
-    return dropdowns
 
 
 def dropdown_exists_in_benchling(
