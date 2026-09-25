@@ -11,12 +11,12 @@ class ResultsSchemaProperties(BaseModel):
     ----------
     name : str
         The name of the schema.
-    warehouse_name : str
+    warehouse_name : str | None
        The sql table name of the schema in the benchling warehouse.
     """
 
     name: str
-    warehouse_name: str
+    warehouse_name: str | None = None
 
     def __repr__(self) -> str:
         """Generates a string representation of the class so that it can be executed."""

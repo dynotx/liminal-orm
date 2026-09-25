@@ -5,10 +5,61 @@ from benchling_api_client.v2.stable.models.assay_result_schema import AssayResul
 from liminal.base.properties.base_field_properties import BaseFieldProperties
 from liminal.connection import BenchlingService
 from liminal.dropdowns.utils import get_benchling_dropdown_id_name_map
-from liminal.entity_schemas.utils import convert_tag_schema_field_to_field_properties
+from liminal.entity_schemas.utils import (
+    get_benchling_entity_schema_id_to_system_name_map,
+)
+from liminal.enums.benchling_field_definition_type import BenchlingFieldDefinitionType
+from liminal.mappers import benchling_field_definition_type_to_field_type
 from liminal.orm.results_schema_properties import ResultsSchemaProperties
-from liminal.results_schemas.models.results_schema_model import ResultsSchemaModel
+from liminal.results_schemas.models.results_schema_model import (
+    ResultsSchemaFieldModel,
+    ResultsSchemaModel,
+)
 from liminal.unit_dictionary.utils import get_unit_id_to_name_map
+
+
+def convert_result_schema_field_to_field_properties(
+    field: ResultsSchemaFieldModel,
+    entity_schema_id_to_system_name_map: dict[str, str],
+    dropdowns_map: dict[str, str],
+    unit_id_to_name_map: dict[str, str],
+) -> BaseFieldProperties:
+    field_type = benchling_field_definition_type_to_field_type(field.typename)
+
+    link_definition_id = field.linkDefinition.id if field.linkDefinition else None
+    unit_id = (
+        field.unit.get("id")
+        if isinstance(field.unit, dict)
+        else getattr(field.unit, "id", None)
+    )
+
+    dropdown_link = None
+    if (
+        BenchlingFieldDefinitionType.is_dropdown_link(field.typename)
+        and link_definition_id
+    ):
+        dropdown_link = dropdowns_map.get(link_definition_id)
+
+    entity_link = None
+    if (
+        BenchlingFieldDefinitionType.is_entity_link(field.typename)
+        and link_definition_id
+    ):
+        entity_link = entity_schema_id_to_system_name_map.get(link_definition_id)
+
+    return BaseFieldProperties(
+        name=field.name,
+        type=field_type,
+        required=field.isRequired,
+        is_multi=field.isMulti,
+        dropdown_link=dropdown_link,
+        parent_link=field.isParent,
+        entity_link=entity_link,
+        tooltip=field.description,
+        _archived=field.archived,
+        unit_name=unit_id_to_name_map.get(unit_id) if unit_id else None,
+        decimal_places=field.displayPrecision,
+    )
 
 
 def get_converted_results_schemas(
@@ -18,21 +69,27 @@ def get_converted_results_schemas(
     It parses the Results Schema and creates ResultsSchemaProperties and a list of FieldProperties for each field in the schema.
     """
     results_schemas = ResultsSchemaModel.get_all(benchling_service)
-    dropdowns_map = get_benchling_dropdown_id_name_map(benchling_service)
+    dropdown_id_to_name_map = get_benchling_dropdown_id_name_map(benchling_service)
     unit_id_to_name_map = get_unit_id_to_name_map(benchling_service)
+    entity_schema_id_to_system_name_map = (
+        get_benchling_entity_schema_id_to_system_name_map(benchling_service)
+    )
     results_schemas_list = []
     if not include_archived:
-        results_schemas = [s for s in results_schemas if not s.archiveRecord]
+        results_schemas = [s for s in results_schemas if not s.archived]
     for schema in results_schemas:
         schema_properties = ResultsSchemaProperties(
             name=schema.name,
-            warehouse_name=schema.sqlIdentifier,
+            warehouse_name=schema.systemName,
         )
         field_properties_dict = {}
         for field in schema.fields:
             field_properties_dict[field.systemName] = (
-                convert_tag_schema_field_to_field_properties(
-                    field, dropdowns_map, unit_id_to_name_map
+                convert_result_schema_field_to_field_properties(
+                    field,
+                    entity_schema_id_to_system_name_map,
+                    dropdown_id_to_name_map,
+                    unit_id_to_name_map,
                 )
             )
         results_schemas_list.append((schema_properties, field_properties_dict))

@@ -4,6 +4,7 @@ from liminal.enums.benchling_entity_schema_endpoint_type import (
     BenchlingEntitySchemaEndpointType,
 )
 from liminal.enums.benchling_entity_type import BenchlingEntityType
+from liminal.enums.benchling_field_definition_type import BenchlingFieldDefinitionType
 from liminal.enums.benchling_field_type import BenchlingFieldType
 from liminal.enums.benchling_folder_item_type import BenchlingFolderItemType
 from liminal.enums.benchling_naming_strategy import BenchlingNamingStrategy
