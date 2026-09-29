@@ -60,7 +60,7 @@ class Column(SqlColumn):
     ):
         """Initializes a Benchling Column object. Validates the type BenchlingFieldType maps to a valid sqlalchemy type.
         Raises an error if the type is a dropdown and a dropdown is not passed in."""
-        properties = BaseFieldProperties(
+        field_props: dict[str, Any] = dict(
             name=name,
             type=type,
             required=required,
@@ -73,6 +73,11 @@ class Column(SqlColumn):
             unit_name=unit_name,
             decimal_places=decimal_places,
         )
+        for f in BaseFieldProperties.unsupported_field_properties(
+            type, entity_link is not None
+        ):
+            field_props.pop(f, None)
+        properties = BaseFieldProperties(**field_props)
         self.properties = properties
 
         nested_sql_type = convert_benchling_type_to_sql_alchemy_type(type)

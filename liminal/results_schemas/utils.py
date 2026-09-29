@@ -9,7 +9,7 @@ from liminal.entity_schemas.utils import (
     get_benchling_entity_schema_id_to_system_name_map,
 )
 from liminal.enums.benchling_field_definition_type import BenchlingFieldDefinitionType
-from liminal.mappers import benchling_field_definition_type_to_field_type
+from liminal.mappers import convert_field_definition_type_to_field_type
 from liminal.orm.results_schema_properties import ResultsSchemaProperties
 from liminal.results_schemas.models.results_schema_model import (
     ResultsSchemaFieldModel,
@@ -24,7 +24,7 @@ def convert_result_schema_field_to_field_properties(
     dropdowns_map: dict[str, str],
     unit_id_to_name_map: dict[str, str],
 ) -> BaseFieldProperties:
-    field_type = benchling_field_definition_type_to_field_type(field.typename)
+    field_type = convert_field_definition_type_to_field_type(field.typename)
 
     link_definition_id = field.linkDefinition.id if field.linkDefinition else None
     unit_id = (

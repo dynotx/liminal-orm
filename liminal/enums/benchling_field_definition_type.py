@@ -20,6 +20,7 @@ class BenchlingFieldDefinitionType(StrEnum):
     BLOB_LINK_FIELD_DEFINITION = "BlobLinkFieldDefinition"
     CUSTOM_ENTITY_LINK_FIELD_DEFINITION = "CustomEntityLinkFieldDefinition"
     DNA_OLIGO_LINK_FIELD_DEFINITION = "DnaOligoLinkFieldDefinition"
+    DNA_PART_LINK_FIELD_DEFINITION = "DnaPartLinkFieldDefinition"
     DNA_SEQUENCE_LINK_FIELD_DEFINITION = "DnaSequenceLinkFieldDefinition"
     DROPDOWN_LINK_FIELD_DEFINITION = "DropdownLinkFieldDefinition"
     ANY_ENTITY_LINK_FIELD_DEFINITION = "AnyEntityLinkFieldDefinition"
@@ -34,6 +35,8 @@ class BenchlingFieldDefinitionType(StrEnum):
     RNA_OLIGO_LINK_FIELD_DEFINITION = "RnaOligoLinkFieldDefinition"
     STORABLE_LINK_FIELD_DEFINITION = "StorableLinkFieldDefinition"
     SYSTEM_CATEGORY_LINK_FIELD_DEFINITION = "SystemCategoryLinkFieldDefinition"
+    TRANSCRIPTION_LINK_FIELD_DEFINITION = "TranscriptionLinkFieldDefinition"
+    TRANSLATION_LINK_FIELD_DEFINITION = "TranslationLinkFieldDefinition"
 
     @classmethod
     def is_primitive(cls, field_definition_type: BenchlingFieldDefinitionType) -> bool:
