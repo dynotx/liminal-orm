@@ -17,7 +17,7 @@ from liminal.entity_schemas.operations import (
     UpdateEntitySchemaField,
     UpdateEntitySchemaNameTemplate,
 )
-from liminal.entity_schemas.utils import get_converted_tag_schemas
+from liminal.entity_schemas.utils_v3 import get_converted_entity_schemas
 from liminal.enums import BenchlingFieldType
 from liminal.enums.benchling_naming_strategy import BenchlingNamingStrategy
 from liminal.orm.base_model import BaseModel
@@ -44,7 +44,7 @@ def compare_entity_schemas(
         Returns a dictionary with the model name as the key and a list of error messages as the value.
     """
     model_operations: dict[str, list[CompareOperation]] = {}
-    benchling_schemas = get_converted_tag_schemas(
+    benchling_schemas = get_converted_entity_schemas(
         benchling_service, include_archived=True, wh_schema_names=schema_names
     )
     # If models are provided, filter the schemas from benchling so that only the models passed in are compared.
