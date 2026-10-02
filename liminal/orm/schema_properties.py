@@ -11,6 +11,8 @@ from liminal.base.properties.base_schema_properties import (
 from liminal.enums import BenchlingEntityType, BenchlingNamingStrategy
 from liminal.utils import is_valid_prefix, is_valid_wh_name
 
+COLLECTION_SCHEMA_PROPERTIES = {"naming_strategies", "constraint_fields"}
+
 
 class SchemaProperties(BaseSchemaProperties):
     """
@@ -67,6 +69,21 @@ class SchemaProperties(BaseSchemaProperties):
         super().__init__(**data)
         self._archived = data.get("_archived", False)
 
+    @staticmethod
+    def unsupported_schema_properties(entity_type: BenchlingEntityType) -> set[str]:
+        """Returns the fields that Benchling does not support for the given entity type."""
+        if entity_type == BenchlingEntityType.ENTRY:
+            return {
+                "naming_strategies",
+                "use_registry_id_as_label",
+                "include_registry_id_in_chips",
+                "constraint_fields",
+                "show_bases_in_expanded_view",
+            }
+        if not entity_type.is_sequence():
+            return {"show_bases_in_expanded_view"}
+        return set()
+
     @model_validator(mode="after")
     def validate_mixture_schema_config(self) -> SchemaProperties:
         if (
@@ -83,12 +100,27 @@ class SchemaProperties(BaseSchemaProperties):
             raise ValueError(
                 "The entity type is not a Mixture. Remove the mixture schema config."
             )
-        if not self.entity_type.is_sequence() and self.show_bases_in_expanded_view:
-            raise ValueError(
-                "show_bases_in_expanded_view can only be set for sequence entities."
-            )
         is_valid_wh_name(self.warehouse_name)
         is_valid_prefix(self.prefix)
+        return self
+
+    @model_validator(mode="after")
+    def validate_supported_properties(self) -> SchemaProperties:
+        unsupported_properties = self.unsupported_schema_properties(self.entity_type)
+        explicitly_set = {
+            f
+            for f in unsupported_properties.intersection(self.model_fields_set)
+            if getattr(self, f) is not None
+        }
+        if explicitly_set:
+            raise ValueError(
+                f"{', '.join(sorted(explicitly_set))} cannot be set for {self.entity_type} schemas."
+            )
+        # for f in unsupported_properties:
+        #     object.__setattr__(
+        #         self, f, set() if f in COLLECTION_SCHEMA_PROPERTIES else None
+        #     )
+        #     self.model_fields_set.discard(f)
         return self
 
     def set_archived(self, value: bool) -> SchemaProperties:
