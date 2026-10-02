@@ -2,11 +2,19 @@ import random
 import re
 import string
 from typing import Any
+from urllib.parse import quote
 
 import requests
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed
 
 from liminal.connection.benchling_service import BenchlingService
+
+EARLY_ACCESS_HEADER = {"EARLY-ACCESS": "true"}
+
+MAX_PAGE_SIZE = 100
+
+# Larger bursts of parallel requests get rate limited by Benchling and stall on retry backoff.
+MAX_CONCURRENT_REQUESTS = 8
 
 
 def generate_random_id(length: int = 8) -> str:
@@ -94,3 +102,30 @@ def await_queued_response(
         return response_json
     else:
         raise ValueError("Failed request: ", response_json)
+
+
+def list_all_items_v3(
+    benchling_service: BenchlingService, url: str
+) -> list[dict[str, Any]]:
+    """Fetch every item from a v3 list endpoint, following nextToken pagination."""
+    separator = "&" if "?" in url else "?"
+    base_url = f"{url}{separator}pageSize={MAX_PAGE_SIZE}"
+    items: list[dict[str, Any]] = []
+    next_token: str | None = None
+    while True:
+        page_url = base_url
+        if next_token:
+            page_url += f"&nextToken={quote(next_token)}"
+        response = benchling_service.api.get_response(
+            url=page_url,
+            additional_headers=EARLY_ACCESS_HEADER,
+        )
+        parsed_response = response.parsed
+        if parsed_response is None:
+            raise ValueError(f"No response body returned for {url}.")
+        if isinstance(parsed_response, list):
+            return items + parsed_response
+        items.extend(parsed_response.get("items", []))
+        next_token = parsed_response.get("nextToken")
+        if not next_token:
+            return items
