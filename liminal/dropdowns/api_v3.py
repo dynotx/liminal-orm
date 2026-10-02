@@ -1,14 +1,17 @@
 import json
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any
 
 from benchling_sdk.models import DropdownCreate, DropdownOption
 
 from liminal.connection import BenchlingService
+from liminal.utils import (
+    EARLY_ACCESS_HEADER,
+    MAX_CONCURRENT_REQUESTS,
+    list_all_items_v3,
+)
 
 _DROPDOWN_API_PATH = "/api/v3/dropdown"
-
-EARLY_ACCESS_HEADER = {"EARLY-ACCESS": "true"}
 
 
 def _response_json(response: Any, operation: str) -> dict[str, Any]:
@@ -37,22 +40,22 @@ def list_dropdowns_v3(
 ) -> list[dict[str, Any]]:
     """Fetch dropdowns from the v3 API."""
     url_suffix = "/items?archived.anyOf=true,false" if include_archived else "/items"
-    response = benchling_service.api.get_response(
-        url=f"/api/v3/dropdown/{url_suffix}",
-        additional_headers=EARLY_ACCESS_HEADER,
-    )
-    return response.parsed.get("items", [])
+    return list_all_items_v3(benchling_service, f"{_DROPDOWN_API_PATH}{url_suffix}")
 
 
 def list_dropdown_options_v3(
     benchling_service: BenchlingService, dropdown_id: str
 ) -> list[dict[str, Any]]:
     """Fetch a dropdown's options from the v3 API."""
-    response = benchling_service.api.get_response(
-        url=f"{_DROPDOWN_API_PATH}/{dropdown_id}/options/items",
-        additional_headers=EARLY_ACCESS_HEADER,
+    return list_all_items_v3(
+        benchling_service, f"{_DROPDOWN_API_PATH}/{dropdown_id}/options/items"
     )
-    return response.parsed.get("items", [])
+
+
+def _fetch_dropdown_options(
+    benchling_service: BenchlingService, dropdown: dict[str, Any]
+) -> None:
+    dropdown["options"] = list_dropdown_options_v3(benchling_service, dropdown["id"])
 
 
 def list_dropdowns_with_options_v3(
@@ -61,13 +64,13 @@ def list_dropdowns_with_options_v3(
     """Fetch all dropdowns from the v3 API, along with their options, fetched in parallel."""
     dropdowns = list_dropdowns_v3(benchling_service, include_archived)
 
-    def _attach_options(dropdown: dict[str, Any]) -> None:
-        dropdown["options"] = list_dropdown_options_v3(
-            benchling_service, dropdown["id"]
-        )
-
-    with ThreadPoolExecutor() as executor:
-        list(executor.map(_attach_options, dropdowns))
+    with ThreadPoolExecutor(max_workers=MAX_CONCURRENT_REQUESTS) as pool:
+        futures = [
+            pool.submit(_fetch_dropdown_options, benchling_service, dropdown)
+            for dropdown in dropdowns
+        ]
+        for future in as_completed(futures):
+            future.result()
 
     return dropdowns
 
