@@ -26,7 +26,7 @@ class TestCompareEntitySchemas:
     ) -> None:
         with (
             patch(
-                "liminal.entity_schemas.compare.get_converted_tag_schemas"
+                "liminal.entity_schemas.compare.get_converted_entity_schemas"
             ) as mock_get_benchling_entity_schemas,
             patch(
                 "liminal.orm.base_model.BaseModel.get_all_subclasses"
@@ -73,7 +73,7 @@ class TestCompareEntitySchemas:
     ) -> None:
         with (
             patch(
-                "liminal.entity_schemas.compare.get_converted_tag_schemas"
+                "liminal.entity_schemas.compare.get_converted_entity_schemas"
             ) as mock_get_benchling_entity_schemas,
             patch(
                 "liminal.orm.base_model.BaseModel.get_all_subclasses"
@@ -97,7 +97,7 @@ class TestCompareEntitySchemas:
     ) -> None:
         with (
             patch(
-                "liminal.entity_schemas.compare.get_converted_tag_schemas"
+                "liminal.entity_schemas.compare.get_converted_entity_schemas"
             ) as mock_get_benchling_entity_schemas,
             patch(
                 "liminal.orm.base_model.BaseModel.get_all_subclasses"
@@ -136,7 +136,7 @@ class TestCompareEntitySchemas:
     ) -> None:
         with (
             patch(
-                "liminal.entity_schemas.compare.get_converted_tag_schemas"
+                "liminal.entity_schemas.compare.get_converted_entity_schemas"
             ) as mock_get_benchling_entity_schemas,
             patch(
                 "liminal.orm.base_model.BaseModel.get_all_subclasses"
