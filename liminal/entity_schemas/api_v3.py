@@ -5,6 +5,7 @@ from typing import Any
 from liminal.utils import (
     EARLY_ACCESS_HEADER,
     MAX_CONCURRENT_REQUESTS,
+    await_task_v3,
     list_all_items_v3,
 )
 from liminal.connection.benchling_service import BenchlingService
@@ -44,9 +45,13 @@ def _list_entity_schemas_for_endpoint_v3(
 def list_entity_schema_field_definitions_v3(
     benchling_service: BenchlingService, field_definitions_url: str
 ) -> list[dict[str, Any]]:
-    """Fetch an entity schema's field definitions from the v3 API."""
+    """Fetch an entity schema's field definitions, including archived ones, from the v3 API.
+    Archived fields are needed because set-field-definitions rejects a list that leaves out any existing field."""
     relative_url = field_definitions_url.split(".benchling.com/", 1)[-1]
-    return list_all_items_v3(benchling_service, relative_url)
+    separator = "&" if "?" in relative_url else "?"
+    return list_all_items_v3(
+        benchling_service, f"{relative_url}{separator}archived.anyOf=true,false"
+    )
 
 
 def attach_entity_schema_field_definitions_v3(
@@ -161,6 +166,7 @@ def update_entity_schema_field_definitions_v3(
 ) -> dict[str, Any]:
     """
     Replace an entity schema's field definitions.
+    The endpoint starts an async task, so this polls the task until it succeeds and returns the final task response.
     """
     endpoint = convert_entity_type_to_entity_schema_endpoint(entity_type)
     response = benchling_service.api.post_response(
@@ -172,4 +178,5 @@ def update_entity_schema_field_definitions_v3(
         raise Exception(
             "Failed to set entity schema field definitions:", response.content
         )
-    return json.loads(response.content)
+    task = json.loads(response.content)
+    return await_task_v3(benchling_service, task["pollingUri"])
