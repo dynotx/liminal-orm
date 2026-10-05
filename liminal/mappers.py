@@ -9,6 +9,7 @@ from liminal.enums import (
     BenchlingEntitySchemaEndpointType,
     BenchlingEntitySchemaType,
     BenchlingEntityType,
+    BenchlingFieldDefinitionInputType,
     BenchlingFieldDefinitionType,
     BenchlingFieldType,
     BenchlingFolderItemType,
@@ -108,6 +109,89 @@ def convert_field_type_to_field_definition_type(
     if field_type not in conversion_map:
         raise ValueError(f"Field type '{field_type}' is not supported.")
     return conversion_map[field_type]
+
+
+def convert_field_type_to_field_definition_input_type(
+    field_type: BenchlingFieldType,
+    linked_schema_type: BenchlingEntitySchemaType | None = None,
+) -> BenchlingFieldDefinitionInputType:
+    if field_type == BenchlingFieldType.ENTITY_LINK and linked_schema_type is not None:
+        linked_schema_conversion_map = {
+            BenchlingEntitySchemaType.AA_SEQUENCE: BenchlingFieldDefinitionInputType.AA_SEQUENCE_LINK,
+            BenchlingEntitySchemaType.CUSTOM_ENTITY: BenchlingFieldDefinitionInputType.CUSTOM_ENTITY_LINK,
+            BenchlingEntitySchemaType.DNA_OLIGO: BenchlingFieldDefinitionInputType.DNA_OLIGO_LINK,
+            BenchlingEntitySchemaType.DNA_SEQUENCE: BenchlingFieldDefinitionInputType.DNA_SEQUENCE_LINK,
+            BenchlingEntitySchemaType.MIXTURE: BenchlingFieldDefinitionInputType.MIXTURE_LINK,
+            BenchlingEntitySchemaType.MOLECULE: BenchlingFieldDefinitionInputType.MOLECULE_LINK,
+            BenchlingEntitySchemaType.RNA_OLIGO: BenchlingFieldDefinitionInputType.RNA_OLIGO_LINK,
+            BenchlingEntitySchemaType.RNA_SEQUENCE: BenchlingFieldDefinitionInputType.RNA_SEQUENCE_LINK,
+        }
+        if linked_schema_type not in linked_schema_conversion_map:
+            raise ValueError(
+                f"Entity links to '{linked_schema_type}' schemas are not supported."
+            )
+        return linked_schema_conversion_map[linked_schema_type]
+    conversion_map = {
+        BenchlingFieldType.TEXT: BenchlingFieldDefinitionInputType.TEXT,
+        BenchlingFieldType.LONG_TEXT: BenchlingFieldDefinitionInputType.LONG_TEXT,
+        BenchlingFieldType.INTEGER: BenchlingFieldDefinitionInputType.INTEGER,
+        BenchlingFieldType.DECIMAL: BenchlingFieldDefinitionInputType.FLOAT,
+        BenchlingFieldType.BOOLEAN: BenchlingFieldDefinitionInputType.BOOLEAN,
+        BenchlingFieldType.DATE: BenchlingFieldDefinitionInputType.DATE,
+        BenchlingFieldType.DATETIME: BenchlingFieldDefinitionInputType.DATE_TIME,
+        BenchlingFieldType.DROPDOWN: BenchlingFieldDefinitionInputType.DROPDOWN,
+        BenchlingFieldType.BLOB_LINK: BenchlingFieldDefinitionInputType.BLOB_LINK,
+        BenchlingFieldType.ENTRY_LINK: BenchlingFieldDefinitionInputType.ENTRY_LINK,
+        BenchlingFieldType.STORAGE_LINK: BenchlingFieldDefinitionInputType.STORAGE_LINK,
+        BenchlingFieldType.ENTITY_LINK: BenchlingFieldDefinitionInputType.ENTITY_LINK,
+        BenchlingFieldType.AA_SEQUENCE_LINK: BenchlingFieldDefinitionInputType.AA_SEQUENCE_LINK,
+        BenchlingFieldType.CUSTOM_ENTITY_LINK: BenchlingFieldDefinitionInputType.CUSTOM_ENTITY_LINK,
+        BenchlingFieldType.DNA_SEQUENCE_LINK: BenchlingFieldDefinitionInputType.DNA_SEQUENCE_LINK,
+        BenchlingFieldType.MIXTURE_LINK: BenchlingFieldDefinitionInputType.MIXTURE_LINK,
+        BenchlingFieldType.PART_LINK: BenchlingFieldDefinitionInputType.DNA_PART_LINK,
+        BenchlingFieldType.TRANSLATION_LINK: BenchlingFieldDefinitionInputType.TRANSLATION_LINK,
+        BenchlingFieldType.TRANSCRIPTION_LINK: BenchlingFieldDefinitionInputType.TRANSCRIPTION_LINK,
+    }
+    if field_type not in conversion_map:
+        raise ValueError(
+            f"Field type '{field_type}' cannot be created through the v3 API."
+        )
+    return conversion_map[field_type]
+
+
+def convert_field_definition_type_to_field_definition_input_type(
+    field_definition_type: BenchlingFieldDefinitionType,
+) -> BenchlingFieldDefinitionInputType:
+    conversion_map = {
+        BenchlingFieldDefinitionType.TEXT_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.TEXT,
+        BenchlingFieldDefinitionType.LONG_TEXT_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.LONG_TEXT,
+        BenchlingFieldDefinitionType.INTEGER_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.INTEGER,
+        BenchlingFieldDefinitionType.FLOAT_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.FLOAT,
+        BenchlingFieldDefinitionType.BOOLEAN_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.BOOLEAN,
+        BenchlingFieldDefinitionType.DATE_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.DATE,
+        BenchlingFieldDefinitionType.DATETIME_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.DATE_TIME,
+        BenchlingFieldDefinitionType.DROPDOWN_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.DROPDOWN,
+        BenchlingFieldDefinitionType.BLOB_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.BLOB_LINK,
+        BenchlingFieldDefinitionType.ENTRY_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.ENTRY_LINK,
+        BenchlingFieldDefinitionType.STORABLE_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.STORAGE_LINK,
+        BenchlingFieldDefinitionType.ANY_ENTITY_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.ENTITY_LINK,
+        BenchlingFieldDefinitionType.AA_SEQUENCE_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.AA_SEQUENCE_LINK,
+        BenchlingFieldDefinitionType.CUSTOM_ENTITY_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.CUSTOM_ENTITY_LINK,
+        BenchlingFieldDefinitionType.DNA_OLIGO_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.DNA_OLIGO_LINK,
+        BenchlingFieldDefinitionType.DNA_SEQUENCE_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.DNA_SEQUENCE_LINK,
+        BenchlingFieldDefinitionType.MIXTURE_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.MIXTURE_LINK,
+        BenchlingFieldDefinitionType.MOLECULE_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.MOLECULE_LINK,
+        BenchlingFieldDefinitionType.RNA_OLIGO_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.RNA_OLIGO_LINK,
+        BenchlingFieldDefinitionType.RNA_SEQUENCE_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.RNA_SEQUENCE_LINK,
+        BenchlingFieldDefinitionType.DNA_PART_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.DNA_PART_LINK,
+        BenchlingFieldDefinitionType.TRANSCRIPTION_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.TRANSCRIPTION_LINK,
+        BenchlingFieldDefinitionType.TRANSLATION_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.TRANSLATION_LINK,
+    }
+    if field_definition_type not in conversion_map:
+        raise ValueError(
+            f"Field definition type '{field_definition_type}' cannot be set through the v3 API."
+        )
+    return conversion_map[field_definition_type]
 
 
 def convert_entity_type_to_entity_schema_type(

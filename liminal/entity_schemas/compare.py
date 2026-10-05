@@ -345,7 +345,11 @@ def compare_entity_schemas(
             ops.append(
                 CompareOperation(
                     op=CreateEntitySchema(
-                        BaseSchemaProperties(**model.__schema_properties__.model_dump())
+                        BaseSchemaProperties(
+                            **model.__schema_properties__.model_dump(
+                                exclude_unset=True
+                            )
+                        )
                         .set_warehouse_name(benchling_given_wh_name)
                         .set_naming_strategies(standard_naming_strategies),
                         fields=field_props,
