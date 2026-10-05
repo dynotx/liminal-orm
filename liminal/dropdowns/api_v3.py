@@ -52,10 +52,11 @@ def list_dropdown_options_v3(
     )
 
 
-def _fetch_dropdown_options(
+def attach_dropdown_options_v3(
     benchling_service: BenchlingService, dropdown: dict[str, Any]
-) -> None:
+) -> dict[str, Any]:
     dropdown["options"] = list_dropdown_options_v3(benchling_service, dropdown["id"])
+    return dropdown
 
 
 def list_dropdowns_with_options_v3(
@@ -66,7 +67,7 @@ def list_dropdowns_with_options_v3(
 
     with ThreadPoolExecutor(max_workers=MAX_CONCURRENT_REQUESTS) as pool:
         futures = [
-            pool.submit(_fetch_dropdown_options, benchling_service, dropdown)
+            pool.submit(attach_dropdown_options_v3, benchling_service, dropdown)
             for dropdown in dropdowns
         ]
         for future in as_completed(futures):
