@@ -10,6 +10,9 @@ from liminal.entity_schemas.entity_schema_models_v3 import (
     EntitySchemaFieldModel,
     EntitySchemaModel,
 )
+from liminal.entity_schemas.utils import (
+    get_benchling_entity_schema_id_to_system_name_map,
+)
 from liminal.enums import BenchlingNamingStrategy
 from liminal.enums.benchling_entity_schema_type import BenchlingEntitySchemaType
 from liminal.enums.benchling_link_definition_type import BenchlingLinkDefinitionType
@@ -35,7 +38,9 @@ def get_converted_entity_schemas(
     all_schemas = EntitySchemaModel.get_all(benchling_service, wh_schema_names)
     dropdown_id_to_name_map = get_benchling_dropdown_id_name_map(benchling_service)
     unit_id_to_name_map = get_unit_id_to_name_map(benchling_service)
-    entity_schema_id_to_name_map = {s.id: s.systemName for s in all_schemas}
+    entity_schema_id_to_name_map = get_benchling_entity_schema_id_to_system_name_map(
+        benchling_service
+    )
     all_schemas = (
         all_schemas if include_archived else [s for s in all_schemas if not s.archived]
     )
