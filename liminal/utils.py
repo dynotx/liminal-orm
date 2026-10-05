@@ -1,3 +1,4 @@
+import json
 import random
 import re
 import string
@@ -5,7 +6,13 @@ from typing import Any
 from urllib.parse import quote
 
 import requests
-from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed
+from tenacity import (
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    stop_after_delay,
+    wait_fixed,
+)
 
 from liminal.connection.benchling_service import BenchlingService
 
@@ -15,6 +22,10 @@ MAX_PAGE_SIZE = 100
 
 # Larger bursts of parallel requests get rate limited by Benchling and stall on retry backoff.
 MAX_CONCURRENT_REQUESTS = 8
+
+TASK_POLL_INTERVAL_SECONDS = 1
+TASK_TIMEOUT_SECONDS = 300
+TASK_FAILED_STATUSES = {"FAILED", "FAILURE", "CANCELLED"}
 
 
 def generate_random_id(length: int = 8) -> str:
@@ -129,3 +140,35 @@ def list_all_items_v3(
         next_token = parsed_response.get("nextToken")
         if not next_token:
             return items
+
+
+class TaskNotFinishedError(Exception):
+    """Raised while a v3 async task is still running, so tenacity polls it again."""
+
+
+@retry(
+    stop=stop_after_delay(TASK_TIMEOUT_SECONDS),
+    retry=retry_if_exception_type(TaskNotFinishedError),
+    reraise=True,
+    wait=wait_fixed(TASK_POLL_INTERVAL_SECONDS),
+)
+def await_task_v3(
+    benchling_service: BenchlingService, polling_uri: str
+) -> dict[str, Any]:
+    """Poll a v3 async task until it completes, and return the final task response.
+    Each poll is a request against the rate limit, so the timeout bounds how many are made."""
+    response = benchling_service.api.get_response(
+        url=polling_uri.split(".benchling.com/", 1)[-1],
+        additional_headers=EARLY_ACCESS_HEADER,
+    )
+    if not (200 <= response.status_code < 300):
+        raise Exception(f"Failed to poll task {polling_uri}:", response.content)
+    task = json.loads(response.content)
+    status = task.get("status")
+    if status == "COMPLETED":
+        return task
+    if status in TASK_FAILED_STATUSES:
+        raise Exception(f"Task {polling_uri} failed:", task)
+    raise TaskNotFinishedError(
+        f"Task {polling_uri} did not complete within {TASK_TIMEOUT_SECONDS} seconds. Last response: {task}"
+    )
