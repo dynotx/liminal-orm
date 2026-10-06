@@ -10,7 +10,6 @@ from liminal.entity_schemas.operations import (
     CreateEntitySchemaField,
     ReorderEntitySchemaFields,
     UnarchiveEntitySchema,
-    UnarchiveEntitySchemaField,
     UpdateEntitySchema,
     UpdateEntitySchemaField,
     UpdateEntitySchemaNameTemplate,
