@@ -39,8 +39,9 @@ def list_dropdowns_v3(
     benchling_service: BenchlingService, include_archived: bool = True
 ) -> list[dict[str, Any]]:
     """Fetch dropdowns from the v3 API."""
-    url_suffix = "/items?archived.anyOf=true,false" if include_archived else "/items"
-    return list_all_items_v3(benchling_service, f"{_DROPDOWN_API_PATH}{url_suffix}")
+    return list_all_items_v3(
+        benchling_service, f"{_DROPDOWN_API_PATH}/items", include_archived
+    )
 
 
 def list_dropdown_options_v3(

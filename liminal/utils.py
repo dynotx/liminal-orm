@@ -116,11 +116,16 @@ def await_queued_response(
 
 
 def list_all_items_v3(
-    benchling_service: BenchlingService, url: str
+    benchling_service: BenchlingService,
+    url: str,
+    include_archived: bool = False,
+    page_size: int | None = MAX_PAGE_SIZE,
 ) -> list[dict[str, Any]]:
     """Fetch every item from a v3 list endpoint, following nextToken pagination."""
-    separator = "&" if "?" in url else "?"
-    base_url = f"{url}{separator}pageSize={MAX_PAGE_SIZE}"
+    query_params = [f"archived.anyOf={'true,false' if include_archived else 'false'}"]
+    if page_size:
+        query_params.append(f"pageSize={page_size}")
+    base_url = f"{url}?{'&'.join(query_params)}"
     items: list[dict[str, Any]] = []
     next_token: str | None = None
     while True:

@@ -1,7 +1,9 @@
 import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any
+from functools import partial
 
+from liminal.enums.benchling_entity_schema_type import BenchlingEntitySchemaType
 from liminal.utils import (
     EARLY_ACCESS_HEADER,
     MAX_CONCURRENT_REQUESTS,
@@ -10,11 +12,15 @@ from liminal.utils import (
 )
 from liminal.connection.benchling_service import BenchlingService
 from liminal.enums import BenchlingEntitySchemaEndpointType, BenchlingEntityType
-from liminal.mappers import convert_entity_type_to_entity_schema_endpoint
+from liminal.mappers import (
+    convert_entity_schema_type_to_entity_type,
+    convert_entity_type_to_entity_schema_endpoint,
+)
 
 
 def list_entity_schemas_v3(
     benchling_service: BenchlingService,
+    include_archived: bool = False,
 ) -> list[dict[str, Any]]:
     """Fetch entity schemas from all v3 schema endpoints."""
     entity_schemas = []
@@ -24,6 +30,7 @@ def list_entity_schemas_v3(
                 _list_entity_schemas_for_endpoint_v3,
                 benchling_service,
                 endpoint,
+                include_archived,
             )
             for endpoint in BenchlingEntitySchemaEndpointType
         ]
@@ -34,48 +41,61 @@ def list_entity_schemas_v3(
 
 
 def _list_entity_schemas_for_endpoint_v3(
-    benchling_service: BenchlingService, endpoint: BenchlingEntitySchemaEndpointType
+    benchling_service: BenchlingService,
+    endpoint: BenchlingEntitySchemaEndpointType,
+    include_archived: bool = False,
 ) -> list[dict[str, Any]]:
     """Fetch all entity schemas, including archived ones, from one v3 schema endpoint."""
     return list_all_items_v3(
-        benchling_service, f"/api/v3/{endpoint.value}/items?archived.anyOf=true,false"
+        benchling_service,
+        f"/api/v3/{endpoint.value}/items",
+        include_archived,
     )
 
 
 def list_entity_schema_field_definitions_v3(
-    benchling_service: BenchlingService, field_definitions_url: str
+    benchling_service: BenchlingService,
+    entity_type: BenchlingEntityType,
+    entity_schema_id: str,
+    include_archived: bool = True,
 ) -> list[dict[str, Any]]:
     """Fetch an entity schema's field definitions, including archived ones, from the v3 API.
     Archived fields are needed because set-field-definitions rejects a list that leaves out any existing field."""
-    relative_url = field_definitions_url.split(".benchling.com/", 1)[-1]
-    separator = "&" if "?" in relative_url else "?"
     return list_all_items_v3(
-        benchling_service, f"{relative_url}{separator}archived.anyOf=true,false"
+        benchling_service,
+        f"/api/v3/{convert_entity_type_to_entity_schema_endpoint(entity_type).value}/{entity_schema_id}/field-definitions/items",
+        include_archived=include_archived,
     )
 
 
 def attach_entity_schema_field_definitions_v3(
     benchling_service: BenchlingService, entity_schema: dict[str, Any]
 ) -> dict[str, Any]:
-    field_definitions_url = entity_schema.get("fieldDefinitions")
-    if not isinstance(field_definitions_url, str):
-        raise ValueError(
-            "Provided entity schema does not have fieldDefinitions property."
-        )
+    typename = BenchlingEntitySchemaType(entity_schema.get("__typename"))
+    entity_type = convert_entity_schema_type_to_entity_type(typename)
+    entity_schema_id = entity_schema.get("id")
+    if entity_schema_id is None:
+        raise ValueError("Entity schema does not have an id")
     entity_schema["fields"] = list_entity_schema_field_definitions_v3(
-        benchling_service, field_definitions_url
+        benchling_service, entity_type, str(entity_schema_id)
     )
     return entity_schema
 
 
 def list_entity_schemas_with_fields_v3(
     benchling_service: BenchlingService,
+    include_archived: bool = False,
 ) -> list[dict[str, Any]]:
     """Fetch all entity schemas and their field definitions from the v3 API."""
-    entity_schemas = list_entity_schemas_v3(benchling_service)
+    entity_schemas = list_entity_schemas_v3(benchling_service, include_archived)
 
     with ThreadPoolExecutor(max_workers=MAX_CONCURRENT_REQUESTS) as executor:
-        list(executor.map(attach_entity_schema_field_definitions_v3, entity_schemas))
+        list(
+            executor.map(
+                partial(attach_entity_schema_field_definitions_v3, benchling_service),
+                entity_schemas,
+            )
+        )
 
     return entity_schemas
 

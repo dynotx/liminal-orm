@@ -232,10 +232,7 @@ class EntitySchemaFieldInputModel(BaseModel):
             field.typename
         )
         link_id = field.linkDefinition.id if field.linkDefinition else None
-        is_numeric = field_type in {
-            BenchlingFieldDefinitionInputType.INTEGER,
-            BenchlingFieldDefinitionInputType.FLOAT,
-        }
+        is_numeric = field_type.is_numeric()
         return cls(
             id=field.id,
             name=field.name,
@@ -259,7 +256,7 @@ class EntitySchemaFieldInputModel(BaseModel):
             numericMin=field.numericMin if is_numeric else None,
             numericMax=field.numericMax if is_numeric else None,
             displayPrecision=field.displayPrecision
-            if field_type == BenchlingFieldDefinitionInputType.FLOAT
+            if field_type.supports_display_precision()
             else None,
         )
 
@@ -320,7 +317,7 @@ class EntitySchemaFieldInputModel(BaseModel):
             dropdownId=dropdown_id,
             unitId=unit_id,
             displayPrecision=field_props.decimal_places
-            if field_type == BenchlingFieldDefinitionInputType.FLOAT
+            if field_type.supports_display_precision()
             else None,
         )
 
@@ -500,8 +497,11 @@ class EntitySchemaModel(BaseModel):
         cls,
         benchling_service: BenchlingService,
         wh_schema_names: set[str] | None = None,
+        include_archived: bool = False,
     ) -> list[EntitySchemaModel]:
-        schemas_data = list_entity_schemas_with_fields_v3(benchling_service)
+        schemas_data = list_entity_schemas_with_fields_v3(
+            benchling_service, include_archived
+        )
         filtered_schemas: list[EntitySchemaModel] = []
         if wh_schema_names:
             for schema in schemas_data:

@@ -8,6 +8,7 @@ class BenchlingFieldDefinitionType(StrEnum):
     LONG_TEXT_FIELD_DEFINITION = "LongTextFieldDefinition"
     INTEGER_FIELD_DEFINITION = "IntegerFieldDefinition"
     FLOAT_FIELD_DEFINITION = "FloatFieldDefinition"
+    DECIMAL_FIELD_DEFINITION = "DecimalFieldDefinition"
     BOOLEAN_FIELD_DEFINITION = "BooleanFieldDefinition"
     DATE_FIELD_DEFINITION = "DateFieldDefinition"
     DATETIME_FIELD_DEFINITION = "DateTimeFieldDefinition"
@@ -17,6 +18,7 @@ class BenchlingFieldDefinitionType(StrEnum):
     ASSAY_REQUEST_LINK_FIELD_DEFINITION = "AssayRequestLinkFieldDefinition"
     ASSAY_RESULT_LINK_FIELD_DEFINITION = "AssayResultLinkFieldDefinition"
     ASSAY_RUN_LINK_FIELD_DEFINITION = "AssayRunLinkFieldDefinition"
+    ATTACHMENT_LINK_FIELD_DEFINITION = "AttachmentLinkFieldDefinition"
     BLOB_LINK_FIELD_DEFINITION = "BlobLinkFieldDefinition"
     CUSTOM_ENTITY_LINK_FIELD_DEFINITION = "CustomEntityLinkFieldDefinition"
     DNA_OLIGO_LINK_FIELD_DEFINITION = "DnaOligoLinkFieldDefinition"
@@ -33,6 +35,7 @@ class BenchlingFieldDefinitionType(StrEnum):
     OLIGO_DUPLEX_LINK_FIELD_DEFINITION = "OligoDuplexLinkFieldDefinition"
     RNA_SEQUENCE_LINK_FIELD_DEFINITION = "RnaSequenceLinkFieldDefinition"
     RNA_OLIGO_LINK_FIELD_DEFINITION = "RnaOligoLinkFieldDefinition"
+    RNA_PART_LINK_FIELD_DEFINITION = "RnaPartLinkFieldDefinition"
     STORABLE_LINK_FIELD_DEFINITION = "StorableLinkFieldDefinition"
     SYSTEM_CATEGORY_LINK_FIELD_DEFINITION = "SystemCategoryLinkFieldDefinition"
     TRANSCRIPTION_LINK_FIELD_DEFINITION = "TranscriptionLinkFieldDefinition"
@@ -45,6 +48,7 @@ class BenchlingFieldDefinitionType(StrEnum):
             cls.LONG_TEXT_FIELD_DEFINITION,
             cls.INTEGER_FIELD_DEFINITION,
             cls.FLOAT_FIELD_DEFINITION,
+            cls.DECIMAL_FIELD_DEFINITION,
             cls.BOOLEAN_FIELD_DEFINITION,
             cls.DATE_FIELD_DEFINITION,
             cls.DATETIME_FIELD_DEFINITION,

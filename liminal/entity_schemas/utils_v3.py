@@ -35,14 +35,13 @@ def get_converted_entity_schemas(
     It parses the Entity Schema and creates SchemaProperties and a list of FieldProperties for each field in the schema.
     If include_archived is True, it will include archived schemas and archived fields.
     """
-    all_schemas = EntitySchemaModel.get_all(benchling_service, wh_schema_names)
+    all_schemas = EntitySchemaModel.get_all(
+        benchling_service, wh_schema_names, include_archived
+    )
     dropdown_id_to_name_map = get_benchling_dropdown_id_name_map(benchling_service)
     unit_id_to_name_map = get_unit_id_to_name_map(benchling_service)
     entity_schema_id_to_name_map = get_benchling_entity_schema_id_to_system_name_map(
         benchling_service
-    )
-    all_schemas = (
-        all_schemas if include_archived else [s for s in all_schemas if not s.archived]
     )
     all_schemas = [s for s in all_schemas if s.systemName != "liminal_remote"]
     return [

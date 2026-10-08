@@ -25,6 +25,7 @@ def convert_field_definition_type_to_field_type(
         BenchlingFieldDefinitionType.LONG_TEXT_FIELD_DEFINITION: BenchlingFieldType.LONG_TEXT,
         BenchlingFieldDefinitionType.INTEGER_FIELD_DEFINITION: BenchlingFieldType.INTEGER,
         BenchlingFieldDefinitionType.FLOAT_FIELD_DEFINITION: BenchlingFieldType.DECIMAL,
+        BenchlingFieldDefinitionType.DECIMAL_FIELD_DEFINITION: BenchlingFieldType.DECIMAL,
         BenchlingFieldDefinitionType.BOOLEAN_FIELD_DEFINITION: BenchlingFieldType.BOOLEAN,
         BenchlingFieldDefinitionType.DATE_FIELD_DEFINITION: BenchlingFieldType.DATE,
         BenchlingFieldDefinitionType.DATETIME_FIELD_DEFINITION: BenchlingFieldType.DATETIME,
@@ -35,6 +36,7 @@ def convert_field_definition_type_to_field_type(
         BenchlingFieldDefinitionType.ASSAY_RESULT_LINK_FIELD_DEFINITION: BenchlingFieldType.ENTITY_LINK,
         BenchlingFieldDefinitionType.ASSAY_RUN_LINK_FIELD_DEFINITION: BenchlingFieldType.ENTITY_LINK,
         BenchlingFieldDefinitionType.BLOB_LINK_FIELD_DEFINITION: BenchlingFieldType.BLOB_LINK,
+        BenchlingFieldDefinitionType.ATTACHMENT_LINK_FIELD_DEFINITION: BenchlingFieldType.BLOB_LINK,
         BenchlingFieldDefinitionType.CUSTOM_ENTITY_LINK_FIELD_DEFINITION: BenchlingFieldType.CUSTOM_ENTITY_LINK,
         BenchlingFieldDefinitionType.DNA_OLIGO_LINK_FIELD_DEFINITION: BenchlingFieldType.ENTITY_LINK,
         BenchlingFieldDefinitionType.DNA_SEQUENCE_LINK_FIELD_DEFINITION: BenchlingFieldType.DNA_SEQUENCE_LINK,
@@ -52,6 +54,7 @@ def convert_field_definition_type_to_field_type(
         BenchlingFieldDefinitionType.STORABLE_LINK_FIELD_DEFINITION: BenchlingFieldType.STORAGE_LINK,
         BenchlingFieldDefinitionType.SYSTEM_CATEGORY_LINK_FIELD_DEFINITION: BenchlingFieldType.ENTITY_LINK,
         BenchlingFieldDefinitionType.DNA_PART_LINK_FIELD_DEFINITION: BenchlingFieldType.PART_LINK,
+        BenchlingFieldDefinitionType.RNA_PART_LINK_FIELD_DEFINITION: BenchlingFieldType.PART_LINK,
         BenchlingFieldDefinitionType.TRANSCRIPTION_LINK_FIELD_DEFINITION: BenchlingFieldType.TRANSCRIPTION_LINK,
         BenchlingFieldDefinitionType.TRANSLATION_LINK_FIELD_DEFINITION: BenchlingFieldType.TRANSLATION_LINK,
     }
@@ -84,6 +87,11 @@ def convert_field_type_to_field_definition_type(
             BenchlingEntitySchemaType.RNA_SEQUENCE: BenchlingFieldDefinitionType.RNA_SEQUENCE_LINK_FIELD_DEFINITION,
         }
         return linked_schema_conversion_map[linked_schema_type]
+    if (
+        field_type == BenchlingFieldType.PART_LINK
+        and linked_schema_type == BenchlingEntitySchemaType.RNA_SEQUENCE
+    ):
+        return BenchlingFieldDefinitionType.RNA_PART_LINK_FIELD_DEFINITION
     conversion_map = {
         BenchlingFieldType.TEXT: BenchlingFieldDefinitionType.TEXT_FIELD_DEFINITION,
         BenchlingFieldType.LONG_TEXT: BenchlingFieldDefinitionType.LONG_TEXT_FIELD_DEFINITION,
@@ -131,6 +139,11 @@ def convert_field_type_to_field_definition_input_type(
                 f"Entity links to '{linked_schema_type}' schemas are not supported."
             )
         return linked_schema_conversion_map[linked_schema_type]
+    if (
+        field_type == BenchlingFieldType.PART_LINK
+        and linked_schema_type == BenchlingEntitySchemaType.RNA_SEQUENCE
+    ):
+        return BenchlingFieldDefinitionInputType.RNA_PART_LINK
     conversion_map = {
         BenchlingFieldType.TEXT: BenchlingFieldDefinitionInputType.TEXT,
         BenchlingFieldType.LONG_TEXT: BenchlingFieldDefinitionInputType.LONG_TEXT,
@@ -167,11 +180,13 @@ def convert_field_definition_type_to_field_definition_input_type(
         BenchlingFieldDefinitionType.LONG_TEXT_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.LONG_TEXT,
         BenchlingFieldDefinitionType.INTEGER_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.INTEGER,
         BenchlingFieldDefinitionType.FLOAT_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.FLOAT,
+        BenchlingFieldDefinitionType.DECIMAL_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.DECIMAL,
         BenchlingFieldDefinitionType.BOOLEAN_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.BOOLEAN,
         BenchlingFieldDefinitionType.DATE_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.DATE,
         BenchlingFieldDefinitionType.DATETIME_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.DATE_TIME,
         BenchlingFieldDefinitionType.DROPDOWN_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.DROPDOWN,
         BenchlingFieldDefinitionType.BLOB_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.BLOB_LINK,
+        BenchlingFieldDefinitionType.ATTACHMENT_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.ATTACHMENT_LINK,
         BenchlingFieldDefinitionType.ENTRY_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.ENTRY_LINK,
         BenchlingFieldDefinitionType.STORABLE_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.STORAGE_LINK,
         BenchlingFieldDefinitionType.ANY_ENTITY_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.ENTITY_LINK,
@@ -184,6 +199,7 @@ def convert_field_definition_type_to_field_definition_input_type(
         BenchlingFieldDefinitionType.RNA_OLIGO_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.RNA_OLIGO_LINK,
         BenchlingFieldDefinitionType.RNA_SEQUENCE_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.RNA_SEQUENCE_LINK,
         BenchlingFieldDefinitionType.DNA_PART_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.DNA_PART_LINK,
+        BenchlingFieldDefinitionType.RNA_PART_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.RNA_PART_LINK,
         BenchlingFieldDefinitionType.TRANSCRIPTION_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.TRANSCRIPTION_LINK,
         BenchlingFieldDefinitionType.TRANSLATION_LINK_FIELD_DEFINITION: BenchlingFieldDefinitionInputType.TRANSLATION_LINK,
     }
