@@ -525,7 +525,9 @@ class EntitySchemaModel(BaseModel):
         schemas_data: list[dict[str, Any]] | None = None,
     ) -> EntitySchemaModel:
         if schemas_data is None:
-            schemas_data = list_entity_schemas_v3(benchling_service)
+            schemas_data = list_entity_schemas_v3(
+                benchling_service, include_archived=True
+            )
         schema = next(
             (
                 schema

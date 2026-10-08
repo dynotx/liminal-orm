@@ -112,7 +112,7 @@ class CreateEntitySchema(BaseOperation):
                 )
 
     def _validate_create(self, benchling_service: BenchlingService) -> None:
-        all_schemas = list_entity_schemas_v3(benchling_service)
+        all_schemas = list_entity_schemas_v3(benchling_service, include_archived=True)
         if self._validated_schema_properties.name in [
             schema["name"] for schema in all_schemas
         ]:
@@ -270,7 +270,7 @@ class UpdateEntitySchema(BaseOperation):
             )
 
     def _validate(self, benchling_service: BenchlingService) -> EntitySchemaModel:
-        all_schemas = list_entity_schemas_v3(benchling_service)
+        all_schemas = list_entity_schemas_v3(benchling_service, include_archived=True)
         entity_schema = EntitySchemaModel.get_one(
             benchling_service, self.wh_schema_name, all_schemas
         )
