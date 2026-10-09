@@ -5,6 +5,7 @@ from rich import print
 
 from liminal.base.base_dropdown import BaseDropdown
 from liminal.connection import BenchlingService
+from liminal.dropdowns.api_v3 import list_dropdowns_v3
 from liminal.entity_schemas.api_v3 import list_entity_schemas_v3
 from liminal.enums import BenchlingFieldType
 from liminal.mappers import convert_benchling_type_to_python_type
