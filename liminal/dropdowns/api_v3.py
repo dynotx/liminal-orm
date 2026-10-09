@@ -61,15 +61,29 @@ def attach_dropdown_options_v3(
 
 
 def list_dropdowns_with_options_v3(
-    benchling_service: BenchlingService, include_archived: bool = True
+    benchling_service: BenchlingService,
+    include_archived: bool = True,
+    dropdown_names_for_options: set[str] | None = None,
 ) -> list[dict[str, Any]]:
-    """Fetch all dropdowns from the v3 API, along with their options, fetched in parallel."""
+    """Fetch all dropdowns from the v3 API, along with their options, fetched in parallel.
+    If dropdown_names_for_options is given, options are only fetched for dropdowns with those Benchling names; the rest get an empty options list.
+    If it is None, options are fetched for every dropdown.
+    """
     dropdowns = list_dropdowns_v3(benchling_service, include_archived)
+    dropdowns_needing_options = []
+    for dropdown in dropdowns:
+        if (
+            dropdown_names_for_options is None
+            or dropdown["name"] in dropdown_names_for_options
+        ):
+            dropdowns_needing_options.append(dropdown)
+        else:
+            dropdown["options"] = []
 
     with ThreadPoolExecutor(max_workers=MAX_CONCURRENT_REQUESTS) as pool:
         futures = [
             pool.submit(attach_dropdown_options_v3, benchling_service, dropdown)
-            for dropdown in dropdowns
+            for dropdown in dropdowns_needing_options
         ]
         for future in as_completed(futures):
             future.result()

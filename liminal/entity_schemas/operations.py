@@ -368,7 +368,7 @@ class CreateEntitySchemaField(BaseOperation):
         if field is None:
             return self._execute_create(benchling_service)
         else:
-            if field.archived:
+            if not field.archived:
                 raise ValueError(
                     f"Field {self._wh_field_name} is already active on entity schema {self.wh_schema_name}."
                 )

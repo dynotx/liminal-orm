@@ -44,9 +44,6 @@ def compare_entity_schemas(
         Returns a dictionary with the model name as the key and a list of error messages as the value.
     """
     model_operations: dict[str, list[CompareOperation]] = {}
-    benchling_schemas = get_converted_entity_schemas(
-        benchling_service, include_archived=True, wh_schema_names=schema_names
-    )
     # If models are provided, filter the schemas from benchling so that only the models passed in are compared.
     # If you don't filter, it will compare to all the schemas in benchling and think that they are missing from code and should be archived.
     models = [
@@ -54,6 +51,14 @@ def compare_entity_schemas(
         for m in BaseModel.get_all_subclasses(schema_names)
         if not m.__schema_properties__._archived
     ]
+    benchling_schemas = get_converted_entity_schemas(
+        benchling_service,
+        include_archived=True,
+        wh_schema_names=schema_names,
+        wh_schema_names_for_fields={
+            m.__schema_properties__.warehouse_name for m in models
+        },
+    )
     if len(models) == 0 and len(benchling_schemas) > 0:
         LOGGER.warning(
             "WARNING: No model classes found that inherit from BaseModel. Ensure that the model classes are defined and imported correctly."

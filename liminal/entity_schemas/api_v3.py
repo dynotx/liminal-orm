@@ -85,15 +85,32 @@ def attach_entity_schema_field_definitions_v3(
 def list_entity_schemas_with_fields_v3(
     benchling_service: BenchlingService,
     include_archived: bool = False,
+    wh_schema_names: set[str] | None = None,
+    wh_schema_names_for_fields: set[str] | None = None,
+    entity_schemas: list[dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
-    """Fetch all entity schemas and their field definitions from the v3 API."""
-    entity_schemas = list_entity_schemas_v3(benchling_service, include_archived)
+    """Fetch entity schemas and their field definitions from the v3 API.
+    If wh_schema_names is given, only those schemas are returned.
+    If wh_schema_names_for_fields is given, field definitions are only fetched for those schemas and the rest are returned without fields.
+    Pass entity_schemas to reuse an already fetched schema list; fields are attached to those dicts in place."""
+    if entity_schemas is None:
+        entity_schemas = list_entity_schemas_v3(benchling_service, include_archived)
+    if wh_schema_names is not None:
+        entity_schemas = [
+            s for s in entity_schemas if s["systemName"] in wh_schema_names
+        ]
+    schemas_needing_fields = [
+        s
+        for s in entity_schemas
+        if wh_schema_names_for_fields is None
+        or s["systemName"] in wh_schema_names_for_fields
+    ]
 
     with ThreadPoolExecutor(max_workers=MAX_CONCURRENT_REQUESTS) as executor:
         list(
             executor.map(
                 partial(attach_entity_schema_field_definitions_v3, benchling_service),
-                entity_schemas,
+                schemas_needing_fields,
             )
         )
 

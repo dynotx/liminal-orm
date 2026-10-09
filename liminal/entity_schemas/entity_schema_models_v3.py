@@ -498,17 +498,22 @@ class EntitySchemaModel(BaseModel):
         benchling_service: BenchlingService,
         wh_schema_names: set[str] | None = None,
         include_archived: bool = False,
+        wh_schema_names_for_fields: set[str] | None = None,
+        schemas_data: list[dict[str, Any]] | None = None,
     ) -> list[EntitySchemaModel]:
+        """If wh_schema_names_for_fields is given, only those schemas have their fields populated.
+        Pass schemas_data to reuse an already fetched schema list instead of listing schemas again."""
         schemas_data = list_entity_schemas_with_fields_v3(
-            benchling_service, include_archived
+            benchling_service,
+            include_archived,
+            wh_schema_names=wh_schema_names or None,
+            wh_schema_names_for_fields=wh_schema_names_for_fields,
+            entity_schemas=schemas_data,
         )
         filtered_schemas: list[EntitySchemaModel] = []
         if wh_schema_names:
             for schema in schemas_data:
-                if schema["systemName"] in wh_schema_names:
-                    filtered_schemas.append(cls.model_validate(schema))
-                if len(filtered_schemas) == len(wh_schema_names):
-                    break
+                filtered_schemas.append(cls.model_validate(schema))
         else:
             for schema in schemas_data:
                 try:
