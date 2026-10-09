@@ -68,8 +68,6 @@ connection = BenchlingConnection(
     api_client_id="my-secret-api-client-id",
     api_client_secret="my-secret-api-client-secret",
     warehouse_connection_string="...",
-    internal_api_admin_email="my-secret-internal-api-admin-email",
-    internal_api_admin_password="my-secret-internal-api-admin-password",
     config_flags=TenantConfigFlags(...)
 )
 """
@@ -120,7 +118,7 @@ def generate_files(
     ),
 ) -> None:
     benchling_connection = read_local_liminal_dir(LIMINAL_DIR_PATH, benchling_tenant)
-    benchling_service = BenchlingService(benchling_connection, use_internal_api=True)
+    benchling_service = BenchlingService(benchling_connection)
     if not write_path.exists():
         write_path.mkdir()
         print(f"[green]Created directory: {write_path}")
@@ -148,7 +146,7 @@ def current(
     ),
 ) -> None:
     benchling_connection = read_local_liminal_dir(LIMINAL_DIR_PATH, benchling_tenant)
-    benchling_service = BenchlingService(benchling_connection, use_internal_api=True)
+    benchling_service = BenchlingService(benchling_connection)
     remote_revision_id = benchling_service.get_remote_revision_id()
     print(f"[blue]Current remote revision_id: {remote_revision_id}.")
 
@@ -181,7 +179,7 @@ def revision(
     ),
 ) -> None:
     benchling_connection = read_local_liminal_dir(LIMINAL_DIR_PATH, benchling_tenant)
-    benchling_service = BenchlingService(benchling_connection, use_internal_api=True)
+    benchling_service = BenchlingService(benchling_connection)
     revisions_timeline = RevisionsTimeline(VERSIONS_DIR_PATH)
     is_init_revision = revisions_timeline.is_only_init_revision()
     if is_init_revision:
@@ -234,7 +232,7 @@ def upgrade(
     ),
 ) -> None:
     benchling_connection = read_local_liminal_dir(LIMINAL_DIR_PATH, benchling_tenant)
-    benchling_service = BenchlingService(benchling_connection, use_internal_api=True)
+    benchling_service = BenchlingService(benchling_connection)
     current_revision_id = benchling_service.get_remote_revision_id()
     revisions_timeline = RevisionsTimeline(VERSIONS_DIR_PATH)
     upgrade_revision_id = upgrade_benchling_tenant(
@@ -262,7 +260,7 @@ def downgrade(
     ),
 ) -> None:
     benchling_connection = read_local_liminal_dir(LIMINAL_DIR_PATH, benchling_tenant)
-    benchling_service = BenchlingService(benchling_connection, use_internal_api=True)
+    benchling_service = BenchlingService(benchling_connection)
     current_revision_id = benchling_service.get_remote_revision_id()
     revisions_timeline = RevisionsTimeline(VERSIONS_DIR_PATH)
     downgrade_revision_id = downgrade_benchling_tenant(
@@ -302,7 +300,7 @@ def live_test(
             "Only one of --entity-schema-migration or --dropdown-migration can be set."
         )
     benchling_connection = read_local_liminal_dir(LIMINAL_DIR_PATH, benchling_tenant)
-    benchling_service = BenchlingService(benchling_connection, use_internal_api=True)
+    benchling_service = BenchlingService(benchling_connection)
     if test_entity_schema_migration:
         mock_entity_schema_full_migration(
             benchling_service, "test_dont_touch", dry_run=not execute

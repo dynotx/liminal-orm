@@ -41,11 +41,13 @@ connection = BenchlingConnection(
 
 - **internal_api_admin_email: Optional[str] = None**
 
-    The email of the internal API admin. If SSO is not enabled or optional on your Benchling tenant, this email is used to log in to Benchling, and give Liminal the authenticated internal API session cookie.
+    !!! warning "Deprecated"
+        Liminal no longer uses Benchling's internal API, so this is ignored. It will be removed in v5.
 
 - **internal_api_admin_password: Optional[str] = None**
 
-    The password of the internal API admin. If SSO is not enabled or optional on your Benchling tenant, this password is used to log in to Benchling, and give Liminal the authenticated internal API session cookie.
+    !!! warning "Deprecated"
+        Liminal no longer uses Benchling's internal API, so this is ignored. It will be removed in v5.
 
 - **playwright_data_dir: Optional[str] = "~/.liminal/playwright_chrome_data/"**
 

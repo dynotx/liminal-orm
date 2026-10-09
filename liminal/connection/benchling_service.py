@@ -1,24 +1,13 @@
-import asyncio
 import logging
-import os
-from typing import Any
-from urllib.parse import urlparse
+from typing import TYPE_CHECKING, Any
 
-from playwright.async_api import async_playwright, Request
-import requests
 from benchling_sdk.auth.client_credentials_oauth2 import ClientCredentialsOAuth2
 from benchling_sdk.benchling import Benchling, BenchlingApiClientDecorator
 from benchling_sdk.helpers.retry_helpers import RetryStrategy
-from bs4 import BeautifulSoup
+from pydantic import ValidationError
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, configure_mappers
-from tenacity import (
-    retry,
-    retry_if_exception_type,
-    stop_after_attempt,
-    wait_exponential,
-)
 
 from liminal.base.properties.base_field_properties import BaseFieldProperties
 from liminal.base.properties.base_schema_properties import BaseSchemaProperties
@@ -28,6 +17,9 @@ from liminal.enums import (
     BenchlingFieldType,
     BenchlingNamingStrategy,
 )
+
+if TYPE_CHECKING:
+    from liminal.entity_schemas.entity_schema_models_v3 import EntitySchemaModel
 
 LOGGER = logging.getLogger(__name__)
 logging.getLogger("httpx").setLevel(logging.WARNING)
@@ -52,8 +44,6 @@ class BenchlingService(Benchling):
         Whether to connect to the Benchling SDK. Requires api_client_id and api_client_secret from the connection object.
     use_db: bool = False
         Whether to connect to the Benchling Postgres database. Requires warehouse_connection_string from the connection object.
-    use_internal_api: bool = False
-        Whether to connect to the Benchling internal API. Requires internal_api_admin_email and internal_api_admin_password from the connection object.
     client_decorator: BenchlingApiClientDecorator | None = None
         An optional function that receives the default BenchlingApiClient and returns a
         customized one. Forwarded to the Benchling SDK. A common use is raising the HTTP
@@ -65,7 +55,6 @@ class BenchlingService(Benchling):
         connection: BenchlingConnection,
         use_api: bool = True,
         use_db: bool = False,
-        use_internal_api: bool = False,
         client_decorator: BenchlingApiClientDecorator | None = None,
     ) -> None:
         self.connection = connection
@@ -101,30 +90,6 @@ class BenchlingService(Benchling):
                 raise ValueError(
                     "use_db is True but warehouse_connection_string not provided in BenchlingConnection."
                 )
-        self.use_internal_api = use_internal_api
-        if use_internal_api:
-            try:
-                authenticated_session, csrf_token = self.autogenerate_auth(
-                    connection.tenant_name,
-                    connection.internal_api_admin_email,
-                    connection.internal_api_admin_password,
-                    connection.playwright_data_dir,
-                )
-            except SSODisabledError as e:
-                raise SSODisabledError(
-                    f"{e} Please provide `internal_api_admin_email` and `internal_api_admin_password` in your BenchlingConnection."
-                )
-            self.custom_post_cookies = {
-                "session": authenticated_session,
-            }
-            self.custom_post_headers = {
-                "Referer": f"https://{connection.tenant_name}.benchling.com/",
-                "Content-Type": "application/json",
-                "x-csrftoken": csrf_token,
-            }
-            LOGGER.info(
-                f"Tenant {connection.tenant_name}: Connected to Benchling internal API."
-            )
 
     @property
     def session(self) -> Session:
@@ -169,17 +134,23 @@ class BenchlingService(Benchling):
         """Closes all sessions and cleans up engine"""
         self.engine.dispose()
 
+    def _get_remote_liminal_schema(self) -> "EntitySchemaModel | None":
+        """Fetches the liminal_remote entity schema with its field definitions.
+        Returns None if the schema doesn't exist."""
+        from liminal.entity_schemas.entity_schema_models_v3 import EntitySchemaModel
+
+        return EntitySchemaModel.get_one(self, REMOTE_LIMINAL_SCHEMA_NAME)
+
     def get_remote_revision_id(self) -> str:
         """
-        Uses internal API to to search for the liminal_remote schema, where the revision_id is stored.
+        Searches for the liminal_remote schema, where the revision_id is stored.
         This schema contains the remote revision_id in the name of the revision_id field.
 
         Returns the remote revision_id stored on the entity.
         """
-        from liminal.entity_schemas.tag_schema_models import TagSchemaModel
 
         try:
-            liminal_schema = TagSchemaModel.get_one(self, REMOTE_LIMINAL_SCHEMA_NAME)
+            liminal_schema = self._get_remote_liminal_schema()
         except Exception:
             raise ValueError(
                 f"Did not find any schema name '{REMOTE_LIMINAL_SCHEMA_NAME}'. Run a liminal migration to populate your registry with the Liminal entity that stores the remote revision_id."
@@ -187,7 +158,7 @@ class BenchlingService(Benchling):
         revision_id_fields = [
             f
             for f in liminal_schema.fields
-            if f.systemName == REMOTE_REVISION_ID_FIELD_WH_NAME
+            if f.systemName == REMOTE_REVISION_ID_FIELD_WH_NAME and not f.archived
         ]
         if len(revision_id_fields) == 1:
             revision_id = revision_id_fields[0].name
@@ -213,11 +184,8 @@ class BenchlingService(Benchling):
         CustomEntity
             remote liminal entity with updated revision_id field.
         """
-        from liminal.entity_schemas.tag_schema_models import TagSchemaModel
-
-        try:
-            liminal_schema = TagSchemaModel.get_one(self, REMOTE_LIMINAL_SCHEMA_NAME)
-        except Exception:
+        liminal_schema = self._get_remote_liminal_schema()
+        if liminal_schema is None:
             # No liminal_remote schema found. Create schema.
             from liminal.entity_schemas.operations import CreateEntitySchema
 
@@ -248,7 +216,7 @@ class BenchlingService(Benchling):
         revision_id_fields = [
             f
             for f in liminal_schema.fields
-            if f.systemName == REMOTE_REVISION_ID_FIELD_WH_NAME
+            if f.systemName == REMOTE_REVISION_ID_FIELD_WH_NAME and not f.archived
         ]
         if len(revision_id_fields) == 1:
             revision_id_field = revision_id_fields[0]
@@ -259,7 +227,7 @@ class BenchlingService(Benchling):
                 from liminal.entity_schemas.operations import UpdateEntitySchemaField
 
                 UpdateEntitySchemaField(
-                    liminal_schema.sqlIdentifier,
+                    liminal_schema.systemName,
                     revision_id_field.systemName,
                     BaseFieldProperties(name=revision_id),
                 ).execute(self)
@@ -268,150 +236,3 @@ class BenchlingService(Benchling):
             raise ValueError(
                 f"Error finding field on {REMOTE_LIMINAL_SCHEMA_NAME} schema with warehouse_name {REMOTE_REVISION_ID_FIELD_WH_NAME}. Check schema fields to ensure this field exists and is defined according to documentation."
             )
-
-    @classmethod
-    def autogenerate_auth(
-        cls,
-        benchling_tenant: str,
-        email: str | None = None,
-        password: str | None = None,
-        playwright_data_dir: str | None = None,
-    ) -> tuple[str, str]:
-        """Logs in to Benchling using the admin email and password or playwright and returns the session cookie and CSRF token.
-        If email and password are not passed in or if SSO is set to required on the Benchling tenant, playwright is used to log in.
-        Otherwise, the admin email and password are used to log in."""
-        with requests.Session() as session:
-            if email and password:
-                signin_page = session.get(
-                    f"https://{benchling_tenant}.benchling.com/signin",
-                    allow_redirects=False,
-                )
-                if signin_page.status_code == 200:
-                    return cls.get_authenticated_session_benchling_admin_login(
-                        benchling_tenant, email, password
-                    )
-
-            else:
-                signin_page = session.get(
-                    f"https://{benchling_tenant}.benchling.com/ext/saml/signin:begin",
-                    allow_redirects=False,
-                )
-                if signin_page.status_code == 403 or signin_page.status_code == 400:
-                    raise SSODisabledError(
-                        f"admin_email and admin_password not provided when sso is turned off for Benchling tenant {benchling_tenant}."
-                    )
-            if signin_page.status_code == 302:
-                try:
-                    return asyncio.get_event_loop().run_until_complete(
-                        cls.get_authenticated_session_sso_login_playwright(
-                            benchling_tenant, playwright_data_dir
-                        )
-                    )
-                except RuntimeError as e:
-                    raise RuntimeError(
-                        f"{e}. If you are running this in a Jupyter notebook, use `nest_asyncio.apply()` to allow the async playwright login to run."
-                    )
-            else:
-                raise ValueError(
-                    f"Unexpected response: Status code {signin_page.status_code}: {signin_page.text}"
-                )
-
-    @classmethod
-    async def get_authenticated_session_sso_login_playwright(
-        cls, benchling_tenant: str, playwright_data_dir: str | None = None
-    ) -> tuple[str, str]:
-        """Logs in to Benchling using playwright and returns the session cookie and CSRF token.
-        This can be used when SSO is enabled and required on the Benchling tenant."""
-        LOGGER.info(f"Log into your {benchling_tenant} Benchling tenant...")
-        async with async_playwright() as playwright:
-            if playwright_data_dir:
-                context = await playwright.chromium.launch_persistent_context(
-                    channel="chrome",
-                    headless=False,
-                    user_data_dir=os.path.expanduser(playwright_data_dir),
-                )
-            else:
-                browser = await playwright.chromium.launch(
-                    channel="chrome", headless=False
-                )
-                context = await browser.new_context()
-            page = await context.new_page()
-
-            headers = {}
-
-            async def async_get_request_headers(request: Request) -> None:
-                if urlparse(request.url).netloc == f"{benchling_tenant}.benchling.com":
-                    headers.update(await request.all_headers())
-
-            page.on("request", async_get_request_headers)
-
-            try:
-                await page.goto(f"https://{benchling_tenant}.benchling.com")
-            except Exception:
-                raise ValueError(
-                    f"Error navigating to https://{benchling_tenant}.benchling.com"
-                )
-            try:
-                await page.wait_for_url(
-                    f"**/{benchling_tenant}.benchling.com/**", timeout=600_000
-                )
-            except Exception:
-                raise TimeoutError(
-                    f"Log in cancelled or timed out (2 min timeout). Did not detect SSO log in for https://{benchling_tenant}.benchling.com."
-                )
-
-            cookies = await context.cookies()
-            session_cookie = next(
-                (c["value"] for c in cookies if c["name"] == "session"), None
-            )
-            if not session_cookie:
-                raise ValueError("No session cookie found.")
-            csrf_token = headers.get("x-csrftoken", None)
-            if not csrf_token:
-                raise ValueError("No CSRF token found.")
-            return session_cookie, csrf_token
-
-    @classmethod
-    @retry(
-        stop=stop_after_attempt(5),
-        retry=retry_if_exception_type(ValueError),
-        wait=wait_exponential(multiplier=1, min=1, max=10),
-        reraise=True,
-    )
-    def get_authenticated_session_benchling_admin_login(
-        cls, benchling_tenant: str, email: str, password: str
-    ) -> tuple[str, str]:
-        """Logs in to Benchling using the admin email and password and returns the session cookie and CSRF token.
-        This can be used when SSO is disabled or optional on the Benchling tenant."""
-        with requests.Session() as session:
-            homepage = session.get(f"https://{benchling_tenant}.benchling.com/signin")
-            soup = BeautifulSoup(homepage.content, features="lxml")
-            input = soup.find(id="csrf_token")
-            csrf_token = input.get("value")
-            assert isinstance(csrf_token, str)
-            login_payload = {
-                "csrf_token": csrf_token,
-                "username": email,
-                "password": password,
-                "signout_on_close": "y",
-            }
-            signin_response = session.post(
-                f"https://{benchling_tenant}.benchling.com/signin",
-                data=login_payload,
-                headers={
-                    "Referer": f"https://{benchling_tenant}.benchling.com/signin",
-                },
-            )
-            if not signin_response.ok:
-                raise ValueError(
-                    f"Failed to sign in to Benchling: {signin_response.reason}. Ensure your email and password are correct."
-                )
-            # The session cookie is set on the post-signin redirect, not necessarily the final response.
-            session_cookie = next(
-                (c.value for c in session.cookies if c.name == "session"), None
-            )
-            if not session_cookie:
-                raise ValueError(
-                    f"Failed to sign in to Benchling: no session cookie returned (status {signin_response.status_code}, final URL {signin_response.url}). Ensure your email and password are correct."
-                )
-        return session_cookie, csrf_token
