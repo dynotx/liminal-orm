@@ -22,11 +22,13 @@ def compare_dropdowns(
     benchling_service: BenchlingService, dropdown_names: set[str] | None = None
 ) -> dict[str, list[CompareOperation]]:
     dropdown_operations: dict[str, list[CompareOperation]] = {}
+    model_dropdowns = BaseDropdown.get_all_subclasses(dropdown_names)
     benchling_dropdowns: dict[str, Dropdown] = get_benchling_dropdowns_dict(
-        benchling_service, include_archived=True
+        benchling_service,
+        include_archived=True,
+        dropdown_names_for_options={d.__benchling_name__ for d in model_dropdowns},
     )
     processed_benchling_names = set()
-    model_dropdowns = BaseDropdown.get_all_subclasses(dropdown_names)
     if len(model_dropdowns) == 0 and len(benchling_dropdowns.keys()) > 0:
         LOGGER.warning(
             "WARNING: No dropdown classes found that inherit from BaseDropdown. Ensure that the dropdown classes are defined and imported correctly."

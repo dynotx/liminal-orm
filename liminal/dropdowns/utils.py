@@ -75,8 +75,11 @@ def _convert_dropdown_from_v3(
 def get_benchling_dropdowns_dict(
     benchling_service: BenchlingService,
     include_archived: bool = False,
+    dropdown_names_for_options: set[str] | None = None,
 ) -> dict[str, Dropdown]:
-    dropdowns = list_dropdowns_with_options_v3(benchling_service)
+    dropdowns = list_dropdowns_with_options_v3(
+        benchling_service, dropdown_names_for_options=dropdown_names_for_options
+    )
 
     if not include_archived:
         dropdowns = [

@@ -168,7 +168,7 @@ def generate_all_entity_schema_files(
         if name_template != NameTemplate():
             import_strings.append("from liminal.orm.name_template import NameTemplate")
             parts_imports = [
-                f"from liminal.orm.name_template_parts import {', '.join(set([part.__class__.__name__ for part in name_template.parts]))}"
+                f"from liminal.orm.name_template_parts import {', '.join(sorted(set([part.__class__.__name__ for part in name_template.parts])))}"
             ]
             import_strings.extend(parts_imports)
         for col_name, col in columns.items():

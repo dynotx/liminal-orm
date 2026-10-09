@@ -232,10 +232,7 @@ class EntitySchemaFieldInputModel(BaseModel):
             field.typename
         )
         link_id = field.linkDefinition.id if field.linkDefinition else None
-        is_numeric = field_type in {
-            BenchlingFieldDefinitionInputType.INTEGER,
-            BenchlingFieldDefinitionInputType.FLOAT,
-        }
+        is_numeric = field_type.is_numeric()
         return cls(
             id=field.id,
             name=field.name,
@@ -259,7 +256,7 @@ class EntitySchemaFieldInputModel(BaseModel):
             numericMin=field.numericMin if is_numeric else None,
             numericMax=field.numericMax if is_numeric else None,
             displayPrecision=field.displayPrecision
-            if field_type == BenchlingFieldDefinitionInputType.FLOAT
+            if field_type.supports_display_precision()
             else None,
         )
 
@@ -320,7 +317,7 @@ class EntitySchemaFieldInputModel(BaseModel):
             dropdownId=dropdown_id,
             unitId=unit_id,
             displayPrecision=field_props.decimal_places
-            if field_type == BenchlingFieldDefinitionInputType.FLOAT
+            if field_type.supports_display_precision()
             else None,
         )
 
@@ -500,15 +497,23 @@ class EntitySchemaModel(BaseModel):
         cls,
         benchling_service: BenchlingService,
         wh_schema_names: set[str] | None = None,
+        include_archived: bool = False,
+        wh_schema_names_for_fields: set[str] | None = None,
+        schemas_data: list[dict[str, Any]] | None = None,
     ) -> list[EntitySchemaModel]:
-        schemas_data = list_entity_schemas_with_fields_v3(benchling_service)
+        """If wh_schema_names_for_fields is given, only those schemas have their fields populated.
+        Pass schemas_data to reuse an already fetched schema list instead of listing schemas again."""
+        schemas_data = list_entity_schemas_with_fields_v3(
+            benchling_service,
+            include_archived,
+            wh_schema_names=wh_schema_names or None,
+            wh_schema_names_for_fields=wh_schema_names_for_fields,
+            entity_schemas=schemas_data,
+        )
         filtered_schemas: list[EntitySchemaModel] = []
         if wh_schema_names:
             for schema in schemas_data:
-                if schema["systemName"] in wh_schema_names:
-                    filtered_schemas.append(cls.model_validate(schema))
-                if len(filtered_schemas) == len(wh_schema_names):
-                    break
+                filtered_schemas.append(cls.model_validate(schema))
         else:
             for schema in schemas_data:
                 try:
@@ -525,7 +530,9 @@ class EntitySchemaModel(BaseModel):
         schemas_data: list[dict[str, Any]] | None = None,
     ) -> EntitySchemaModel:
         if schemas_data is None:
-            schemas_data = list_entity_schemas_v3(benchling_service)
+            schemas_data = list_entity_schemas_v3(
+                benchling_service, include_archived=True
+            )
         schema = next(
             (
                 schema

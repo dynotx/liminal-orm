@@ -116,9 +116,9 @@ def mock_entity_schema_full_migration(
         test_model_wh_name, "test_column_3"
     )
 
-    # unarchive_entity_schema_field_op = UnarchiveEntitySchemaField(
-    #     test_model_wh_name, "test_column_3", 1
-    # )
+    unarchive_entity_schema_field_op = UnarchiveEntitySchemaField(
+        test_model_wh_name, "test_column_3", 1
+    )
 
     reorder_entity_schema_field_op = ReorderEntitySchemaFields(
         test_model_wh_name,
@@ -147,7 +147,7 @@ def mock_entity_schema_full_migration(
         create_entity_schema_field_op,
         update_entity_schema_field_op,
         archive_entity_schema_field_op,
-        # unarchive_entity_schema_field_op,
+        unarchive_entity_schema_field_op,
         reorder_entity_schema_field_op,
         update_name_template_op,
         archive_entity_schema_op,

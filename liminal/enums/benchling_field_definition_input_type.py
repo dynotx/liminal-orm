@@ -10,11 +10,13 @@ class BenchlingFieldDefinitionInputType(StrEnum):
     LONG_TEXT = "LONG_TEXT"
     INTEGER = "INTEGER"
     FLOAT = "FLOAT"
+    DECIMAL = "DECIMAL"
     BOOLEAN = "BOOLEAN"
     DATE = "DATE"
     DATE_TIME = "DATE_TIME"
     DROPDOWN = "DROPDOWN"
     BLOB_LINK = "BLOB_LINK"
+    ATTACHMENT_LINK = "ATTACHMENT_LINK"
     ENTRY_LINK = "ENTRY_LINK"
     STORAGE_LINK = "STORAGE_LINK"
     ENTITY_LINK = "ENTITY_LINK"
@@ -27,6 +29,7 @@ class BenchlingFieldDefinitionInputType(StrEnum):
     RNA_OLIGO_LINK = "RNA_OLIGO_LINK"
     RNA_SEQUENCE_LINK = "RNA_SEQUENCE_LINK"
     DNA_PART_LINK = "DNA_PART_LINK"
+    RNA_PART_LINK = "RNA_PART_LINK"
     TRANSCRIPTION_LINK = "TRANSCRIPTION_LINK"
     TRANSLATION_LINK = "TRANSLATION_LINK"
 
@@ -42,6 +45,7 @@ class BenchlingFieldDefinitionInputType(StrEnum):
             self.RNA_OLIGO_LINK,
             self.RNA_SEQUENCE_LINK,
             self.DNA_PART_LINK,
+            self.RNA_PART_LINK,
             self.TRANSCRIPTION_LINK,
             self.TRANSLATION_LINK,
         }
@@ -54,10 +58,17 @@ class BenchlingFieldDefinitionInputType(StrEnum):
         return self.is_schema_link() or self in {
             self.DROPDOWN,
             self.BLOB_LINK,
+            self.ATTACHMENT_LINK,
             self.ENTRY_LINK,
             self.STORAGE_LINK,
             self.ENTITY_LINK,
         }
 
+    def is_numeric(self) -> bool:
+        return self in {self.INTEGER, self.FLOAT, self.DECIMAL}
+
+    def supports_display_precision(self) -> bool:
+        return self in {self.FLOAT, self.DECIMAL}
+
     def supports_unit(self) -> bool:
-        return self in {self.INTEGER, self.FLOAT}
+        return self.is_numeric()

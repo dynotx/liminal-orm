@@ -5,8 +5,7 @@ from rich import print
 
 from liminal.base.base_dropdown import BaseDropdown
 from liminal.connection import BenchlingService
-from liminal.dropdowns.api_v3 import list_dropdowns_v3
-from liminal.entity_schemas.utils import get_converted_tag_schemas
+from liminal.entity_schemas.api_v3 import list_entity_schemas_v3
 from liminal.enums import BenchlingFieldType
 from liminal.mappers import convert_benchling_type_to_python_type
 from liminal.orm.base_model import BaseModel
@@ -207,8 +206,8 @@ def _get_entity_schemas_wh_name_to_classname(
             s.__schema_properties__.warehouse_name: s._sa_class_manager.class_.__name__
             for s in BaseModel.get_all_subclasses()
         }
-    tag_schemas = get_converted_tag_schemas(benchling_service)
     return {
-        schema_props.warehouse_name: to_pascal_case(schema_props.warehouse_name)
-        for schema_props, _, _ in tag_schemas
+        schema["systemName"]: to_pascal_case(schema["systemName"])
+        for schema in list_entity_schemas_v3(benchling_service)
+        if schema["systemName"] != "liminal_remote"
     }

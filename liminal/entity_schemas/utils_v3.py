@@ -10,9 +10,7 @@ from liminal.entity_schemas.entity_schema_models_v3 import (
     EntitySchemaFieldModel,
     EntitySchemaModel,
 )
-from liminal.entity_schemas.utils import (
-    get_benchling_entity_schema_id_to_system_name_map,
-)
+from liminal.entity_schemas.api_v3 import list_entity_schemas_v3
 from liminal.enums import BenchlingNamingStrategy
 from liminal.enums.benchling_entity_schema_type import BenchlingEntitySchemaType
 from liminal.enums.benchling_link_definition_type import BenchlingLinkDefinitionType
@@ -30,20 +28,25 @@ def get_converted_entity_schemas(
     benchling_service: BenchlingService,
     include_archived: bool = False,
     wh_schema_names: set[str] | None = None,
+    wh_schema_names_for_fields: set[str] | None = None,
 ) -> list[tuple[SchemaProperties, NameTemplate, dict[str, BaseFieldProperties]]]:
     """This functions gets all Entity schemas from Benchling and converts them to our internal representation of a schema and its fields.
     It parses the Entity Schema and creates SchemaProperties and a list of FieldProperties for each field in the schema.
     If include_archived is True, it will include archived schemas and archived fields.
+    If wh_schema_names_for_fields is given, only those schemas have their fields fetched.
+    If it is None, all schemas are fetched with their fields.
     """
-    all_schemas = EntitySchemaModel.get_all(benchling_service, wh_schema_names)
+    schemas_data = list_entity_schemas_v3(benchling_service, include_archived)
+    entity_schema_id_to_name_map = {s["id"]: s["systemName"] for s in schemas_data}
+    all_schemas = EntitySchemaModel.get_all(
+        benchling_service,
+        wh_schema_names,
+        include_archived,
+        wh_schema_names_for_fields=wh_schema_names_for_fields,
+        schemas_data=schemas_data,
+    )
     dropdown_id_to_name_map = get_benchling_dropdown_id_name_map(benchling_service)
     unit_id_to_name_map = get_unit_id_to_name_map(benchling_service)
-    entity_schema_id_to_name_map = get_benchling_entity_schema_id_to_system_name_map(
-        benchling_service
-    )
-    all_schemas = (
-        all_schemas if include_archived else [s for s in all_schemas if not s.archived]
-    )
     all_schemas = [s for s in all_schemas if s.systemName != "liminal_remote"]
     return [
         convert_entity_schema_to_internal_schema(
@@ -52,6 +55,8 @@ def get_converted_entity_schemas(
             dropdown_id_to_name_map,
             unit_id_to_name_map,
             include_archived,
+            fields_fetched=wh_schema_names_for_fields is None
+            or entity_schema.systemName in wh_schema_names_for_fields,
         )
         for entity_schema in all_schemas
     ]
@@ -63,6 +68,7 @@ def convert_entity_schema_to_internal_schema(
     dropdown_id_to_name_map: dict[str, str],
     unit_id_to_name_map: dict[str, str],
     include_archived_fields: bool = False,
+    fields_fetched: bool = True,
 ) -> tuple[SchemaProperties, NameTemplate, dict[str, BaseFieldProperties]]:
     all_fields = entity_schema.fields
     if not include_archived_fields:
@@ -116,7 +122,7 @@ def convert_entity_schema_to_internal_schema(
             parts=entity_schema.get_internal_name_template_parts(),
             order_name_parts_by_sequence=entity_schema.nameTemplate.shouldOrderPartsBySequence,
         )
-        if entity_schema.nameTemplate
+        if entity_schema.nameTemplate and fields_fetched
         else NameTemplate(),
         {
             f.systemName: convert_entity_schema_field_to_field_properties(
