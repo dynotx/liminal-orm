@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Any
 from benchling_sdk.auth.client_credentials_oauth2 import ClientCredentialsOAuth2
 from benchling_sdk.benchling import Benchling, BenchlingApiClientDecorator
 from benchling_sdk.helpers.retry_helpers import RetryStrategy
-from pydantic import ValidationError
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, configure_mappers

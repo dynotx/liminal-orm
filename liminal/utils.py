@@ -9,13 +9,11 @@ from typing import Any
 from urllib.parse import quote
 
 from benchling_sdk.services.v2.stable.api_service import ApiService
-import requests
 from benchling_sdk.errors import BenchlingError
 from benchling_sdk.helpers.retry_helpers import RetryStrategy
 from tenacity import (
     retry,
     retry_if_exception_type,
-    stop_after_attempt,
     stop_after_delay,
     wait_fixed,
 )
@@ -110,30 +108,6 @@ def is_valid_prefix(prefix: str) -> bool:
             f"Invalid prefix '{prefix}'. The prefix should only contain alphabetic characters or underscores, not end end in a digit, and not contain whitespace."
         )
     return valid
-
-
-@retry(
-    stop=stop_after_attempt(5),
-    retry=retry_if_exception_type(ValueError),
-    reraise=True,
-    wait=wait_fixed(2),
-)
-def await_queued_response(
-    status_url: str, benchling_sdk: BenchlingService
-) -> dict[str, Any]:
-    with requests.Session() as session:
-        response = session.get(
-            f"https://{benchling_sdk.benchling_tenant}.benchling.com{status_url}",
-            headers=benchling_sdk.custom_post_headers,
-            cookies=benchling_sdk.custom_post_cookies,
-        )
-    response_json = response.json()
-    if not response.ok:
-        raise ValueError("Failed request: ", response_json)
-    if response_json["status"] == "SUCCESS":
-        return response_json
-    else:
-        raise ValueError("Failed request: ", response_json)
 
 
 class RateLimiter:
