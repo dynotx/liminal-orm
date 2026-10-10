@@ -18,8 +18,8 @@ from liminal.enums import (
     BenchlingEntityTypeName,
 )
 from liminal.mappers import (
-    convert_entity_schema_type_to_entity_type,
-    convert_field_definition_type_to_field_type,
+    map_entity_schema_type_to_entity_type,
+    map_field_definition_type_to_field_type,
 )
 from liminal.orm.name_template import NameTemplate
 from liminal.orm.schema_properties import MixtureSchemaConfig, SchemaProperties
@@ -76,7 +76,7 @@ def convert_entity_schema_to_internal_schema(
     if not include_archived_fields:
         all_fields = [f for f in all_fields if not f.archived]
     constraint_fields: set[str] = set()
-    entity_type = convert_entity_schema_type_to_entity_type(entity_schema.typename)
+    entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
     if entity_schema.constraint:
         constraint_fields = constraint_fields.union(
             [n for n in entity_schema.constraint.fieldDefinitionNames]
@@ -148,7 +148,7 @@ def convert_entity_schema_field_to_field_properties(
         field.linkDefinition is not None
         and field.linkDefinition.typename.is_entity_schema_type()
     )
-    field_type = convert_field_definition_type_to_field_type(
+    field_type = map_field_definition_type_to_field_type(
         field.typename, links_to_entity_schema
     )
     field_props: dict[str, Any] = dict(

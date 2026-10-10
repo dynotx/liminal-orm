@@ -14,7 +14,7 @@ from liminal.enums import (
 )
 
 
-def convert_field_definition_type_to_field_type(
+def map_field_definition_type_to_field_type(
     field_definition_type: BenchlingFieldDefinitionType, has_entity_link: bool = False
 ) -> BenchlingFieldType:
     conversion_map = {
@@ -67,7 +67,7 @@ def convert_field_definition_type_to_field_type(
     return field_type
 
 
-def convert_field_type_to_field_definition_type(
+def map_field_type_to_field_definition_type(
     field_type: BenchlingFieldType,
     linked_schema_type: BenchlingEntityTypeName | None = None,
 ) -> BenchlingFieldDefinitionType:
@@ -115,7 +115,7 @@ def convert_field_type_to_field_definition_type(
     return conversion_map[field_type]
 
 
-def convert_field_type_to_field_definition_input_type(
+def map_field_type_to_field_definition_input_type(
     field_type: BenchlingFieldType,
     linked_schema_type: BenchlingEntityTypeName | None = None,
 ) -> BenchlingFieldDefinitionInputType:
@@ -168,7 +168,7 @@ def convert_field_type_to_field_definition_input_type(
     return conversion_map[field_type]
 
 
-def convert_field_definition_type_to_field_definition_input_type(
+def map_field_definition_type_to_field_definition_input_type(
     field_definition_type: BenchlingFieldDefinitionType,
 ) -> BenchlingFieldDefinitionInputType:
     conversion_map = {
@@ -206,7 +206,7 @@ def convert_field_definition_type_to_field_definition_input_type(
     return conversion_map[field_definition_type]
 
 
-def convert_entity_schema_type_to_entity_type(
+def map_entity_schema_type_to_entity_type(
     entity_schema_type: BenchlingEntityTypeName,
 ) -> BenchlingEntityType:
     conversion_map = {
@@ -225,7 +225,7 @@ def convert_entity_schema_type_to_entity_type(
     raise ValueError(f"Entity schema type '{entity_schema_type}' is not supported.")
 
 
-def convert_benchling_type_to_python_type(benchling_type: BenchlingFieldType) -> type:
+def map_benchling_type_to_python_type(benchling_type: BenchlingFieldType) -> type:
     benchling_to_python_type_map = {
         BenchlingFieldType.DATE: datetime,
         BenchlingFieldType.DATETIME: datetime,
@@ -254,7 +254,7 @@ def convert_benchling_type_to_python_type(benchling_type: BenchlingFieldType) ->
         raise ValueError(f"Benchling field type '{benchling_type}' is not supported.")
 
 
-def convert_benchling_type_to_sql_alchemy_type(
+def map_benchling_type_to_sql_alchemy_type(
     benchling_type: BenchlingFieldType,
 ) -> TypeEngine:
     benchling_to_sql_alchemy_type_map = {
@@ -285,7 +285,7 @@ def convert_benchling_type_to_sql_alchemy_type(
         raise ValueError(f"Benchling field type '{benchling_type}' is not supported.")
 
 
-def convert_entity_type_to_entity_schema_endpoint(
+def map_entity_type_to_entity_schema_endpoint(
     entity_type: BenchlingEntityType,
 ) -> BenchlingEntitySchemaEndpointType:
     conversion_map = {
@@ -305,7 +305,7 @@ def convert_entity_type_to_entity_schema_endpoint(
         raise ValueError(f"Entity type '{entity_type}' is not supported.")
 
 
-def entity_type_to_valid_field_types(
+def map_entity_type_to_valid_field_types(
     entity_type: BenchlingEntityType,
 ) -> list[BenchlingFieldType]:
     entity_type_to_valid_field_types_map: dict[

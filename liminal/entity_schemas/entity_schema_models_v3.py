@@ -30,10 +30,10 @@ from liminal.enums import BenchlingNamingStrategy
 from liminal.enums import NameTemplatePartType
 from liminal.enums import SequenceConstraint
 from liminal.mappers import (
-    convert_entity_schema_type_to_entity_type,
-    convert_field_definition_type_to_field_definition_input_type,
-    convert_field_type_to_field_definition_input_type,
-    convert_field_type_to_field_definition_type,
+    map_entity_schema_type_to_entity_type,
+    map_field_definition_type_to_field_definition_input_type,
+    map_field_type_to_field_definition_input_type,
+    map_field_type_to_field_definition_type,
 )
 from liminal.orm.name_template_parts import NameTemplatePart
 from liminal.orm.schema_properties import SchemaProperties
@@ -148,7 +148,7 @@ class EntitySchemaFieldModel(BaseModel):
                 and self.linkDefinition.typename.is_entity_schema_type()
                 else None
             )
-            self.typename = convert_field_type_to_field_definition_type(
+            self.typename = map_field_type_to_field_definition_type(
                 update_props.type, linked_schema_type
             )
         if "dropdown_link" in update_diff_names and update_props.dropdown_link:
@@ -228,7 +228,7 @@ class EntitySchemaFieldInputModel(BaseModel):
         EntitySchemaFieldInputModel
             A pydantic model for a v3 field definition input that updates the existing field.
         """
-        field_type = convert_field_definition_type_to_field_definition_input_type(
+        field_type = map_field_definition_type_to_field_definition_input_type(
             field.typename
         )
         link_id = field.linkDefinition.id if field.linkDefinition else None
@@ -290,7 +290,7 @@ class EntitySchemaFieldInputModel(BaseModel):
             )
             link_definition_id = linked_schema.id
             linked_schema_type = linked_schema.typename
-        field_type = convert_field_type_to_field_definition_input_type(
+        field_type = map_field_type_to_field_definition_input_type(
             field_props.type, linked_schema_type
         )
         dropdown_id = None
@@ -644,7 +644,7 @@ class EntitySchemaModel(BaseModel):
         Dump the result with `exclude_unset=True` to get the body for the v3 update entity schema endpoint."""
         update_diff_names = list(update_diff.keys())
         update_props = BaseSchemaProperties(**update_diff)
-        entity_type = convert_entity_schema_type_to_entity_type(self.typename)
+        entity_type = map_entity_schema_type_to_entity_type(self.typename)
         if (
             "entity_type" in update_diff_names
             and update_props.entity_type != entity_type

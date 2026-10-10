@@ -28,7 +28,7 @@ from liminal.entity_schemas.utils_v3 import (
 )
 from liminal.enums import BenchlingNamingStrategy
 from liminal.mappers import (
-    convert_entity_schema_type_to_entity_type,
+    map_entity_schema_type_to_entity_type,
 )
 from liminal.orm.schema_properties import SchemaProperties
 from liminal.unit_dictionary.utils import (
@@ -172,7 +172,7 @@ class ArchiveEntitySchema(BaseOperation):
 
     def execute(self, benchling_service: BenchlingService) -> dict[str, Any]:
         entity_schema = self._validate(benchling_service)
-        entity_type = convert_entity_schema_type_to_entity_type(entity_schema.typename)
+        entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
         return archive_entity_schema_v3(
             benchling_service, entity_type, entity_schema.id
         )
@@ -202,7 +202,7 @@ class UnarchiveEntitySchema(BaseOperation):
 
     def execute(self, benchling_service: BenchlingService) -> dict[str, Any]:
         entity_schema = self._validate(benchling_service)
-        entity_type = convert_entity_schema_type_to_entity_type(entity_schema.typename)
+        entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
         return unarchive_entity_schema_v3(
             benchling_service, entity_type, entity_schema.id
         )
@@ -240,7 +240,7 @@ class UpdateEntitySchema(BaseOperation):
         update = entity_schema.to_entity_schema_input_update_model(
             self.update_props.model_dump(exclude_unset=True)
         )
-        entity_type = convert_entity_schema_type_to_entity_type(entity_schema.typename)
+        entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
         return update_entity_schema_properties_v3(
             benchling_service,
             entity_type,
@@ -308,7 +308,7 @@ class UpdateEntitySchemaNameTemplate(BaseOperation):
         entity_schema = EntitySchemaModel.get_one(
             benchling_service, self.wh_schema_name
         )
-        entity_type = convert_entity_schema_type_to_entity_type(entity_schema.typename)
+        entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
         entity_schema.update_name_template(self.update_name_template)
         assert entity_schema.nameTemplate is not None
         return update_entity_schema_properties_v3(
@@ -387,7 +387,7 @@ class CreateEntitySchemaField(BaseOperation):
         entity_schema = EntitySchemaModel.get_one(
             benchling_service, self.wh_schema_name
         )
-        entity_type = convert_entity_schema_type_to_entity_type(entity_schema.typename)
+        entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
         existing_new_field = next(
             (f for f in entity_schema.fields if f.systemName == self._wh_field_name),
             None,
@@ -456,7 +456,7 @@ class ArchiveEntitySchemaField(BaseOperation):
         entity_schema = EntitySchemaModel.get_one(
             benchling_service, self.wh_schema_name
         )
-        entity_type = convert_entity_schema_type_to_entity_type(entity_schema.typename)
+        entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
         # The query will fail if the field is used in calculated fields or name template or constraints. Not covered atm. TODO
         updated_entity_schema = entity_schema.archive_field(
             self.wh_field_name, self.index
@@ -509,7 +509,7 @@ class UnarchiveEntitySchemaField(BaseOperation):
         entity_schema = EntitySchemaModel.get_one(
             benchling_service, self.wh_schema_name
         )
-        entity_type = convert_entity_schema_type_to_entity_type(entity_schema.typename)
+        entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
         entity_schema.unarchive_field(self.wh_field_name, self.index)
         updated_fields = [
             EntitySchemaFieldInputModel.from_field_model(f)
@@ -544,7 +544,7 @@ class UpdateEntitySchemaField(BaseOperation):
 
     def execute(self, benchling_service: BenchlingService) -> dict[str, Any]:
         entity_schema = self._validate(benchling_service)
-        entity_type = convert_entity_schema_type_to_entity_type(entity_schema.typename)
+        entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
         field = entity_schema.get_field(self.wh_field_name)
         field.update_from_props(self.update_props.model_dump(exclude_unset=True))
 
@@ -644,7 +644,7 @@ class ReorderEntitySchemaFields(BaseOperation):
         entity_schema = EntitySchemaModel.get_one(
             benchling_service, self.wh_schema_name
         )
-        entity_type = convert_entity_schema_type_to_entity_type(entity_schema.typename)
+        entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
         updated_entity_schema = entity_schema.reorder_fields(self.new_order)
         updated_fields = [
             EntitySchemaFieldInputModel.from_field_model(f)
