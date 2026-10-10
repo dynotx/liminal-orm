@@ -1,7 +1,7 @@
 from liminal.base.str_enum import StrEnum
 
 
-class BenchlingEntitySchemaType(StrEnum):
+class BenchlingEntityTypeName(StrEnum):
     """This enum represents the different entity schema types returned by the v3 API as `__typename`."""
 
     AA_SEQUENCE = "AaSequenceSchema"

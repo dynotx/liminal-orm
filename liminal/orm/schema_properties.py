@@ -11,8 +11,6 @@ from liminal.base.properties.base_schema_properties import (
 from liminal.enums import BenchlingEntityType, BenchlingNamingStrategy
 from liminal.utils import is_valid_prefix, is_valid_wh_name
 
-COLLECTION_SCHEMA_PROPERTIES = {"naming_strategies", "constraint_fields"}
-
 
 class SchemaProperties(BaseSchemaProperties):
     """
@@ -116,11 +114,6 @@ class SchemaProperties(BaseSchemaProperties):
             raise ValueError(
                 f"{', '.join(sorted(explicitly_set))} cannot be set for {self.entity_type} schemas."
             )
-        # for f in unsupported_properties:
-        #     object.__setattr__(
-        #         self, f, set() if f in COLLECTION_SCHEMA_PROPERTIES else None
-        #     )
-        #     self.model_fields_set.discard(f)
         return self
 
     def set_archived(self, value: bool) -> SchemaProperties:

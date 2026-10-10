@@ -12,9 +12,11 @@ from liminal.entity_schemas.entity_schema_models_v3 import (
 )
 from liminal.entity_schemas.api_v3 import list_entity_schemas_v3
 from liminal.enums import BenchlingNamingStrategy
-from liminal.enums.benchling_entity_schema_type import BenchlingEntitySchemaType
-from liminal.enums.benchling_link_definition_type import BenchlingLinkDefinitionType
-from liminal.enums.sequence_constraint import SequenceConstraint
+from liminal.enums import (
+    BenchlingLinkDefinitionType,
+    SequenceConstraint,
+    BenchlingEntityTypeName,
+)
 from liminal.mappers import (
     convert_entity_schema_type_to_entity_type,
     convert_field_definition_type_to_field_type,
@@ -101,7 +103,7 @@ def convert_entity_schema_to_internal_schema(
             componentLotStorageEnabled=entity_schema.componentLotStorageEnabled,
             componentLotTextEnabled=entity_schema.componentLotTextEnabled,
         )
-        if entity_schema.typename == BenchlingEntitySchemaType.MIXTURE
+        if entity_schema.typename == BenchlingEntityTypeName.MIXTURE
         else None,
         naming_strategies=set(
             BenchlingNamingStrategy(strategy)

@@ -4,6 +4,8 @@ from liminal.base.str_enum import StrEnum
 
 
 class BenchlingFieldDefinitionType(StrEnum):
+    """This enum represents the different field definition types returned by the v3 API."""
+
     TEXT_FIELD_DEFINITION = "TextFieldDefinition"
     LONG_TEXT_FIELD_DEFINITION = "LongTextFieldDefinition"
     INTEGER_FIELD_DEFINITION = "IntegerFieldDefinition"

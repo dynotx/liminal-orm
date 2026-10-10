@@ -1,4 +1,5 @@
 import logging
+import warnings
 from typing import TYPE_CHECKING, Any
 
 from benchling_sdk.auth.client_credentials_oauth2 import ClientCredentialsOAuth2
@@ -43,6 +44,8 @@ class BenchlingService(Benchling):
         Whether to connect to the Benchling SDK. Requires api_client_id and api_client_secret from the connection object.
     use_db: bool = False
         Whether to connect to the Benchling Postgres database. Requires warehouse_connection_string from the connection object.
+    use_internal_api: bool = False
+        DEPRECATED: Liminal no longer uses Benchling's internal API, so this is ignored. It will be removed in v6.
     client_decorator: BenchlingApiClientDecorator | None = None
         An optional function that receives the default BenchlingApiClient and returns a
         customized one. Forwarded to the Benchling SDK. A common use is raising the HTTP
@@ -54,8 +57,15 @@ class BenchlingService(Benchling):
         connection: BenchlingConnection,
         use_api: bool = True,
         use_db: bool = False,
+        use_internal_api: bool = False,
         client_decorator: BenchlingApiClientDecorator | None = None,
     ) -> None:
+        if use_internal_api:
+            warnings.warn(
+                "Deprecated BenchlingService argument set: use_internal_api. Liminal no longer uses Benchling's internal API, so it is ignored. Remove it from your BenchlingService, since it will be removed in v6.",
+                FutureWarning,
+                stacklevel=2,
+            )
         self.connection = connection
         self._session: Session | None = None
         self.use_api = use_api

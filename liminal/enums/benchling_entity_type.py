@@ -2,7 +2,7 @@ from liminal.base.str_enum import StrEnum
 
 
 class BenchlingEntityType(StrEnum):
-    """This enum represents the different entity types that can be created in Benchling."""
+    """This enum represents Liminals definition of Benchling entity types."""
 
     CUSTOM_ENTITY = "custom_entity"
     DNA_SEQUENCE = "dna_sequence"

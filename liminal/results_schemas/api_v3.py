@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
+from functools import partial
 from typing import Any
 
 from liminal.connection.benchling_service import BenchlingService
@@ -42,6 +43,11 @@ def list_results_schemas_with_fields_v3(
     result_schemas = list_results_schemas_v3(benchling_service)
 
     with ThreadPoolExecutor(max_workers=MAX_CONCURRENT_REQUESTS) as executor:
-        list(executor.map(attach_result_schema_field_definitions_v3, result_schemas))
+        list(
+            executor.map(
+                partial(attach_result_schema_field_definitions_v3, benchling_service),
+                result_schemas,
+            )
+        )
 
     return result_schemas
