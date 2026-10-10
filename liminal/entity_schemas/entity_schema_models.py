@@ -16,10 +16,10 @@ from liminal.base.properties.base_name_template import BaseNameTemplate
 from liminal.base.properties.base_schema_properties import BaseSchemaProperties
 from liminal.connection.benchling_service import BenchlingService
 from liminal.dropdowns.utils import get_benchling_dropdown_summary_by_name
-from liminal.entity_schemas.api_v3 import (
-    attach_entity_schema_field_definitions_v3,
-    list_entity_schemas_v3,
-    list_entity_schemas_with_fields_v3,
+from liminal.entity_schemas.api import (
+    attach_entity_schema_field_definitions,
+    list_entity_schemas,
+    list_entity_schemas_with_fields,
 )
 from liminal.enums import BenchlingEntityTypeName
 from liminal.enums import BenchlingEntityType
@@ -503,7 +503,7 @@ class EntitySchemaModel(BaseModel):
     ) -> list[EntitySchemaModel]:
         """If wh_schema_names_for_fields is given, only those schemas have their fields populated.
         Pass schemas_data to reuse an already fetched schema list instead of listing schemas again."""
-        schemas_data = list_entity_schemas_with_fields_v3(
+        schemas_data = list_entity_schemas_with_fields(
             benchling_service,
             include_archived,
             wh_schema_names=wh_schema_names or None,
@@ -530,7 +530,7 @@ class EntitySchemaModel(BaseModel):
         schemas_data: list[dict[str, Any]] | None = None,
     ) -> EntitySchemaModel:
         if schemas_data is None:
-            schemas_data = list_entity_schemas_v3(
+            schemas_data = list_entity_schemas(
                 benchling_service, include_archived=True
             )
         schema = next(
@@ -545,7 +545,7 @@ class EntitySchemaModel(BaseModel):
             raise ValueError(
                 f"Schema {wh_schema_name} not found in Benchling {benchling_service.benchling_tenant}."
             )
-        schema_with_fields = attach_entity_schema_field_definitions_v3(
+        schema_with_fields = attach_entity_schema_field_definitions(
             benchling_service, schema
         )
         return cls.model_validate(schema_with_fields)

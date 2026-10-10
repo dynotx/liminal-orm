@@ -23,19 +23,7 @@ def _response_json(response: Any, operation: str) -> dict[str, Any]:
     return json.loads(response.content)
 
 
-def _convert_dropdown_option_to_v3(option: DropdownOption) -> dict[str, Any]:
-    v3_option_dict: dict[str, Any] = {"name": option.name}
-    if option.id is not None:
-        v3_option_dict["id"] = option.id
-        if option.archive_record is not None:
-            v3_option_dict["archiveReason"] = option.archive_record.reason
-            v3_option_dict["archived"] = True
-        else:
-            v3_option_dict["archived"] = False
-    return v3_option_dict
-
-
-def list_dropdowns_v3(
+def list_dropdowns(
     benchling_service: BenchlingService, include_archived: bool = True
 ) -> list[dict[str, Any]]:
     """Fetch dropdowns from the v3 API."""
@@ -44,7 +32,7 @@ def list_dropdowns_v3(
     )
 
 
-def list_dropdown_options_v3(
+def list_dropdown_options(
     benchling_service: BenchlingService, dropdown_id: str
 ) -> list[dict[str, Any]]:
     """Fetch a dropdown's options from the v3 API."""
@@ -53,14 +41,14 @@ def list_dropdown_options_v3(
     )
 
 
-def attach_dropdown_options_v3(
+def attach_dropdown_options(
     benchling_service: BenchlingService, dropdown: dict[str, Any]
 ) -> dict[str, Any]:
-    dropdown["options"] = list_dropdown_options_v3(benchling_service, dropdown["id"])
+    dropdown["options"] = list_dropdown_options(benchling_service, dropdown["id"])
     return dropdown
 
 
-def list_dropdowns_with_options_v3(
+def list_dropdowns_with_options(
     benchling_service: BenchlingService,
     include_archived: bool = True,
     dropdown_names_for_options: set[str] | None = None,
@@ -69,7 +57,7 @@ def list_dropdowns_with_options_v3(
     If dropdown_names_for_options is given, options are only fetched for dropdowns with those Benchling names; the rest get an empty options list.
     If it is None, options are fetched for every dropdown.
     """
-    dropdowns = list_dropdowns_v3(benchling_service, include_archived)
+    dropdowns = list_dropdowns(benchling_service, include_archived)
     dropdowns_needing_options = []
     for dropdown in dropdowns:
         if (
@@ -82,7 +70,7 @@ def list_dropdowns_with_options_v3(
 
     with ThreadPoolExecutor(max_workers=MAX_CONCURRENT_REQUESTS) as pool:
         futures = [
-            pool.submit(attach_dropdown_options_v3, benchling_service, dropdown)
+            pool.submit(attach_dropdown_options, benchling_service, dropdown)
             for dropdown in dropdowns_needing_options
         ]
         for future in as_completed(futures):
@@ -109,6 +97,18 @@ def update_dropdown_name(
         additional_headers=EARLY_ACCESS_HEADER,
     )
     return _response_json(response, "update dropdown name")
+
+
+def _convert_dropdown_option_to_v3(option: DropdownOption) -> dict[str, Any]:
+    v3_option_dict: dict[str, Any] = {"name": option.name}
+    if option.id is not None:
+        v3_option_dict["id"] = option.id
+        if option.archive_record is not None:
+            v3_option_dict["archiveReason"] = option.archive_record.reason
+            v3_option_dict["archived"] = True
+        else:
+            v3_option_dict["archived"] = False
+    return v3_option_dict
 
 
 def update_dropdown_options(
