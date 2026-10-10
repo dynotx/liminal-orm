@@ -52,6 +52,8 @@ class BenchlingFieldType(StrEnum):
             cls.INTEGER,
             cls.DATE,
             cls.DATETIME,
+            cls.BOOLEAN,
+            cls.JSON,
         ]
 
     @classmethod

@@ -1,5 +1,6 @@
 from liminal.base.base_operation import BaseOperation
 from liminal.base.properties.base_field_properties import BaseFieldProperties
+from liminal.base.properties.base_name_template import BaseNameTemplate
 from liminal.base.properties.base_schema_properties import BaseSchemaProperties
 from liminal.connection.benchling_service import BenchlingService
 from liminal.entity_schemas.operations import (
@@ -12,6 +13,7 @@ from liminal.entity_schemas.operations import (
     UnarchiveEntitySchemaField,
     UpdateEntitySchema,
     UpdateEntitySchemaField,
+    UpdateEntitySchemaNameTemplate,
 )
 from liminal.enums import (
     BenchlingEntityType,
@@ -19,6 +21,7 @@ from liminal.enums import (
     BenchlingNamingStrategy,
 )
 from liminal.migrate.components import execute_operations, execute_operations_dry_run
+from liminal.orm.name_template_parts import FieldPart, SeparatorPart, TextPart
 from liminal.orm.schema_properties import SchemaProperties
 from liminal.utils import generate_random_id
 
@@ -122,6 +125,18 @@ def mock_entity_schema_full_migration(
         ["test_column_1", "test_column_2", "test_column_3", "test_column_4"],
     )
 
+    update_name_template_op = UpdateEntitySchemaNameTemplate(
+        test_model_wh_name,
+        BaseNameTemplate(
+            parts=[
+                TextPart(value="TEST"),
+                SeparatorPart(value="-"),
+                FieldPart(wh_field_name="test_column_1"),
+            ],
+            order_name_parts_by_sequence=False,
+        ),
+    )
+
     archive_entity_schema_op = ArchiveEntitySchema(test_model_wh_name)
     unarchive_entity_schema_op = UnarchiveEntitySchema(test_model_wh_name)
     rearchive_entity_schema_op = ArchiveEntitySchema(test_model_wh_name)
@@ -134,6 +149,7 @@ def mock_entity_schema_full_migration(
         archive_entity_schema_field_op,
         unarchive_entity_schema_field_op,
         reorder_entity_schema_field_op,
+        update_name_template_op,
         archive_entity_schema_op,
         unarchive_entity_schema_op,
         rearchive_entity_schema_op,
