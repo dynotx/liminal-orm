@@ -7,8 +7,8 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field
 
 from liminal.connection.benchling_service import BenchlingService
-from liminal.results_schemas.api_v3 import list_results_schemas_with_fields_v3
 from liminal.enums import BenchlingFieldDefinitionType
+from liminal.results_schemas.api_v3 import list_results_schemas_with_fields_v3
 
 
 class ResultsSchemaFieldLinkDefinitionModel(BaseModel):
@@ -49,7 +49,7 @@ class ResultsSchemaModel(BaseModel):
     fields: list[ResultsSchemaFieldModel]
     id: str
     name: str
-    systemName: str | None = None
+    systemName: str
     organization: Any | None
     typename: str = Field(alias="__typename")
 
@@ -78,7 +78,7 @@ class ResultsSchemaModel(BaseModel):
     def get_all(
         cls,
         benchling_service: BenchlingService,
-        names: set[str] | None = None,
+        wh_schema_names: set[str] | None = None,
     ) -> list[ResultsSchemaModel]:
         """This function gets all results schemas from Benchling's internal API.
         If a list of names is provided, the function will only return the results schemas with the given names.
@@ -87,8 +87,8 @@ class ResultsSchemaModel(BaseModel):
         ----------
         benchling_service : BenchlingService
             The benchling service to use to get the results schemas.
-        names : set[str] | None, optional
-            The set of names to filter the results schemas by. If not provided, all results schemas will be returned.
+        wh_schema_names : set[str] | None, optional
+            The set of warehouse schema names to filter the results schemas by. If not provided, all results schemas will be returned.
 
         Returns
         -------
@@ -97,11 +97,11 @@ class ResultsSchemaModel(BaseModel):
         """
         schemas_data = cls.get_all_json(benchling_service)
         filtered_schemas: list[ResultsSchemaModel] = []
-        if names:
+        if wh_schema_names:
             for schema in schemas_data:
-                if schema["name"] in names:
+                if schema["systemName"] in wh_schema_names:
                     filtered_schemas.append(cls.model_validate(schema))
-                if len(filtered_schemas) == len(names):
+                if len(filtered_schemas) == len(wh_schema_names):
                     break
         else:
             for schema in schemas_data:
@@ -115,17 +115,17 @@ class ResultsSchemaModel(BaseModel):
     def get_one(
         cls,
         benchling_service: BenchlingService,
-        name: str,
+        wh_schema_name: str,
         schemas_data: list[dict[str, Any]] | None = None,
     ) -> ResultsSchemaModel:
-        """This function gets a singular results schema, and raises an error if a schema with the given name is not found.
+        """This function gets a singular results schema, and raises an error if a schema with the given warehouse schema name is not found.
 
         Parameters
         ----------
         benchling_service : BenchlingService
             The benchling service to use to get the results schema.
-        name : str
-            The name of the results schema to search for.
+        wh_schema_name : str
+            The warehouse schema name of the results schema to search for.
         schemas_data : list[dict[str, Any]] | None
             The list of results schemas to search through, to avoid making extra API calls. If not provided, the function will get all results schemas from Benchling.
 
@@ -140,14 +140,14 @@ class ResultsSchemaModel(BaseModel):
             (
                 schema
                 for schema in schemas_data
-                if schema["name"] == name
+                if schema["systemName"] == wh_schema_name
                 # and schema["registryId"] == benchling_service.registry_id
             ),
             None,
         )
         if schema is None:
             raise ValueError(
-                f"Schema {name} not found in Benchling {benchling_service.benchling_tenant}."
+                f"Schema {wh_schema_name} not found in Benchling {benchling_service.benchling_tenant}."
             )
         return cls.model_validate(schema)
 
@@ -156,7 +156,7 @@ class ResultsSchemaModel(BaseModel):
     def get_one_cached(
         cls,
         benchling_service: BenchlingService,
-        name: str,
+        wh_schema_name: str,
     ) -> ResultsSchemaModel:
         """This function gets a singular results schema from Benchling and caches it."""
-        return cls.get_one(benchling_service, name)
+        return cls.get_one(benchling_service, wh_schema_name)
