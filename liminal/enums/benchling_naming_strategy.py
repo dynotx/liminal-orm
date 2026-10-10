@@ -4,6 +4,8 @@ from liminal.base.str_enum import StrEnum
 
 
 class BenchlingNamingStrategy(StrEnum):
+    """This enum represents the different naming strategies that can be used when creating a new entity."""
+
     NEW_IDS = "NEW_IDS"  # Generate new registry IDs
     IDS_FROM_NAMES = "IDS_FROM_NAMES"  # Generate registry IDs based on entity names
     REPLACE_NAME_WITH_ID = (

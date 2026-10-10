@@ -3,7 +3,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any
 from functools import partial
 
-from liminal.enums.benchling_entity_schema_type import BenchlingEntitySchemaType
 from liminal.utils import (
     EARLY_ACCESS_HEADER,
     MAX_CONCURRENT_REQUESTS,
@@ -11,7 +10,11 @@ from liminal.utils import (
     list_all_items_v3,
 )
 from liminal.connection.benchling_service import BenchlingService
-from liminal.enums import BenchlingEntitySchemaEndpointType, BenchlingEntityType
+from liminal.enums import (
+    BenchlingEntityTypeName,
+    BenchlingEntitySchemaEndpointType,
+    BenchlingEntityType,
+)
 from liminal.mappers import (
     convert_entity_schema_type_to_entity_type,
     convert_entity_type_to_entity_schema_endpoint,
@@ -71,7 +74,7 @@ def list_entity_schema_field_definitions_v3(
 def attach_entity_schema_field_definitions_v3(
     benchling_service: BenchlingService, entity_schema: dict[str, Any]
 ) -> dict[str, Any]:
-    typename = BenchlingEntitySchemaType(entity_schema.get("__typename"))
+    typename = BenchlingEntityTypeName(entity_schema.get("__typename"))
     entity_type = convert_entity_schema_type_to_entity_type(typename)
     entity_schema_id = entity_schema.get("id")
     if entity_schema_id is None:

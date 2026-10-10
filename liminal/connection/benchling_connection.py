@@ -38,9 +38,9 @@ class BenchlingConnection(BaseModel):
     warehouse_connection_string: str | None = None
         The connection string for the warehouse.
     internal_api_admin_email: str | None = None
-        DEPRECATED: Liminal no longer uses Benchling's internal API, so this is ignored. It will be removed in v5.
+        DEPRECATED: Liminal no longer uses Benchling's internal API, so this is ignored. It will be removed in v6.
     internal_api_admin_password: str | None = None
-        DEPRECATED: Liminal no longer uses Benchling's internal API, so this is ignored. It will be removed in v5.
+        DEPRECATED: Liminal no longer uses Benchling's internal API, so this is ignored. It will be removed in v6.
     playwright_data_dir: str | None = "~/.liminal/chrome_data/"
         The directory to store the playwright browser user data. If SSO is enabled and required on your Benchling tenant,
         Liminal uses playwright so the user can log into Benchling in order to give Liminal the authenticated internal API session cookie.
@@ -90,7 +90,7 @@ class BenchlingConnection(BaseModel):
             or self.internal_api_admin_password is not None
         ):
             warnings.warn(
-                "Deprecated BenchlingConnection properties set: internal_api_admin_email and internal_api_admin_password. Liminal no longer uses Benchling's internal API, so they are ignored. Remove them from your BenchlingConnection, since they will be removed in v5.",
+                "Deprecated BenchlingConnection properties set: internal_api_admin_email and internal_api_admin_password. Liminal no longer uses Benchling's internal API, so they are ignored. Remove them from your BenchlingConnection, since they will be removed in v6.",
                 FutureWarning,
                 stacklevel=3,
             )
