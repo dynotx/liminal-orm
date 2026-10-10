@@ -28,13 +28,9 @@ REMOTE_LIMINAL_SCHEMA_NAME = "liminal_remote"
 REMOTE_REVISION_ID_FIELD_WH_NAME = "revision_id"
 
 
-class SSODisabledError(ValueError):
-    pass
-
-
 class BenchlingService(Benchling):
     """
-    Class that creates a connection object that can be used to connect to Benchling's API, database, or internal API.
+    Class that creates a connection object that can be used to connect to Benchling's API and/or Postgres warehouse.
 
     Parameters
     ----------
