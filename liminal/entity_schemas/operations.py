@@ -281,7 +281,7 @@ class UpdateEntitySchema(BaseOperation):
                 f"Entity schema name {self.update_props.name} already exists in Benchling."
             )
         if self.update_props.warehouse_name and self.update_props.warehouse_name in [
-            schema["sqlIdentifier"] for schema in all_schemas
+            schema["systemName"] for schema in all_schemas
         ]:
             raise ValueError(
                 f"Entity schema warehouse name {self.update_props.warehouse_name} already exists in Benchling."
