@@ -16,7 +16,6 @@ from liminal.enums import (
     BenchlingLinkDefinitionType,
     SequenceConstraint,
     BenchlingEntityTypeName,
-    BenchlingNamingStrategy,
 )
 from liminal.mappers import (
     convert_entity_schema_type_to_entity_type,
