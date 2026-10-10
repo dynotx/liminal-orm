@@ -3,7 +3,7 @@ from liminal.base.str_enum import StrEnum
 
 
 class BenchlingFieldType(StrEnum):
-    """This enum represents the different types a Benchling field can have on an entity schema."""
+    """This enum represents Liminals definition of Benchling field types."""
 
     AA_SEQUENCE_LINK = "aa_sequence_link"
     BLOB_LINK = "blob_link"

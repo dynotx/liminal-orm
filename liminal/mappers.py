@@ -5,15 +5,12 @@ from sqlalchemy import JSON, DateTime, Float, Integer, String, Boolean
 from sqlalchemy.sql.type_api import TypeEngine
 
 from liminal.enums import (
-    BenchlingAPIFieldType,
     BenchlingEntitySchemaEndpointType,
-    BenchlingEntitySchemaType,
+    BenchlingEntityTypeName,
     BenchlingEntityType,
     BenchlingFieldDefinitionInputType,
     BenchlingFieldDefinitionType,
     BenchlingFieldType,
-    BenchlingFolderItemType,
-    BenchlingSequenceType,
 )
 
 
@@ -72,24 +69,24 @@ def convert_field_definition_type_to_field_type(
 
 def convert_field_type_to_field_definition_type(
     field_type: BenchlingFieldType,
-    linked_schema_type: BenchlingEntitySchemaType | None = None,
+    linked_schema_type: BenchlingEntityTypeName | None = None,
 ) -> BenchlingFieldDefinitionType:
     if field_type == BenchlingFieldType.ENTITY_LINK and linked_schema_type is not None:
         linked_schema_conversion_map = {
-            BenchlingEntitySchemaType.AA_SEQUENCE: BenchlingFieldDefinitionType.AA_SEQUENCE_LINK_FIELD_DEFINITION,
-            BenchlingEntitySchemaType.CUSTOM_ENTITY: BenchlingFieldDefinitionType.CUSTOM_ENTITY_LINK_FIELD_DEFINITION,
-            BenchlingEntitySchemaType.DNA_OLIGO: BenchlingFieldDefinitionType.DNA_OLIGO_LINK_FIELD_DEFINITION,
-            BenchlingEntitySchemaType.DNA_SEQUENCE: BenchlingFieldDefinitionType.DNA_SEQUENCE_LINK_FIELD_DEFINITION,
-            BenchlingEntitySchemaType.ENTRY: BenchlingFieldDefinitionType.ENTRY_LINK_FIELD_DEFINITION,
-            BenchlingEntitySchemaType.MIXTURE: BenchlingFieldDefinitionType.MIXTURE_LINK_FIELD_DEFINITION,
-            BenchlingEntitySchemaType.MOLECULE: BenchlingFieldDefinitionType.MOLECULE_LINK_FIELD_DEFINITION,
-            BenchlingEntitySchemaType.RNA_OLIGO: BenchlingFieldDefinitionType.RNA_OLIGO_LINK_FIELD_DEFINITION,
-            BenchlingEntitySchemaType.RNA_SEQUENCE: BenchlingFieldDefinitionType.RNA_SEQUENCE_LINK_FIELD_DEFINITION,
+            BenchlingEntityTypeName.AA_SEQUENCE: BenchlingFieldDefinitionType.AA_SEQUENCE_LINK_FIELD_DEFINITION,
+            BenchlingEntityTypeName.CUSTOM_ENTITY: BenchlingFieldDefinitionType.CUSTOM_ENTITY_LINK_FIELD_DEFINITION,
+            BenchlingEntityTypeName.DNA_OLIGO: BenchlingFieldDefinitionType.DNA_OLIGO_LINK_FIELD_DEFINITION,
+            BenchlingEntityTypeName.DNA_SEQUENCE: BenchlingFieldDefinitionType.DNA_SEQUENCE_LINK_FIELD_DEFINITION,
+            BenchlingEntityTypeName.ENTRY: BenchlingFieldDefinitionType.ENTRY_LINK_FIELD_DEFINITION,
+            BenchlingEntityTypeName.MIXTURE: BenchlingFieldDefinitionType.MIXTURE_LINK_FIELD_DEFINITION,
+            BenchlingEntityTypeName.MOLECULE: BenchlingFieldDefinitionType.MOLECULE_LINK_FIELD_DEFINITION,
+            BenchlingEntityTypeName.RNA_OLIGO: BenchlingFieldDefinitionType.RNA_OLIGO_LINK_FIELD_DEFINITION,
+            BenchlingEntityTypeName.RNA_SEQUENCE: BenchlingFieldDefinitionType.RNA_SEQUENCE_LINK_FIELD_DEFINITION,
         }
         return linked_schema_conversion_map[linked_schema_type]
     if (
         field_type == BenchlingFieldType.PART_LINK
-        and linked_schema_type == BenchlingEntitySchemaType.RNA_SEQUENCE
+        and linked_schema_type == BenchlingEntityTypeName.RNA_SEQUENCE
     ):
         return BenchlingFieldDefinitionType.RNA_PART_LINK_FIELD_DEFINITION
     conversion_map = {
@@ -121,18 +118,18 @@ def convert_field_type_to_field_definition_type(
 
 def convert_field_type_to_field_definition_input_type(
     field_type: BenchlingFieldType,
-    linked_schema_type: BenchlingEntitySchemaType | None = None,
+    linked_schema_type: BenchlingEntityTypeName | None = None,
 ) -> BenchlingFieldDefinitionInputType:
     if field_type == BenchlingFieldType.ENTITY_LINK and linked_schema_type is not None:
         linked_schema_conversion_map = {
-            BenchlingEntitySchemaType.AA_SEQUENCE: BenchlingFieldDefinitionInputType.AA_SEQUENCE_LINK,
-            BenchlingEntitySchemaType.CUSTOM_ENTITY: BenchlingFieldDefinitionInputType.CUSTOM_ENTITY_LINK,
-            BenchlingEntitySchemaType.DNA_OLIGO: BenchlingFieldDefinitionInputType.DNA_OLIGO_LINK,
-            BenchlingEntitySchemaType.DNA_SEQUENCE: BenchlingFieldDefinitionInputType.DNA_SEQUENCE_LINK,
-            BenchlingEntitySchemaType.MIXTURE: BenchlingFieldDefinitionInputType.MIXTURE_LINK,
-            BenchlingEntitySchemaType.MOLECULE: BenchlingFieldDefinitionInputType.MOLECULE_LINK,
-            BenchlingEntitySchemaType.RNA_OLIGO: BenchlingFieldDefinitionInputType.RNA_OLIGO_LINK,
-            BenchlingEntitySchemaType.RNA_SEQUENCE: BenchlingFieldDefinitionInputType.RNA_SEQUENCE_LINK,
+            BenchlingEntityTypeName.AA_SEQUENCE: BenchlingFieldDefinitionInputType.AA_SEQUENCE_LINK,
+            BenchlingEntityTypeName.CUSTOM_ENTITY: BenchlingFieldDefinitionInputType.CUSTOM_ENTITY_LINK,
+            BenchlingEntityTypeName.DNA_OLIGO: BenchlingFieldDefinitionInputType.DNA_OLIGO_LINK,
+            BenchlingEntityTypeName.DNA_SEQUENCE: BenchlingFieldDefinitionInputType.DNA_SEQUENCE_LINK,
+            BenchlingEntityTypeName.MIXTURE: BenchlingFieldDefinitionInputType.MIXTURE_LINK,
+            BenchlingEntityTypeName.MOLECULE: BenchlingFieldDefinitionInputType.MOLECULE_LINK,
+            BenchlingEntityTypeName.RNA_OLIGO: BenchlingFieldDefinitionInputType.RNA_OLIGO_LINK,
+            BenchlingEntityTypeName.RNA_SEQUENCE: BenchlingFieldDefinitionInputType.RNA_SEQUENCE_LINK,
         }
         if linked_schema_type not in linked_schema_conversion_map:
             raise ValueError(
@@ -141,7 +138,7 @@ def convert_field_type_to_field_definition_input_type(
         return linked_schema_conversion_map[linked_schema_type]
     if (
         field_type == BenchlingFieldType.PART_LINK
-        and linked_schema_type == BenchlingEntitySchemaType.RNA_SEQUENCE
+        and linked_schema_type == BenchlingEntityTypeName.RNA_SEQUENCE
     ):
         return BenchlingFieldDefinitionInputType.RNA_PART_LINK
     conversion_map = {
@@ -210,38 +207,19 @@ def convert_field_definition_type_to_field_definition_input_type(
     return conversion_map[field_definition_type]
 
 
-def convert_entity_type_to_entity_schema_type(
-    entity_type: BenchlingEntityType,
-) -> BenchlingEntitySchemaType:
-    conversion_map = {
-        BenchlingEntityType.AA_SEQUENCE: BenchlingEntitySchemaType.AA_SEQUENCE,
-        BenchlingEntityType.CUSTOM_ENTITY: BenchlingEntitySchemaType.CUSTOM_ENTITY,
-        BenchlingEntityType.DNA_OLIGO: BenchlingEntitySchemaType.DNA_OLIGO,
-        BenchlingEntityType.DNA_SEQUENCE: BenchlingEntitySchemaType.DNA_SEQUENCE,
-        BenchlingEntityType.ENTRY: BenchlingEntitySchemaType.ENTRY,
-        BenchlingEntityType.MIXTURE: BenchlingEntitySchemaType.MIXTURE,
-        BenchlingEntityType.MOLECULE: BenchlingEntitySchemaType.MOLECULE,
-        BenchlingEntityType.RNA_OLIGO: BenchlingEntitySchemaType.RNA_OLIGO,
-        BenchlingEntityType.RNA_SEQUENCE: BenchlingEntitySchemaType.RNA_SEQUENCE,
-    }
-    if entity_type in conversion_map:
-        return conversion_map[entity_type]
-    raise ValueError(f"Entity type '{entity_type}' is not supported.")
-
-
 def convert_entity_schema_type_to_entity_type(
-    entity_schema_type: BenchlingEntitySchemaType,
+    entity_schema_type: BenchlingEntityTypeName,
 ) -> BenchlingEntityType:
     conversion_map = {
-        BenchlingEntitySchemaType.AA_SEQUENCE: BenchlingEntityType.AA_SEQUENCE,
-        BenchlingEntitySchemaType.CUSTOM_ENTITY: BenchlingEntityType.CUSTOM_ENTITY,
-        BenchlingEntitySchemaType.DNA_OLIGO: BenchlingEntityType.DNA_OLIGO,
-        BenchlingEntitySchemaType.DNA_SEQUENCE: BenchlingEntityType.DNA_SEQUENCE,
-        BenchlingEntitySchemaType.ENTRY: BenchlingEntityType.ENTRY,
-        BenchlingEntitySchemaType.MIXTURE: BenchlingEntityType.MIXTURE,
-        BenchlingEntitySchemaType.MOLECULE: BenchlingEntityType.MOLECULE,
-        BenchlingEntitySchemaType.RNA_OLIGO: BenchlingEntityType.RNA_OLIGO,
-        BenchlingEntitySchemaType.RNA_SEQUENCE: BenchlingEntityType.RNA_SEQUENCE,
+        BenchlingEntityTypeName.AA_SEQUENCE: BenchlingEntityType.AA_SEQUENCE,
+        BenchlingEntityTypeName.CUSTOM_ENTITY: BenchlingEntityType.CUSTOM_ENTITY,
+        BenchlingEntityTypeName.DNA_OLIGO: BenchlingEntityType.DNA_OLIGO,
+        BenchlingEntityTypeName.DNA_SEQUENCE: BenchlingEntityType.DNA_SEQUENCE,
+        BenchlingEntityTypeName.ENTRY: BenchlingEntityType.ENTRY,
+        BenchlingEntityTypeName.MIXTURE: BenchlingEntityType.MIXTURE,
+        BenchlingEntityTypeName.MOLECULE: BenchlingEntityType.MOLECULE,
+        BenchlingEntityTypeName.RNA_OLIGO: BenchlingEntityType.RNA_OLIGO,
+        BenchlingEntityTypeName.RNA_SEQUENCE: BenchlingEntityType.RNA_SEQUENCE,
     }
     if entity_schema_type in conversion_map:
         return conversion_map[entity_schema_type]
@@ -308,178 +286,6 @@ def convert_benchling_type_to_sql_alchemy_type(
         raise ValueError(f"Benchling field type '{benchling_type}' is not supported.")
 
 
-def convert_field_type_to_api_field_type(
-    field_type: BenchlingFieldType,
-) -> tuple[BenchlingAPIFieldType, BenchlingFolderItemType | None]:
-    conversion_map = {
-        BenchlingFieldType.BLOB_LINK: (BenchlingAPIFieldType.BLOB_LINK, None),
-        BenchlingFieldType.DATE: (BenchlingAPIFieldType.DATE, None),
-        BenchlingFieldType.DATETIME: (BenchlingAPIFieldType.DATETIME, None),
-        BenchlingFieldType.ENTRY_LINK: (BenchlingAPIFieldType.ENTRY_LINK, None),
-        BenchlingFieldType.AA_SEQUENCE_LINK: (
-            BenchlingAPIFieldType.FILE_LINK,
-            BenchlingFolderItemType.PROTEIN,
-        ),
-        BenchlingFieldType.MIXTURE_LINK: (
-            BenchlingAPIFieldType.FILE_LINK,
-            BenchlingFolderItemType.MIXTURE,
-        ),
-        BenchlingFieldType.CUSTOM_ENTITY_LINK: (
-            BenchlingAPIFieldType.FILE_LINK,
-            BenchlingFolderItemType.BASIC_FOLDER_ITEM,
-        ),
-        BenchlingFieldType.DNA_SEQUENCE_LINK: (
-            BenchlingAPIFieldType.FILE_LINK,
-            BenchlingFolderItemType.SEQUENCE,
-        ),
-        BenchlingFieldType.PART_LINK: (BenchlingAPIFieldType.PART_LINK, None),
-        BenchlingFieldType.TRANSLATION_LINK: (
-            BenchlingAPIFieldType.TRANSLATION_LINK,
-            None,
-        ),
-        BenchlingFieldType.TRANSCRIPTION_LINK: (
-            BenchlingAPIFieldType.TRANSCRIPTION_LINK,
-            None,
-        ),
-        BenchlingFieldType.ENTITY_LINK: (BenchlingAPIFieldType.FILE_LINK, None),
-        BenchlingFieldType.DECIMAL: (BenchlingAPIFieldType.FLOAT, None),
-        BenchlingFieldType.INTEGER: (BenchlingAPIFieldType.INTEGER, None),
-        BenchlingFieldType.LONG_TEXT: (BenchlingAPIFieldType.LONG_TEXT, None),
-        BenchlingFieldType.DROPDOWN: (BenchlingAPIFieldType.SELECTOR, None),
-        BenchlingFieldType.STORAGE_LINK: (BenchlingAPIFieldType.STORABLE_LINK, None),
-        BenchlingFieldType.TEXT: (BenchlingAPIFieldType.STRING, None),
-        BenchlingFieldType.JSON: (BenchlingAPIFieldType.JSON, None),
-        BenchlingFieldType.BOOLEAN: (BenchlingAPIFieldType.BOOLEAN, None),
-    }
-    if field_type in conversion_map:
-        return conversion_map[field_type]
-    else:
-        raise ValueError(f"Field type '{field_type}' is not supported.")
-
-
-def convert_api_field_type_to_field_type(
-    field_type: BenchlingAPIFieldType,
-    folder_item_type: BenchlingFolderItemType | None = None,
-) -> BenchlingFieldType:
-    conversion_map = {
-        (BenchlingAPIFieldType.BLOB_LINK, None): BenchlingFieldType.BLOB_LINK,
-        (BenchlingAPIFieldType.DATE, None): BenchlingFieldType.DATE,
-        (BenchlingAPIFieldType.DATETIME, None): BenchlingFieldType.DATETIME,
-        (BenchlingAPIFieldType.ENTRY_LINK, None): BenchlingFieldType.ENTRY_LINK,
-        (
-            BenchlingAPIFieldType.FILE_LINK,
-            BenchlingFolderItemType.BASIC_FOLDER_ITEM,
-        ): BenchlingFieldType.CUSTOM_ENTITY_LINK,
-        (
-            BenchlingAPIFieldType.FILE_LINK,
-            BenchlingFolderItemType.SEQUENCE,
-        ): BenchlingFieldType.DNA_SEQUENCE_LINK,
-        (
-            BenchlingAPIFieldType.FILE_LINK,
-            BenchlingFolderItemType.MIXTURE,
-        ): BenchlingFieldType.MIXTURE_LINK,
-        (
-            BenchlingAPIFieldType.FILE_LINK,
-            BenchlingFolderItemType.PROTEIN,
-        ): BenchlingFieldType.AA_SEQUENCE_LINK,
-        (BenchlingAPIFieldType.PART_LINK, None): BenchlingFieldType.PART_LINK,
-        (
-            BenchlingAPIFieldType.TRANSLATION_LINK,
-            None,
-        ): BenchlingFieldType.TRANSLATION_LINK,
-        (
-            BenchlingAPIFieldType.TRANSCRIPTION_LINK,
-            None,
-        ): BenchlingFieldType.TRANSCRIPTION_LINK,
-        (BenchlingAPIFieldType.FILE_LINK, None): BenchlingFieldType.ENTITY_LINK,
-        (BenchlingAPIFieldType.FLOAT, None): BenchlingFieldType.DECIMAL,
-        (BenchlingAPIFieldType.INTEGER, None): BenchlingFieldType.INTEGER,
-        (BenchlingAPIFieldType.LONG_TEXT, None): BenchlingFieldType.LONG_TEXT,
-        (BenchlingAPIFieldType.SELECTOR, None): BenchlingFieldType.DROPDOWN,
-        (BenchlingAPIFieldType.STORABLE_LINK, None): BenchlingFieldType.STORAGE_LINK,
-        (BenchlingAPIFieldType.STRING, None): BenchlingFieldType.TEXT,
-        (BenchlingAPIFieldType.JSON, None): BenchlingFieldType.JSON,
-        (BenchlingAPIFieldType.BOOLEAN, None): BenchlingFieldType.BOOLEAN,
-    }
-    if (field_type, folder_item_type) in conversion_map:
-        return conversion_map[(field_type, folder_item_type)]
-    else:
-        raise ValueError(f"Field type '{field_type}' is not supported.")
-
-
-def convert_api_entity_type_to_entity_type(
-    folder_item_type: BenchlingFolderItemType,
-    sequence_type: BenchlingSequenceType | None,
-) -> BenchlingEntityType:
-    conversion_map = {
-        (
-            BenchlingFolderItemType.BASIC_FOLDER_ITEM,
-            None,
-        ): BenchlingEntityType.CUSTOM_ENTITY,
-        (BenchlingFolderItemType.ENTRY, None): BenchlingEntityType.ENTRY,
-        (BenchlingFolderItemType.MIXTURE, None): BenchlingEntityType.MIXTURE,
-        (BenchlingFolderItemType.MOLECULE, None): BenchlingEntityType.MOLECULE,
-        (BenchlingFolderItemType.PROTEIN, None): BenchlingEntityType.AA_SEQUENCE,
-        (
-            BenchlingFolderItemType.SEQUENCE,
-            BenchlingSequenceType.DNA_SEQUENCE,
-        ): BenchlingEntityType.DNA_SEQUENCE,
-        (
-            BenchlingFolderItemType.SEQUENCE,
-            BenchlingSequenceType.RNA_SEQUENCE,
-        ): BenchlingEntityType.RNA_SEQUENCE,
-        (
-            BenchlingFolderItemType.SEQUENCE,
-            BenchlingSequenceType.DNA_OLIGO,
-        ): BenchlingEntityType.DNA_OLIGO,
-        (
-            BenchlingFolderItemType.SEQUENCE,
-            BenchlingSequenceType.RNA_OLIGO,
-        ): BenchlingEntityType.RNA_OLIGO,
-    }
-    if (folder_item_type, sequence_type) in conversion_map:
-        return conversion_map[(folder_item_type, sequence_type)]
-    else:
-        raise ValueError(
-            f"Folder item type '{folder_item_type}' and sequence type '{sequence_type}' do not map to a valid Benchling entity type."
-        )
-
-
-def convert_entity_type_to_api_entity_type(
-    entity_type: BenchlingEntityType,
-) -> tuple[BenchlingFolderItemType, BenchlingSequenceType | None]:
-    conversion_map = {
-        BenchlingEntityType.CUSTOM_ENTITY: (
-            BenchlingFolderItemType.BASIC_FOLDER_ITEM,
-            None,
-        ),
-        BenchlingEntityType.ENTRY: (BenchlingFolderItemType.ENTRY, None),
-        BenchlingEntityType.MIXTURE: (BenchlingFolderItemType.MIXTURE, None),
-        BenchlingEntityType.MOLECULE: (BenchlingFolderItemType.MOLECULE, None),
-        BenchlingEntityType.AA_SEQUENCE: (BenchlingFolderItemType.PROTEIN, None),
-        BenchlingEntityType.DNA_SEQUENCE: (
-            BenchlingFolderItemType.SEQUENCE,
-            BenchlingSequenceType.DNA_SEQUENCE,
-        ),
-        BenchlingEntityType.RNA_SEQUENCE: (
-            BenchlingFolderItemType.SEQUENCE,
-            BenchlingSequenceType.RNA_SEQUENCE,
-        ),
-        BenchlingEntityType.DNA_OLIGO: (
-            BenchlingFolderItemType.SEQUENCE,
-            BenchlingSequenceType.DNA_OLIGO,
-        ),
-        BenchlingEntityType.RNA_OLIGO: (
-            BenchlingFolderItemType.SEQUENCE,
-            BenchlingSequenceType.RNA_OLIGO,
-        ),
-    }
-    if entity_type in conversion_map:
-        return conversion_map[entity_type]
-    else:
-        raise ValueError(f"Entity type '{entity_type}' is not supported.")
-
-
 def convert_entity_type_to_entity_schema_endpoint(
     entity_type: BenchlingEntityType,
 ) -> BenchlingEntitySchemaEndpointType:
@@ -521,6 +327,7 @@ def entity_type_to_valid_field_types(
         BenchlingEntityType.AA_SEQUENCE: [],
         BenchlingEntityType.ENTRY: [],
         BenchlingEntityType.MIXTURE: [],
+        BenchlingEntityType.MOLECULE: [],
     }
     for valid_field_types in entity_type_to_valid_field_types_map.values():
         valid_field_types.extend(BenchlingFieldType.get_default_field_types())

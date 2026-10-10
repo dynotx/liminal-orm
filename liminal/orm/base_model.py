@@ -14,7 +14,7 @@ from sqlalchemy.orm.decl_api import declared_attr
 from liminal.base.base_dropdown import BaseDropdown
 from liminal.base.base_validation_filters import BaseValidatorFilters
 from liminal.connection.benchling_service import BenchlingService
-from liminal.entity_schemas.utils import get_benchling_entity_schemas
+from liminal.entity_schemas.utils_v3 import get_benchling_entity_schemas
 from liminal.enums import BenchlingNamingStrategy
 from liminal.enums.benchling_entity_type import BenchlingEntityType
 from liminal.enums.sequence_constraint import SequenceConstraint

@@ -5,7 +5,7 @@ from benchling_api_client.v2.stable.models.assay_result_schema import AssayResul
 from liminal.base.properties.base_field_properties import BaseFieldProperties
 from liminal.connection import BenchlingService
 from liminal.dropdowns.utils import get_benchling_dropdown_id_name_map
-from liminal.entity_schemas.utils import (
+from liminal.entity_schemas.utils_v3 import (
     get_benchling_entity_schema_id_to_system_name_map,
 )
 from liminal.enums.benchling_field_definition_type import BenchlingFieldDefinitionType
