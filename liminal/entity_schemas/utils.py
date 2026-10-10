@@ -17,7 +17,6 @@ from liminal.mappers import (
 from liminal.orm.name_template import NameTemplate
 from liminal.orm.schema_properties import MixtureSchemaConfig, SchemaProperties
 from liminal.unit_dictionary.utils import get_unit_id_to_name_map
-from liminal.entity_schemas.api_v3 import list_entity_schemas_v3
 
 
 def get_converted_tag_schemas(
