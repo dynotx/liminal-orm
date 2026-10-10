@@ -41,11 +41,8 @@ class BenchlingConnection(BaseModel):
         DEPRECATED: Liminal no longer uses Benchling's internal API, so this is ignored. It will be removed in v6.
     internal_api_admin_password: str | None = None
         DEPRECATED: Liminal no longer uses Benchling's internal API, so this is ignored. It will be removed in v6.
-    playwright_data_dir: str | None = "~/.liminal/chrome_data/"
-        The directory to store the playwright browser user data. If SSO is enabled and required on your Benchling tenant,
-        Liminal uses playwright so the user can log into Benchling in order to give Liminal the authenticated internal API session cookie.
-        This directory is used to store playwright's persistent context, allowing the user to set up a persistent chrome profile.
-        Set this to None in order to disable playwright's persistent context which enables automatic login.
+    playwright_data_dir: str | None = None
+        DEPRECATED: Liminal no longer uses Playwright to log into Benchling's internal API, so this is ignored. It will be removed in v6.
     fieldsets: bool = False
         Whether your Benchling tenant has access to fieldsets.
     config_flags: TenantConfigFlags = TenantConfigFlags()
@@ -60,7 +57,7 @@ class BenchlingConnection(BaseModel):
     warehouse_connection_string: str | None = None
     internal_api_admin_email: str | None = None
     internal_api_admin_password: str | None = None
-    playwright_data_dir: str | None = "~/.liminal/playwright_chrome_data/"
+    playwright_data_dir: str | None = None
     fieldsets: bool = False
     config_flags: TenantConfigFlags = TenantConfigFlags()
 
@@ -91,6 +88,16 @@ class BenchlingConnection(BaseModel):
         ):
             warnings.warn(
                 "Deprecated BenchlingConnection properties set: internal_api_admin_email and internal_api_admin_password. Liminal no longer uses Benchling's internal API, so they are ignored. Remove them from your BenchlingConnection, since they will be removed in v6.",
+                FutureWarning,
+                stacklevel=3,
+            )
+        return self
+
+    @model_validator(mode="after")
+    def warn_deprecated_playwright_data_dir(self) -> "BenchlingConnection":
+        if self.playwright_data_dir is not None:
+            warnings.warn(
+                "Deprecated BenchlingConnection property set: playwright_data_dir. Liminal no longer uses Playwright to log into Benchling, so it is ignored. Remove it from your BenchlingConnection, since it will be removed in v6.",
                 FutureWarning,
                 stacklevel=3,
             )
