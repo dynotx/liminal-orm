@@ -100,7 +100,6 @@ def convert_field_type_to_field_definition_type(
         BenchlingFieldType.BOOLEAN: BenchlingFieldDefinitionType.BOOLEAN_FIELD_DEFINITION,
         BenchlingFieldType.DATE: BenchlingFieldDefinitionType.DATE_FIELD_DEFINITION,
         BenchlingFieldType.DATETIME: BenchlingFieldDefinitionType.DATETIME_FIELD_DEFINITION,
-        BenchlingFieldType.JSON: BenchlingFieldDefinitionType.JSON_FIELD_DEFINITION,
         BenchlingFieldType.DROPDOWN: BenchlingFieldDefinitionType.DROPDOWN_LINK_FIELD_DEFINITION,
         BenchlingFieldType.BLOB_LINK: BenchlingFieldDefinitionType.BLOB_LINK_FIELD_DEFINITION,
         BenchlingFieldType.ENTRY_LINK: BenchlingFieldDefinitionType.ENTRY_LINK_FIELD_DEFINITION,
