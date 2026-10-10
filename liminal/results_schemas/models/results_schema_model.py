@@ -42,7 +42,7 @@ class ResultsSchemaFieldModel(BaseModel):
 
 
 class ResultsSchemaModel(BaseModel):
-    """A pydantic model to define a results schema, which is used when querying for results schemas from Benchling's internal API."""
+    """A pydantic model to define a results schema, which is used when querying for results schemas from Benchling's API."""
 
     archived: bool
     archive_reason: str | None = None
@@ -60,7 +60,7 @@ class ResultsSchemaModel(BaseModel):
         cls,
         benchling_service: BenchlingService,
     ) -> list[dict[str, Any]]:
-        """This function gets all results schemas from Benchling's internal API, returning the raw JSON data.
+        """This function gets all results schemas from Benchling's API, returning the raw JSON data.
 
         Parameters
         ----------
@@ -80,7 +80,7 @@ class ResultsSchemaModel(BaseModel):
         benchling_service: BenchlingService,
         wh_schema_names: set[str] | None = None,
     ) -> list[ResultsSchemaModel]:
-        """This function gets all results schemas from Benchling's internal API.
+        """This function gets all results schemas from Benchling's API.
         If a list of names is provided, the function will only return the results schemas with the given names.
 
         Parameters

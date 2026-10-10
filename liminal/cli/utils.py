@@ -25,7 +25,7 @@ def read_local_liminal_dir(
     liminal_dir_path: Path, benchling_tenant: str
 ) -> BenchlingConnection:
     """Imports the env.py file from /liminal/env.py and returns the BenchlingConnection object.
-    The BenchlingConnection object is expected to be defined and have connection information for the Benchling API client and internal API.
+    The BenchlingConnection object is expected to be defined and have connection information for the Benchling API client.
     """
     _check_liminal_directory_initialized(liminal_dir_path)
     env_file_path = liminal_dir_path / "env.py"
@@ -36,7 +36,7 @@ def _read_local_env_file(
     env_file_path: Path, benchling_tenant: str
 ) -> BenchlingConnection:
     """Imports the env.py file from the current working directory and returns the BenchlingConnection object.
-    The BenchlingConnection object is expected to be defined and have connection information for the Benchling API client and internal API.
+    The BenchlingConnection object is expected to be defined and have connection information for the Benchling API client.
     """
     module_path = Path.cwd() / env_file_path
     spec = importlib.util.spec_from_file_location(env_file_path.stem, module_path)

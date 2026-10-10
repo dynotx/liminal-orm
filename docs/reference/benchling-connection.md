@@ -1,6 +1,6 @@
 ## BenchlingConnection: [class](https://github.com/dynotx/liminal-orm/blob/main/liminal/connection/benchling_connection.py)
 
-The `BenchlingConnection` class is used to define the connection information for a particular Benchling tenant. The BenchlingConnection class is defined in your `env.py` file and it also used to create a BenchlingService object. In the `env.py` file, the api_client is required for the BenchlingConnection object in orderto be used in the migration service. The BenchlingService can be imported from the liminal pacakage and be used to connect to [Benchling's SDK](https://docs.benchling.com/docs/getting-started-with-the-sdk), internal API, and/or Postgres warehouse.
+The `BenchlingConnection` class is used to define the connection information for a particular Benchling tenant. The BenchlingConnection class is defined in your `env.py` file and it also used to create a BenchlingService object. In the `env.py` file, the api_client is required for the BenchlingConnection object in orderto be used in the migration service. The BenchlingService can be imported from the liminal pacakage and be used to connect to [Benchling's SDK](https://docs.benchling.com/docs/getting-started-with-the-sdk) and/or Postgres warehouse.
 
 ```python
 # Example BenchlingConnection definition
@@ -38,23 +38,6 @@ connection = BenchlingConnection(
 - **warehouse_connection_string: Optional[str] = None**
 
     The connection string for the warehouse.
-
-- **internal_api_admin_email: Optional[str] = None**
-
-    !!! warning "Deprecated"
-        Liminal no longer uses Benchling's internal API, so this is ignored. It will be removed in v5.
-
-- **internal_api_admin_password: Optional[str] = None**
-
-    !!! warning "Deprecated"
-        Liminal no longer uses Benchling's internal API, so this is ignored. It will be removed in v5.
-
-- **playwright_data_dir: Optional[str] = "~/.liminal/playwright_chrome_data/"**
-
-    The directory to store the playwright browser user data. If SSO is enabled and required on your Benchling tenant,
-    Liminal uses playwright so the user can log into Benchling in order to give Liminal the user's authenticated internal API session cookie.
-    This directory is used to store playwright's persistent context, allowing the user to set up a persistent Chrome user profile.
-    Set this to None in order to disable playwright's persistent context which enables automatic login.
 
 - **fieldsets: bool = False**
 
