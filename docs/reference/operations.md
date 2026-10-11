@@ -42,8 +42,8 @@ example_operation.validate()
 | CreateEntitySchema             | Creates a new entity schema with specified fields.                          | 9     |
 | UnarchiveEntitySchema          | Unarchives an archived entity schema.                                       | 10     |
 | CreateEntitySchemaField        | Creates a new field in an existing entity schema.                           | 11    |
-| UpdateEntitySchemaNameTemplate | Updates the name template of an existing entity schema.                     | 12    |
-| UpdateEntitySchema             | Updates the properties of an existing entity schema.                        | 13    |
+| UpdateEntitySchema             | Updates the properties of an existing entity schema.                        | 12    |
+| UpdateEntitySchemaNameTemplate | Updates the name template of an existing entity schema.                     | 13    |
 | UnarchiveEntitySchemaField     | Unarchives an archived field in an entity schema.                           | 14    |
 | UpdateEntitySchemaField        | Updates the properties of an existing field in an entity schema.            | 15    |
 | ArchiveEntitySchemaField       | Archives an existing field in an entity schema.                             | 16    |

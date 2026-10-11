@@ -225,7 +225,7 @@ class UnarchiveEntitySchema(BaseOperation):
 
 
 class UpdateEntitySchema(BaseOperation):
-    order: ClassVar[int] = 120
+    order: ClassVar[int] = 110
 
     def __init__(
         self,
@@ -294,7 +294,7 @@ class UpdateEntitySchema(BaseOperation):
 
 
 class UpdateEntitySchemaNameTemplate(BaseOperation):
-    order: ClassVar[int] = 110
+    order: ClassVar[int] = 120
 
     def __init__(
         self,
@@ -311,15 +311,18 @@ class UpdateEntitySchemaNameTemplate(BaseOperation):
         entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
         entity_schema.update_name_template(self.update_name_template)
         assert entity_schema.nameTemplate is not None
+        name_template_payload = (
+            NameTemplateInputModel.from_name_template_model(
+                entity_schema.nameTemplate
+            ).model_dump(exclude_none=True)
+            if entity_schema.nameTemplate.parts
+            else None
+        )
         return update_entity_schema_properties(
             benchling_service,
             entity_type,
             entity_schema.id,
-            {
-                "nameTemplate": NameTemplateInputModel.from_name_template_model(
-                    entity_schema.nameTemplate
-                ).model_dump(exclude_none=True)
-            },
+            {"nameTemplate": name_template_payload},
         )
 
     def describe_operation(self) -> str:
