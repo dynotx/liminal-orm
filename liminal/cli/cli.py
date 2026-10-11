@@ -154,10 +154,26 @@ def current(
 
 @app.command(
     name="head",
-    help="Returns the local heads, or the latest revision_id, in your linear revision timeline.",
+    help="Returns the local heads, or the latest revision_id, in your linear revision timeline. Pass --reset to delete the local head revision file.",
 )
-def head() -> None:
+def head(
+    reset: bool = typer.Option(
+        False,
+        "-r",
+        "--reset",
+        help="Deletes the local head revision file, making its down_revision the new head. Only use this for revisions that have not been applied to any tenant.",
+    ),
+) -> None:
     revision_timeline = RevisionsTimeline(VERSIONS_DIR_PATH)
+    if reset:
+        latest_revision = revision_timeline.get_latest_revision()
+        file_path = VERSIONS_DIR_PATH / latest_revision.revision_file_name
+        print(
+            f"[bold yellow]Delete local head revision file {latest_revision.id} ({file_path})?[/bold yellow]"
+        )
+        typer.confirm("Confirm", abort=True)
+        revision_timeline.delete_latest_revision()
+        print(f"[dim]Deleted revision file {file_path}.")
     print(f"[blue]{revision_timeline.get_latest_revision().id}: (head)[/blue]")
 
 
