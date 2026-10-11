@@ -530,9 +530,7 @@ class EntitySchemaModel(BaseModel):
         schemas_data: list[dict[str, Any]] | None = None,
     ) -> EntitySchemaModel:
         if schemas_data is None:
-            schemas_data = list_entity_schemas(
-                benchling_service, include_archived=True
-            )
+            schemas_data = list_entity_schemas(benchling_service, include_archived=True)
         schema = next(
             (
                 schema

@@ -87,7 +87,9 @@ def get_benchling_dropdowns_dict(
         ]
 
     return {
-        dropdown["name"]: _convert_dropdown_from_v3_to_v2_sdk(dropdown, include_archived)
+        dropdown["name"]: _convert_dropdown_from_v3_to_v2_sdk(
+            dropdown, include_archived
+        )
         for dropdown in dropdowns
     }
 

@@ -173,9 +173,7 @@ class ArchiveEntitySchema(BaseOperation):
     def execute(self, benchling_service: BenchlingService) -> dict[str, Any]:
         entity_schema = self._validate(benchling_service)
         entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
-        return archive_entity_schema(
-            benchling_service, entity_type, entity_schema.id
-        )
+        return archive_entity_schema(benchling_service, entity_type, entity_schema.id)
 
     def describe_operation(self) -> str:
         return f"{self.wh_schema_name}: Archiving entity schema."
@@ -203,9 +201,7 @@ class UnarchiveEntitySchema(BaseOperation):
     def execute(self, benchling_service: BenchlingService) -> dict[str, Any]:
         entity_schema = self._validate(benchling_service)
         entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
-        return unarchive_entity_schema(
-            benchling_service, entity_type, entity_schema.id
-        )
+        return unarchive_entity_schema(benchling_service, entity_type, entity_schema.id)
 
     def describe_operation(self) -> str:
         return f"{self.wh_schema_name}: Unarchiving entity schema."

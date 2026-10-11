@@ -25,7 +25,9 @@ from liminal.mappers import (
 _API_V3_PATH = "/api/v3"
 
 
-def _entity_schema_specific_api_path(endpoint: BenchlingEntitySchemaEndpointType) -> str:
+def _entity_schema_specific_api_path(
+    endpoint: BenchlingEntitySchemaEndpointType,
+) -> str:
     return f"{_API_V3_PATH}/{endpoint.value}"
 
 
