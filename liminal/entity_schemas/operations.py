@@ -452,9 +452,7 @@ class ArchiveEntitySchemaField(BaseOperation):
         self.index = index
 
     def execute(self, benchling_service: BenchlingService) -> dict[str, Any]:
-        entity_schema = EntitySchemaModel.get_one(
-            benchling_service, self.wh_schema_name
-        )
+        entity_schema = self._validate(benchling_service)
         entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
         # The query will fail if the field is used in calculated fields or name template or constraints. Not covered atm. TODO
         updated_entity_schema = entity_schema.archive_field(
@@ -481,16 +479,17 @@ class ArchiveEntitySchemaField(BaseOperation):
         entity_schema = EntitySchemaModel.get_one(
             benchling_service, self.wh_schema_name
         )
-        name_template_field_ids = [
-            p.configuration.field.id
-            for p in entity_schema.nameTemplate.parts
-            if p.configuration and p.configuration.field
-        ]
-        field = entity_schema.get_field(self.wh_field_name)
-        if field.id in name_template_field_ids:
-            raise ValueError(
-                f"Cannot archive field {self.wh_field_name} on entity schema {self.wh_schema_name}. Field is used in name template."
-            )
+        if entity_schema.nameTemplate:
+            name_template_field_ids = [
+                p.configuration.field.id
+                for p in entity_schema.nameTemplate.parts
+                if p.configuration and p.configuration.field
+            ]
+            field = entity_schema.get_field(self.wh_field_name)
+            if field.id in name_template_field_ids:
+                raise ValueError(
+                    f"Cannot archive field {self.wh_field_name} on entity schema {self.wh_schema_name}. Field is used in name template."
+                )
         return entity_schema
 
 
@@ -570,7 +569,7 @@ class UpdateEntitySchemaField(BaseOperation):
     def validate(self, benchling_service: BenchlingService) -> None:
         unit_no_change_message = f"{self.__class__.__name__} {self.wh_schema_name}: Updating unit name to {self.update_props.unit_name} on field {self.wh_field_name}. The unit of this field CANNOT be changed once it's been set."
         try:
-            entity_schema = EntitySchemaModel.get_one_cached(
+            entity_schema = EntitySchemaModel.get_one(
                 benchling_service, self.wh_schema_name
             )
         except Exception:
