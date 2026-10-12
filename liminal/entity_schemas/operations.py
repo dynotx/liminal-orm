@@ -593,7 +593,7 @@ class UpdateEntitySchemaField(BaseOperation):
                 f"{self.__class__.__name__} {self.wh_schema_name}: Tenant config flag SCHEMAS_ENABLE_CHANGE_WAREHOUSE_NAME is required to update the field warehouse_name to a custom name. Reach out to Benchling support to turn this config flag to True and then set the flag to True in BenchlingConnection.config_flags."
             )
         if "unit_name" in self.update_props.model_dump(exclude_unset=True):
-            if entity_schema.get_field(self.wh_field_name).unit.id:
+            if entity_schema.get_field(self.wh_field_name).unit is not None:
                 raise ValueError(unit_no_change_message)
             LOGGER.warning(unit_no_change_message)
             if (
