@@ -151,7 +151,7 @@ class CreateEntitySchema(BaseOperation):
         )
         benchling_schema_props, _, benchling_fields_props = (
             convert_entity_schema_to_internal_schema(
-                schema, dropdowns_map, entity_schema_id_to_name_map, unit_id_to_name_map
+                schema, entity_schema_id_to_name_map, dropdowns_map, unit_id_to_name_map
             )
         )
         if (
@@ -372,7 +372,7 @@ class CreateEntitySchemaField(BaseOperation):
                 get_benchling_entity_schema_id_to_system_name_map(benchling_service)
             )
             if self.field_props == convert_entity_schema_field_to_field_properties(
-                field, dropdowns_map, entity_schema_id_to_name_map, unit_id_to_name_map
+                field, entity_schema_id_to_name_map, dropdowns_map, unit_id_to_name_map
             ).set_warehouse_name(self._wh_field_name):
                 return UnarchiveEntitySchemaField(
                     self.wh_schema_name, self._wh_field_name, self.index
