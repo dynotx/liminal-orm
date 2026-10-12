@@ -92,14 +92,10 @@ def get_benchling_dropdowns_dict(
     dropdown_names_for_options: set[str] | None = None,
 ) -> dict[str, Dropdown]:
     dropdowns = list_dropdowns_with_options(
-        benchling_service, dropdown_names_for_options=dropdown_names_for_options
+        benchling_service,
+        include_archived=include_archived,
+        dropdown_names_for_options=dropdown_names_for_options,
     )
-
-    if not include_archived:
-        dropdowns = [
-            dropdown for dropdown in dropdowns if not dropdown.get("archived", False)
-        ]
-
     return {
         dropdown["name"]: _convert_dropdown_from_v3_to_v2_sdk(
             dropdown, include_archived
@@ -111,7 +107,9 @@ def get_benchling_dropdowns_dict(
 def dropdown_exists_in_benchling(
     benchling_service: BenchlingService, name: str
 ) -> bool:
-    return name in get_benchling_dropdown_summaries(benchling_service)
+    return any(
+        d.name == name for d in get_benchling_dropdown_summaries(benchling_service)
+    )
 
 
 def get_schemas_with_dropdown(dropdown_name: str) -> list[str]:
