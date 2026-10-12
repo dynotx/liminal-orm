@@ -21,7 +21,7 @@ from liminal.entity_schemas.api_v3 import (
     list_entity_schemas_v3,
     list_entity_schemas_with_fields_v3,
 )
-from liminal.enums import BenchlingEntitySchemaType
+from liminal.enums import BenchlingEntityTypeName
 from liminal.enums import BenchlingEntityType
 from liminal.enums import BenchlingFieldDefinitionInputType
 from liminal.enums import BenchlingFieldDefinitionType
@@ -143,7 +143,7 @@ class EntitySchemaFieldModel(BaseModel):
             )
         if "type" in update_diff_names and update_props.type:
             linked_schema_type = (
-                BenchlingEntitySchemaType(self.linkDefinition.typename.value)
+                BenchlingEntityTypeName(self.linkDefinition.typename.value)
                 if self.linkDefinition
                 and self.linkDefinition.typename.is_entity_schema_type()
                 else None
@@ -490,7 +490,7 @@ class EntitySchemaModel(BaseModel):
     allowMeasuredIngredients: bool | None = None
     componentLotTextEnabled: bool | None = None
     componentLotStorageEnabled: bool | None = None
-    typename: BenchlingEntitySchemaType = Field(alias="__typename")
+    typename: BenchlingEntityTypeName = Field(alias="__typename")
 
     @classmethod
     def get_all(

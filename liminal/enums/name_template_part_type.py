@@ -2,6 +2,8 @@ from liminal.base.str_enum import StrEnum
 
 
 class NameTemplatePartType(StrEnum):
+    """This enum represents the different parts of a name template."""
+
     SEPARATOR = "SEPARATOR"
     TEXT = "TEXT"
     CREATION_YEAR = "CREATED_AT_YEAR"

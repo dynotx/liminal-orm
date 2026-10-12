@@ -15,21 +15,16 @@ from liminal.entity_schemas.api_v3 import (
     update_entity_schema_field_definitions_v3,
     update_entity_schema_properties_v3,
 )
-from liminal.entity_schemas.tag_schema_models import (
-    TagSchemaModel,
-)
 from liminal.entity_schemas.entity_schema_models_v3 import (
     EntitySchemaFieldInputModel,
     EntitySchemaInputModel,
     EntitySchemaModel,
     NameTemplateInputModel,
 )
-from liminal.entity_schemas.utils import (
-    get_benchling_entity_schema_id_to_system_name_map,
-)
 from liminal.entity_schemas.utils_v3 import (
     convert_entity_schema_field_to_field_properties,
     convert_entity_schema_to_internal_schema,
+    get_benchling_entity_schema_id_to_system_name_map,
 )
 from liminal.enums import BenchlingNamingStrategy
 from liminal.mappers import (
@@ -483,17 +478,21 @@ class ArchiveEntitySchemaField(BaseOperation):
     def describe(self) -> str:
         return f"{self.wh_schema_name}: Entity schema field '{self.wh_field_name}' is defined in Benchling but not in code."
 
-    def _validate(self, benchling_service: BenchlingService) -> TagSchemaModel:
-        tag_schema = TagSchemaModel.get_one(benchling_service, self.wh_schema_name)
+    def _validate(self, benchling_service: BenchlingService) -> EntitySchemaModel:
+        entity_schema = EntitySchemaModel.get_one(
+            benchling_service, self.wh_schema_name
+        )
         name_template_field_ids = [
-            p.fieldId for p in tag_schema.nameTemplateParts if p is not None
+            p.configuration.field.id
+            for p in entity_schema.nameTemplate.parts
+            if p.configuration and p.configuration.field
         ]
-        field = tag_schema.get_field(self.wh_field_name)
+        field = entity_schema.get_field(self.wh_field_name)
         if field.id in name_template_field_ids:
             raise ValueError(
                 f"Cannot archive field {self.wh_field_name} on entity schema {self.wh_schema_name}. Field is used in name template."
             )
-        return tag_schema
+        return entity_schema
 
 
 class UnarchiveEntitySchemaField(BaseOperation):
