@@ -36,7 +36,7 @@ def single_relationship(
 
 
 def multi_relationship(*args: Any, **kwargs: Any) -> RelationshipProperty:
-    """Wrapper for generating a multi-relationship. Supporting the usage of a deprecated signature until v5 release."""
+    """Wrapper for generating a multi-relationship. Supporting the usage of a deprecated signature until v6 release."""
     if len(args) == 2 and isinstance(args[1], Column):
         return multi_relationship_v2(*args, **kwargs)
     else:
@@ -64,7 +64,7 @@ def multi_relationship_deprecated(
     SQLAlchemy RelationshipProperty
     """
     warnings.warn(
-        "This version of multi_relationship is deprecated. New function signature is multi_relationship(target_class_name: str, entity_link_field: Column). Support for this signature will end with the v5 release.",
+        "This version of multi_relationship is deprecated. New function signature is multi_relationship(target_class_name: str, entity_link_field: Column). Support for this signature will end with the v6 release.",
         FutureWarning,
         stacklevel=2,
     )

@@ -213,7 +213,7 @@ def autogenerate(
     ),
 ) -> None:
     raise DeprecationWarning(
-        "CLI command `liminal autogenerate ...` is deprecated and will be removed in v5. Please use `liminal revision ...` instead."
+        "CLI command `liminal autogenerate ...` is deprecated and will be removed in v6. Please use `liminal revision ...` instead."
     )
 
 
