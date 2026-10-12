@@ -7,7 +7,7 @@ from sqlalchemy.types import JSON
 from liminal.base.base_dropdown import BaseDropdown
 from liminal.base.properties.base_field_properties import BaseFieldProperties
 from liminal.enums import BenchlingFieldType
-from liminal.mappers import convert_benchling_type_to_sql_alchemy_type
+from liminal.mappers import map_benchling_type_to_sql_alchemy_type
 
 
 class Column(SqlColumn):
@@ -80,7 +80,7 @@ class Column(SqlColumn):
         properties = BaseFieldProperties(**field_props)
         self.properties = properties
 
-        nested_sql_type = convert_benchling_type_to_sql_alchemy_type(type)
+        nested_sql_type = map_benchling_type_to_sql_alchemy_type(type)
         sqlalchemy_type = JSON if is_multi else nested_sql_type
         if dropdown and type != BenchlingFieldType.DROPDOWN:
             raise ValueError(

@@ -8,7 +8,7 @@ from liminal.connection import BenchlingService
 from liminal.dropdowns.api_v3 import list_dropdowns_v3
 from liminal.entity_schemas.api_v3 import list_entity_schemas_v3
 from liminal.enums import BenchlingFieldType
-from liminal.mappers import convert_benchling_type_to_python_type
+from liminal.mappers import map_benchling_type_to_python_type
 from liminal.orm.base_model import BaseModel
 from liminal.results_schemas.utils import get_converted_results_schemas
 from liminal.utils import to_pascal_case, to_snake_case
@@ -85,7 +85,7 @@ def generate_all_results_schema_files(
             column_strings.append(column_string)
             if col.required and col.type:
                 init_strings.append(
-                    f"""{TAB}{col_name}: {convert_benchling_type_to_python_type(col.type).__name__},"""
+                    f"""{TAB}{col_name}: {map_benchling_type_to_python_type(col.type).__name__},"""
                 )
 
             if (
@@ -119,7 +119,7 @@ def generate_all_results_schema_files(
         for col_name, col in field_properties_dict.items():
             if not col.required and col.type:
                 init_strings.append(
-                    f"""{TAB}{col_name}: {convert_benchling_type_to_python_type(col.type).__name__} | None = None,"""
+                    f"""{TAB}{col_name}: {map_benchling_type_to_python_type(col.type).__name__} | None = None,"""
                 )
         init_strings.append("):")
         for col_name in field_properties_dict.keys():

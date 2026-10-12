@@ -16,8 +16,8 @@ from liminal.enums import (
     BenchlingEntityType,
 )
 from liminal.mappers import (
-    convert_entity_schema_type_to_entity_type,
-    convert_entity_type_to_entity_schema_endpoint,
+    map_entity_schema_type_to_entity_type,
+    map_entity_type_to_entity_schema_endpoint,
 )
 
 
@@ -66,7 +66,7 @@ def list_entity_schema_field_definitions_v3(
     Archived fields are needed because set-field-definitions rejects a list that leaves out any existing field."""
     return list_all_items_v3(
         benchling_service,
-        f"/api/v3/{convert_entity_type_to_entity_schema_endpoint(entity_type).value}/{entity_schema_id}/field-definitions/items",
+        f"/api/v3/{map_entity_type_to_entity_schema_endpoint(entity_type).value}/{entity_schema_id}/field-definitions/items",
         include_archived=include_archived,
     )
 
@@ -75,7 +75,7 @@ def attach_entity_schema_field_definitions_v3(
     benchling_service: BenchlingService, entity_schema: dict[str, Any]
 ) -> dict[str, Any]:
     typename = BenchlingEntityTypeName(entity_schema.get("__typename"))
-    entity_type = convert_entity_schema_type_to_entity_type(typename)
+    entity_type = map_entity_schema_type_to_entity_type(typename)
     entity_schema_id = entity_schema.get("id")
     if entity_schema_id is None:
         raise ValueError("Entity schema does not have an id")
@@ -128,7 +128,7 @@ def create_entity_schema_v3(
     """
     Create a new entity schema.
     """
-    endpoint = convert_entity_type_to_entity_schema_endpoint(entity_type)
+    endpoint = map_entity_type_to_entity_schema_endpoint(entity_type)
     response = benchling_service.api.post_response(
         url=f"/api/v3/{endpoint.value}",
         body=payload,
@@ -148,7 +148,7 @@ def archive_entity_schema_v3(
     """
     Archive an entity schema.
     """
-    endpoint = convert_entity_type_to_entity_schema_endpoint(entity_type)
+    endpoint = map_entity_type_to_entity_schema_endpoint(entity_type)
     response = benchling_service.api.patch_response(
         url=f"/api/v3/{endpoint.value}/{entity_schema_id}",
         body={"archived": True, "archiveReason": archive_reason},
@@ -167,7 +167,7 @@ def unarchive_entity_schema_v3(
     """
     Unarchive an entity schema.
     """
-    endpoint = convert_entity_type_to_entity_schema_endpoint(entity_type)
+    endpoint = map_entity_type_to_entity_schema_endpoint(entity_type)
     response = benchling_service.api.patch_response(
         url=f"/api/v3/{endpoint.value}/{entity_schema_id}",
         body={"archived": False},
@@ -187,7 +187,7 @@ def update_entity_schema_properties_v3(
     """
     Update an entity schema's properties.
     """
-    endpoint = convert_entity_type_to_entity_schema_endpoint(entity_type)
+    endpoint = map_entity_type_to_entity_schema_endpoint(entity_type)
     response = benchling_service.api.patch_response(
         url=f"/api/v3/{endpoint.value}/{entity_schema_id}",
         body=payload,
@@ -208,7 +208,7 @@ def update_entity_schema_field_definitions_v3(
     Replace an entity schema's field definitions.
     The endpoint starts an async task, so this polls the task until it succeeds and returns the final task response.
     """
-    endpoint = convert_entity_type_to_entity_schema_endpoint(entity_type)
+    endpoint = map_entity_type_to_entity_schema_endpoint(entity_type)
     response = benchling_service.api.post_response(
         url=f"/api/v3/{endpoint.value}/{entity_schema_id}:set-field-definitions",
         body={"fieldDefinitions": field_definitions},

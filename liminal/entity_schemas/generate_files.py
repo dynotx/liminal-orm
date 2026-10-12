@@ -7,7 +7,7 @@ from liminal.connection.benchling_service import BenchlingService
 from liminal.dropdowns.api_v3 import list_dropdowns_v3
 from liminal.entity_schemas.utils_v3 import get_converted_entity_schemas
 from liminal.enums import BenchlingEntityType, BenchlingFieldType
-from liminal.mappers import convert_benchling_type_to_python_type
+from liminal.mappers import map_benchling_type_to_python_type
 from liminal.orm.name_template import NameTemplate
 from liminal.utils import to_pascal_case, to_snake_case
 
@@ -126,7 +126,7 @@ def generate_all_entity_schema_files(
             column_strings.append(column_string)
             if col.required and col.type:
                 init_strings.append(
-                    f"""{TAB}{col_name}: {convert_benchling_type_to_python_type(col.type).__name__},"""
+                    f"""{TAB}{col_name}: {map_benchling_type_to_python_type(col.type).__name__},"""
                 )
 
             if (
@@ -158,7 +158,7 @@ def generate_all_entity_schema_files(
         for col_name, col in columns.items():
             if not col.required and col.type:
                 init_strings.append(
-                    f"""{TAB}{col_name}: {convert_benchling_type_to_python_type(col.type).__name__} | None = None,"""
+                    f"""{TAB}{col_name}: {map_benchling_type_to_python_type(col.type).__name__} | None = None,"""
                 )
         init_strings.append("):")
         for col_name in columns.keys():
