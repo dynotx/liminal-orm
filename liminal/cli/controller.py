@@ -76,7 +76,7 @@ def autogenerate_revision_file(
         )
     if current_revision_id != revisions_timeline.get_latest_revision().id:
         raise Exception(
-            f"Your target Benchling tenant is currently at revision_id {current_revision_id}, which is not up to date with the local head revision ({revisions_timeline.get_latest_revision().id}). Please upgrade your tenant to the latest revision before generating a new revision."
+            f"Your target Benchling tenant is currently at revision_id {current_revision_id}, which is not up to date with the local head revision ({revisions_timeline.get_latest_revision().id}). Please upgrade your tenant to the latest revision before generating a new revision. If the local head revision should not be applied, run `liminal head --reset` to delete it."
         )
     if compare:
         compare_ops = get_full_migration_operations(benchling_service)
