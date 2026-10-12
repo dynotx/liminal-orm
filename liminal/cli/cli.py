@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from pathlib import Path
 from typing import Any
+
 import typer
 from rich import print
 from typer.core import TyperGroup

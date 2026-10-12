@@ -29,22 +29,23 @@ example_operation.validate()
 | UpdateDropdownName       | Updates the name of an existing dropdown.                                   | 2     |
 | UnarchiveDropdown        | Unarchives an archived dropdown.                                            | 3     |
 | CreateDropdownOption     | Creates a new option in an existing dropdown.                               | 4     |
-| UpdateDropdownOption     | Updates the name of an existing option in a dropdown.                       | 5     |
-| ArchiveDropdownOption    | Archives an existing option in a dropdown.                                  | 6     |
-| ReorderDropdownOptions   | Reorders the options in an existing dropdown.                               | 7     |
-| ArchiveDropdown          | Archives an existing dropdown.                                              | 18    |
+| UnarchiveDropdownOption  | Unarchives an archived option in a dropdown.                                | 5     |
+| UpdateDropdownOption     | Updates the name of an existing option in a dropdown.                       | 6     |
+| ArchiveDropdownOption    | Archives an existing option in a dropdown.                                  | 7     |
+| ReorderDropdownOptions   | Reorders the options in an existing dropdown.                               | 8     |
+| ArchiveDropdown          | Archives an existing dropdown.                                              | 19    |
 
 ### Entity Schema Operations
 
 | Operation Class                | Description                                                                 | Order |
 |--------------------------------|-----------------------------------------------------------------------------|-------|
-| CreateEntitySchema             | Creates a new entity schema with specified fields.                          | 8     |
-| UnarchiveEntitySchema          | Unarchives an archived entity schema.                                       | 9     |
-| CreateEntitySchemaField        | Creates a new field in an existing entity schema.                           | 10    |
-| UpdateEntitySchemaNameTemplate | Updates the name template of an existing entity schema.                     | 11    |
-| UpdateEntitySchema             | Updates the properties of an existing entity schema.                        | 12    |
-| UnarchiveEntitySchemaField     | Unarchives an archived field in an entity schema.                           | 13    |
-| UpdateEntitySchemaField        | Updates the properties of an existing field in an entity schema.            | 14    |
-| ArchiveEntitySchemaField       | Archives an existing field in an entity schema.                             | 15    |
-| ReorderEntitySchemaFields      | Reorders the fields in an existing entity schema.                           | 16    |
-| ArchiveEntitySchema            | Archives an existing entity schema.                                         | 17    |
+| CreateEntitySchema             | Creates a new entity schema with specified fields.                          | 9     |
+| UnarchiveEntitySchema          | Unarchives an archived entity schema.                                       | 10     |
+| CreateEntitySchemaField        | Creates a new field in an existing entity schema.                           | 11    |
+| UpdateEntitySchemaNameTemplate | Updates the name template of an existing entity schema.                     | 12    |
+| UpdateEntitySchema             | Updates the properties of an existing entity schema.                        | 13    |
+| UnarchiveEntitySchemaField     | Unarchives an archived field in an entity schema.                           | 14    |
+| UpdateEntitySchemaField        | Updates the properties of an existing field in an entity schema.            | 15    |
+| ArchiveEntitySchemaField       | Archives an existing field in an entity schema.                             | 16    |
+| ReorderEntitySchemaFields      | Reorders the fields in an existing entity schema.                           | 17    |
+| ArchiveEntitySchema            | Archives an existing entity schema.                                         | 18    |
