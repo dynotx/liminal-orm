@@ -1,32 +1,59 @@
 from __future__ import annotations
 
+from datetime import datetime
 from functools import lru_cache
 from typing import Any
 
-import requests
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field
 
 from liminal.connection.benchling_service import BenchlingService
-from liminal.entity_schemas.tag_schema_models import TagSchemaFieldModel
+from liminal.enums import BenchlingFieldDefinitionType
+from liminal.results_schemas.api_v3 import list_results_schemas_with_fields_v3
+
+
+class ResultsSchemaFieldLinkDefinitionModel(BaseModel):
+    id: str
+    typename: str = Field(alias="__typename")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class ResultsSchemaFieldModel(BaseModel):
+    id: str
+    name: str
+    systemName: str
+    isRequired: bool
+    derivationType: str
+    archived: bool
+    archiveReason: str | None = None
+    description: str | None = None
+    createdAt: datetime
+    modifiedAt: datetime
+    typename: BenchlingFieldDefinitionType = Field(alias="__typename")
+    isMulti: bool | None = None
+    isParent: bool | None = None
+    linkDefinition: ResultsSchemaFieldLinkDefinitionModel | None = None
+    numericMin: float | None = None
+    numericMax: float | None = None
+    displayPrecision: int | None = None
+    unit: Any | None = None
+
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class ResultsSchemaModel(BaseModel):
     """A pydantic model to define a results schema, which is used when querying for results schemas from Benchling's internal API."""
 
-    allFields: list[TagSchemaFieldModel]
-    archiveRecord: dict[str, str] | None
-    fields: list[TagSchemaFieldModel]
+    archived: bool
+    archive_reason: str | None = None
+    fields: list[ResultsSchemaFieldModel]
     id: str
-    name: str | None
+    name: str
+    systemName: str
     organization: Any | None
-    permissions: dict[str, bool] | None
-    prefix: str | None
-    publishedDataTableColumns: Any | None
-    requestTaskSchemaIds: list[Any] | None
-    requestTemplateIds: list[Any] | None
-    sampleGroupSchema: Any | None
-    schemaType: str
-    sqlIdentifier: str | None
+    typename: str = Field(alias="__typename")
+
+    model_config = ConfigDict(populate_by_name=True)
 
     @classmethod
     def get_all_json(
@@ -45,16 +72,7 @@ class ResultsSchemaModel(BaseModel):
         list[dict[str, Any]]
             A list of results schemas, in their raw JSON format.
         """
-
-        with requests.Session() as session:
-            response = session.get(
-                f"https://{benchling_service.benchling_tenant}.benchling.com/1/api/result-schemas",
-                headers=benchling_service.custom_post_headers,
-                cookies=benchling_service.custom_post_cookies,
-            )
-        if not response.ok:
-            raise Exception("Failed to get result schemas.")
-        return response.json()["data"]
+        return list_results_schemas_with_fields_v3(benchling_service)
 
     @classmethod
     def get_all(
@@ -63,14 +81,14 @@ class ResultsSchemaModel(BaseModel):
         wh_schema_names: set[str] | None = None,
     ) -> list[ResultsSchemaModel]:
         """This function gets all results schemas from Benchling's internal API.
-        If a list of warehouse names is provided, the function will only return the results schemas with the given warehouse names.
+        If a list of names is provided, the function will only return the results schemas with the given names.
 
         Parameters
         ----------
         benchling_service : BenchlingService
             The benchling service to use to get the results schemas.
         wh_schema_names : set[str] | None, optional
-            The set of warehouse names to filter the results schemas by. If not provided, all results schemas will be returned.
+            The set of warehouse schema names to filter the results schemas by. If not provided, all results schemas will be returned.
 
         Returns
         -------
@@ -81,7 +99,7 @@ class ResultsSchemaModel(BaseModel):
         filtered_schemas: list[ResultsSchemaModel] = []
         if wh_schema_names:
             for schema in schemas_data:
-                if schema["sqlIdentifier"] in wh_schema_names:
+                if schema["systemName"] in wh_schema_names:
                     filtered_schemas.append(cls.model_validate(schema))
                 if len(filtered_schemas) == len(wh_schema_names):
                     break
@@ -90,7 +108,7 @@ class ResultsSchemaModel(BaseModel):
                 try:
                     filtered_schemas.append(cls.model_validate(schema))
                 except Exception as e:
-                    print(f"Error validating schema {schema['sqlIdentifier']}: {e}")
+                    print(f"Error validating schema {schema['name']}: {e}")
         return filtered_schemas
 
     @classmethod
@@ -100,14 +118,14 @@ class ResultsSchemaModel(BaseModel):
         wh_schema_name: str,
         schemas_data: list[dict[str, Any]] | None = None,
     ) -> ResultsSchemaModel:
-        """This function gets a singular results schema, and raises an error if a schema with the given warehouse name is not found.
+        """This function gets a singular results schema, and raises an error if a schema with the given warehouse schema name is not found.
 
         Parameters
         ----------
         benchling_service : BenchlingService
             The benchling service to use to get the results schema.
         wh_schema_name : str
-            The warehouse name of the results schema to search for.
+            The warehouse schema name of the results schema to search for.
         schemas_data : list[dict[str, Any]] | None
             The list of results schemas to search through, to avoid making extra API calls. If not provided, the function will get all results schemas from Benchling.
 
@@ -122,8 +140,8 @@ class ResultsSchemaModel(BaseModel):
             (
                 schema
                 for schema in schemas_data
-                if schema["sqlIdentifier"] == wh_schema_name
-                and schema["registryId"] == benchling_service.registry_id
+                if schema["systemName"] == wh_schema_name
+                # and schema["registryId"] == benchling_service.registry_id
             ),
             None,
         )
