@@ -678,8 +678,9 @@ class EntitySchemaModel(BaseModel):
             updates["showResidues"] = update_props.show_bases_in_expanded_view
         if "constraint_fields" in update_diff_names:
             # The v3 constraint input has no way to set unique residues, so sequence constraints are dropped here.
+            wh_name_to_field_name = {f.systemName: f.name for f in self.fields}
             constraint_field_names = [
-                f
+                wh_name_to_field_name.get(f, f)
                 for f in update_props.constraint_fields or set()
                 if not SequenceConstraint.is_sequence_constraint(f)
             ]
@@ -770,8 +771,12 @@ class EntitySchemaInputModel(BaseModel):
         is_registry_schema = entity_type != BenchlingEntityType.ENTRY
         # The v3 constraint input has no way to set unique residues, so sequence constraints are dropped here.
         sequence_constraints = {c.value for c in SequenceConstraint}
+        # Liminal stores warehouse names, but the API expects field display names.
+        wh_name_to_field_name = {
+            f.warehouse_name: f.name for f in fields if f.warehouse_name and f.name
+        }
         constraint_field_names = [
-            f
+            wh_name_to_field_name.get(f, f)
             for f in benchling_props.constraint_fields or set()
             if f not in sequence_constraints
         ]

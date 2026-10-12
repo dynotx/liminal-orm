@@ -144,7 +144,10 @@ class BenchlingService(Benchling):
         Returns None if the schema doesn't exist."""
         from liminal.entity_schemas.entity_schema_models import EntitySchemaModel
 
-        return EntitySchemaModel.get_one(self, REMOTE_LIMINAL_SCHEMA_NAME)
+        try:
+            return EntitySchemaModel.get_one(self, REMOTE_LIMINAL_SCHEMA_NAME)
+        except ValueError:
+            return None
 
     def get_remote_revision_id(self) -> str:
         """
@@ -154,9 +157,8 @@ class BenchlingService(Benchling):
         Returns the remote revision_id stored on the entity.
         """
 
-        try:
-            liminal_schema = self._get_remote_liminal_schema()
-        except Exception:
+        liminal_schema = self._get_remote_liminal_schema()
+        if liminal_schema is None:
             raise ValueError(
                 f"Did not find any schema name '{REMOTE_LIMINAL_SCHEMA_NAME}'. Run a liminal migration to populate your registry with the Liminal entity that stores the remote revision_id."
             )

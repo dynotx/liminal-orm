@@ -14,6 +14,7 @@ class BenchlingFieldDefinitionInputType(StrEnum):
     BOOLEAN = "BOOLEAN"
     DATE = "DATE"
     DATE_TIME = "DATE_TIME"
+    JSON = "JSON"
     DROPDOWN = "DROPDOWN"
     BLOB_LINK = "BLOB_LINK"
     ATTACHMENT_LINK = "ATTACHMENT_LINK"
@@ -21,27 +22,40 @@ class BenchlingFieldDefinitionInputType(StrEnum):
     STORAGE_LINK = "STORAGE_LINK"
     ENTITY_LINK = "ENTITY_LINK"
     AA_SEQUENCE_LINK = "AA_SEQUENCE_LINK"
+    ANTIBODY_LINK = "ANTIBODY_LINK"
     CUSTOM_ENTITY_LINK = "CUSTOM_ENTITY_LINK"
     DNA_OLIGO_LINK = "DNA_OLIGO_LINK"
     DNA_SEQUENCE_LINK = "DNA_SEQUENCE_LINK"
+    EQUIPMENT_LINK = "EQUIPMENT_LINK"
     MIXTURE_LINK = "MIXTURE_LINK"
     MOLECULE_LINK = "MOLECULE_LINK"
+    OLIGO_CONJUGATE_LINK = "OLIGO_CONJUGATE_LINK"
+    OLIGO_DUPLEX_LINK = "OLIGO_DUPLEX_LINK"
     RNA_OLIGO_LINK = "RNA_OLIGO_LINK"
     RNA_SEQUENCE_LINK = "RNA_SEQUENCE_LINK"
     DNA_PART_LINK = "DNA_PART_LINK"
     RNA_PART_LINK = "RNA_PART_LINK"
     TRANSCRIPTION_LINK = "TRANSCRIPTION_LINK"
     TRANSLATION_LINK = "TRANSLATION_LINK"
+    ASSAY_REQUEST_LINK = "ASSAY_REQUEST_LINK"
+    ASSAY_RESULT_LINK = "ASSAY_RESULT_LINK"
+    ASSAY_RUN_LINK = "ASSAY_RUN_LINK"
+    FIELDSET_LINK = "FIELDSET_LINK"
+    SYSTEM_CATEGORY_LINK = "SYSTEM_CATEGORY_LINK"
 
     def is_schema_link(self) -> bool:
         """Whether the field links to a specific schema, and so supports `isParent`."""
         return self in {
             self.AA_SEQUENCE_LINK,
+            self.ANTIBODY_LINK,
             self.CUSTOM_ENTITY_LINK,
             self.DNA_OLIGO_LINK,
             self.DNA_SEQUENCE_LINK,
+            self.EQUIPMENT_LINK,
             self.MIXTURE_LINK,
             self.MOLECULE_LINK,
+            self.OLIGO_CONJUGATE_LINK,
+            self.OLIGO_DUPLEX_LINK,
             self.RNA_OLIGO_LINK,
             self.RNA_SEQUENCE_LINK,
             self.DNA_PART_LINK,
@@ -52,15 +66,21 @@ class BenchlingFieldDefinitionInputType(StrEnum):
 
     def requires_link_definition_id(self) -> bool:
         """Whether the field definition input requires `linkDefinitionId`, even if it is null."""
-        return self.is_schema_link() or self == self.STORAGE_LINK
+        return self.is_schema_link() or self in {
+            self.STORAGE_LINK,
+            self.ASSAY_REQUEST_LINK,
+            self.ASSAY_RESULT_LINK,
+            self.ASSAY_RUN_LINK,
+            self.FIELDSET_LINK,
+            self.SYSTEM_CATEGORY_LINK,
+        }
 
     def supports_is_multi(self) -> bool:
-        return self.is_schema_link() or self in {
+        return self.requires_link_definition_id() or self in {
             self.DROPDOWN,
             self.BLOB_LINK,
             self.ATTACHMENT_LINK,
             self.ENTRY_LINK,
-            self.STORAGE_LINK,
             self.ENTITY_LINK,
         }
 

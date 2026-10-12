@@ -151,7 +151,7 @@ class CreateEntitySchema(BaseOperation):
         )
         benchling_schema_props, _, benchling_fields_props = (
             convert_entity_schema_to_internal_schema(
-                schema, dropdowns_map, entity_schema_id_to_name_map, unit_id_to_name_map
+                schema, entity_schema_id_to_name_map, dropdowns_map, unit_id_to_name_map
             )
         )
         if (
@@ -307,15 +307,18 @@ class UpdateEntitySchemaNameTemplate(BaseOperation):
         entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
         entity_schema.update_name_template(self.update_name_template)
         assert entity_schema.nameTemplate is not None
+        name_template_payload = (
+            NameTemplateInputModel.from_name_template_model(
+                entity_schema.nameTemplate
+            ).model_dump(exclude_none=True)
+            if entity_schema.nameTemplate.parts
+            else None
+        )
         return update_entity_schema_properties(
             benchling_service,
             entity_type,
             entity_schema.id,
-            {
-                "nameTemplate": NameTemplateInputModel.from_name_template_model(
-                    entity_schema.nameTemplate
-                ).model_dump(exclude_none=True)
-            },
+            {"nameTemplate": name_template_payload},
         )
 
     def describe_operation(self) -> str:
@@ -369,7 +372,7 @@ class CreateEntitySchemaField(BaseOperation):
                 get_benchling_entity_schema_id_to_system_name_map(benchling_service)
             )
             if self.field_props == convert_entity_schema_field_to_field_properties(
-                field, dropdowns_map, entity_schema_id_to_name_map, unit_id_to_name_map
+                field, entity_schema_id_to_name_map, dropdowns_map, unit_id_to_name_map
             ).set_warehouse_name(self._wh_field_name):
                 return UnarchiveEntitySchemaField(
                     self.wh_schema_name, self._wh_field_name, self.index
@@ -449,9 +452,7 @@ class ArchiveEntitySchemaField(BaseOperation):
         self.index = index
 
     def execute(self, benchling_service: BenchlingService) -> dict[str, Any]:
-        entity_schema = EntitySchemaModel.get_one(
-            benchling_service, self.wh_schema_name
-        )
+        entity_schema = self._validate(benchling_service)
         entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
         # The query will fail if the field is used in calculated fields or name template or constraints. Not covered atm. TODO
         updated_entity_schema = entity_schema.archive_field(
@@ -478,16 +479,17 @@ class ArchiveEntitySchemaField(BaseOperation):
         entity_schema = EntitySchemaModel.get_one(
             benchling_service, self.wh_schema_name
         )
-        name_template_field_ids = [
-            p.configuration.field.id
-            for p in entity_schema.nameTemplate.parts
-            if p.configuration and p.configuration.field
-        ]
-        field = entity_schema.get_field(self.wh_field_name)
-        if field.id in name_template_field_ids:
-            raise ValueError(
-                f"Cannot archive field {self.wh_field_name} on entity schema {self.wh_schema_name}. Field is used in name template."
-            )
+        if entity_schema.nameTemplate:
+            name_template_field_ids = [
+                p.configuration.field.id
+                for p in entity_schema.nameTemplate.parts
+                if p.configuration and p.configuration.field
+            ]
+            field = entity_schema.get_field(self.wh_field_name)
+            if field.id in name_template_field_ids:
+                raise ValueError(
+                    f"Cannot archive field {self.wh_field_name} on entity schema {self.wh_schema_name}. Field is used in name template."
+                )
         return entity_schema
 
 
@@ -542,7 +544,9 @@ class UpdateEntitySchemaField(BaseOperation):
         entity_schema = self._validate(benchling_service)
         entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
         field = entity_schema.get_field(self.wh_field_name)
-        field.update_from_props(self.update_props.model_dump(exclude_unset=True))
+        field.update_from_props(
+            self.update_props.model_dump(exclude_unset=True), benchling_service
+        )
 
         converted_fields = [
             EntitySchemaFieldInputModel.from_field_model(f)
@@ -565,7 +569,7 @@ class UpdateEntitySchemaField(BaseOperation):
     def validate(self, benchling_service: BenchlingService) -> None:
         unit_no_change_message = f"{self.__class__.__name__} {self.wh_schema_name}: Updating unit name to {self.update_props.unit_name} on field {self.wh_field_name}. The unit of this field CANNOT be changed once it's been set."
         try:
-            entity_schema = EntitySchemaModel.get_one_cached(
+            entity_schema = EntitySchemaModel.get_one(
                 benchling_service, self.wh_schema_name
             )
         except Exception:
@@ -588,7 +592,7 @@ class UpdateEntitySchemaField(BaseOperation):
                 f"{self.__class__.__name__} {self.wh_schema_name}: Tenant config flag SCHEMAS_ENABLE_CHANGE_WAREHOUSE_NAME is required to update the field warehouse_name to a custom name. Reach out to Benchling support to turn this config flag to True and then set the flag to True in BenchlingConnection.config_flags."
             )
         if "unit_name" in self.update_props.model_dump(exclude_unset=True):
-            if entity_schema.get_field(self.wh_field_name).unit.id:
+            if entity_schema.get_field(self.wh_field_name).unit is not None:
                 raise ValueError(unit_no_change_message)
             LOGGER.warning(unit_no_change_message)
             if (

@@ -361,15 +361,10 @@ class TestCompareEntitySchemas:
                 benchling_mismatch_constraint_fields
             )
             invalid_models = compare_entity_schemas(mock_benchling_sdk)
-            assert len(invalid_models["mock_entity"]) == 2
+            assert len(invalid_models["mock_entity"]) == 1
             assert isinstance(invalid_models["mock_entity"][0].op, UpdateEntitySchema)
-            clear_props_dict = invalid_models["mock_entity"][
-                0
-            ].op.update_props.model_dump(exclude_unset=True)
-            assert clear_props_dict == {"constraint_fields": set()}
-            assert isinstance(invalid_models["mock_entity"][1].op, UpdateEntitySchema)
             update_props_dict = invalid_models["mock_entity"][
-                1
+                0
             ].op.update_props.model_dump(exclude_unset=True)
             assert update_props_dict == {
                 "constraint_fields": {
