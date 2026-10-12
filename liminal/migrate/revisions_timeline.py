@@ -250,6 +250,26 @@ class RevisionsTimeline:
         ).up_revision_id = new_revision.id
         return str(self.versions_dir_path / new_revision.revision_file_name)
 
+    def delete_latest_revision(self) -> Path:
+        """Deletes the revision file of the latest revision and removes it from the timeline.
+        The base revision cannot be deleted.
+
+        Returns
+        -------
+        Path
+            The path to the revision file that was deleted.
+        """
+        latest_revision = self.get_latest_revision()
+        if latest_revision.down_revision_id is None:
+            raise Exception(
+                f"Cannot delete the base revision {latest_revision.id}. There must be at least one revision in the timeline."
+            )
+        file_path = self.versions_dir_path / latest_revision.revision_file_name
+        file_path.unlink()
+        del self.revisions_map[latest_revision.id]
+        self.get_revision(latest_revision.down_revision_id).up_revision_id = None
+        return file_path
+
     def init_versions(self, versions_dir_path: Path) -> Path:
         """Initializes the versions directory with a base revision.
         The base revision is the first revision in the timeline and has no down_revision_id and no operations.
