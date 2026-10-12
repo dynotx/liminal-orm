@@ -237,29 +237,6 @@ def compare_entity_schemas(
                         )
                     )
             if benchling_schema_props != model.__schema_properties__:
-                needs_constraint_clear = (
-                    benchling_schema_props.constraint_fields
-                    != model.__schema_properties__.constraint_fields
-                    and len(benchling_schema_props.constraint_fields) > 0
-                    and len(model.__schema_properties__.constraint_fields) > 0
-                )
-                if needs_constraint_clear:
-                    ops.append(
-                        CompareOperation(
-                            op=UpdateEntitySchema(
-                                model.__schema_properties__.warehouse_name,
-                                BaseSchemaProperties(constraint_fields=set()),
-                            ),
-                            reverse_op=UpdateEntitySchema(
-                                model.__schema_properties__.warehouse_name,
-                                BaseSchemaProperties(
-                                    **model.__schema_properties__.merge(
-                                        benchling_schema_props
-                                    )
-                                ),
-                            ),
-                        )
-                    )
                 ops.append(
                     CompareOperation(
                         op=UpdateEntitySchema(
@@ -272,9 +249,7 @@ def compare_entity_schemas(
                         ),
                         reverse_op=UpdateEntitySchema(
                             model.__schema_properties__.warehouse_name,
-                            BaseSchemaProperties(constraint_fields=set())
-                            if needs_constraint_clear
-                            else BaseSchemaProperties(
+                            BaseSchemaProperties(
                                 **model.__schema_properties__.merge(
                                     benchling_schema_props
                                 )

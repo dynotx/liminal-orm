@@ -75,8 +75,12 @@ def convert_entity_schema_to_internal_schema(
     constraint_fields: set[str] = set()
     entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
     if entity_schema.constraint:
+        field_name_to_wh_name = {f.name: f.systemName for f in entity_schema.fields}
         constraint_fields = constraint_fields.union(
-            [n for n in entity_schema.constraint.fieldDefinitionNames]
+            [
+                field_name_to_wh_name.get(n, n)
+                for n in entity_schema.constraint.fieldDefinitionNames
+            ]
         )
         if entity_schema.constraint.hasUniqueResidues:
             if entity_type.is_nt_sequence():
