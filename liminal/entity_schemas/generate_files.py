@@ -4,7 +4,7 @@ from pathlib import Path
 from rich import print
 
 from liminal.connection.benchling_service import BenchlingService
-from liminal.dropdowns.api import list_dropdowns
+from liminal.dropdowns.utils import get_benchling_dropdown_name_to_classname_map
 from liminal.entity_schemas.utils import get_converted_entity_schemas
 from liminal.enums import BenchlingEntityType, BenchlingFieldType
 from liminal.mappers import map_benchling_type_to_python_type
@@ -76,7 +76,7 @@ def generate_all_entity_schema_files(
     has_date = False
     subdirectory_map: dict[str, list[tuple[str, str]]] = {}
     subdirectory_num_files_written: dict[str, int] = {}
-    dropdown_name_to_classname_map = _get_dropdown_name_to_classname_map(
+    dropdown_name_to_classname_map = get_benchling_dropdown_name_to_classname_map(
         benchling_service
     )
     wh_name_to_classname: dict[str, str] = {
@@ -237,15 +237,3 @@ class {classname}(BaseModel, {get_entity_mixin(schema_properties.entity_type)}):
         print(
             "[green dim]No new entity schema files to be written. If you want to overwrite existing files, run with -o flag."
         )
-
-
-def _get_dropdown_name_to_classname_map(
-    benchling_service: BenchlingService,
-) -> dict[str, str]:
-    """Gets the dropdown name to classname map by querying Benchling dropdowns and using the dropdown name to create the classname."""
-    benchling_dropdowns = list_dropdowns(benchling_service, include_archived=False)
-    return {
-        dropdown["name"]: to_pascal_case(dropdown["name"])
-        for dropdown in benchling_dropdowns
-        if not dropdown.get("archived", False)
-    }

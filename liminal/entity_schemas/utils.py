@@ -35,8 +35,11 @@ def get_converted_entity_schemas(
     If wh_schema_names_for_fields is given, only those schemas have their fields fetched.
     If it is None, all schemas are fetched with their fields.
     """
-    schemas_data = list_entity_schemas(benchling_service, include_archived)
-    entity_schema_id_to_name_map = {s["id"]: s["systemName"] for s in schemas_data}
+    all_schemas_data = list_entity_schemas(benchling_service, include_archived=True)
+    entity_schema_id_to_name_map = {s["id"]: s["systemName"] for s in all_schemas_data}
+    schemas_data = [
+        s for s in all_schemas_data if include_archived or not s.get("archived")
+    ]
     all_schemas = EntitySchemaModel.get_all(
         benchling_service,
         wh_schema_names,

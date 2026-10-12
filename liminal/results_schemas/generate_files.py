@@ -5,7 +5,7 @@ from rich import print
 
 from liminal.base.base_dropdown import BaseDropdown
 from liminal.connection import BenchlingService
-from liminal.dropdowns.api import list_dropdowns
+from liminal.dropdowns.utils import get_benchling_dropdown_name_to_classname_map
 from liminal.entity_schemas.api import list_entity_schemas
 from liminal.enums import BenchlingFieldType
 from liminal.mappers import map_benchling_type_to_python_type
@@ -182,12 +182,7 @@ def _get_dropdown_name_to_classname_map(
             dropdown.__benchling_name__: dropdown.__name__
             for dropdown in BaseDropdown.get_all_subclasses()
         }
-    benchling_dropdowns = list_dropdowns(benchling_service, include_archived=False)
-    return {
-        dropdown["name"]: to_pascal_case(dropdown["name"])
-        for dropdown in benchling_dropdowns
-        if not dropdown.get("archived", False)
-    }
+    return get_benchling_dropdown_name_to_classname_map(benchling_service)
 
 
 def _get_entity_schemas_wh_name_to_classname(
