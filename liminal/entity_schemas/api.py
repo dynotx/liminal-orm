@@ -1,7 +1,9 @@
 import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any
-from functools import partial
+from functools import lru_cache, partial
+
+from benchling_sdk.models import EntitySchema
 
 from liminal.utils import (
     EARLY_ACCESS_HEADER,
@@ -20,8 +22,16 @@ from liminal.mappers import (
     map_entity_type_to_entity_schema_endpoint,
 )
 
+_API_V3_PATH = "/api/v3"
 
-def list_entity_schemas_v3(
+
+def _entity_schema_specific_api_path(
+    endpoint: BenchlingEntitySchemaEndpointType,
+) -> str:
+    return f"{_API_V3_PATH}/{endpoint.value}"
+
+
+def list_entity_schemas(
     benchling_service: BenchlingService,
     include_archived: bool = False,
 ) -> list[dict[str, Any]]:
@@ -30,7 +40,7 @@ def list_entity_schemas_v3(
     with ThreadPoolExecutor() as pool:
         futures = [
             pool.submit(
-                _list_entity_schemas_for_endpoint_v3,
+                _list_entity_schemas_for_endpoint,
                 benchling_service,
                 endpoint,
                 include_archived,
@@ -43,7 +53,18 @@ def list_entity_schemas_v3(
     return entity_schemas
 
 
-def _list_entity_schemas_for_endpoint_v3(
+@lru_cache
+def list_entity_schemas_cached(
+    benchling_service: BenchlingService,
+) -> list[EntitySchema]:
+    return [
+        s
+        for schemas in benchling_service.schemas.list_entity_schemas()
+        for s in schemas
+    ]
+
+
+def _list_entity_schemas_for_endpoint(
     benchling_service: BenchlingService,
     endpoint: BenchlingEntitySchemaEndpointType,
     include_archived: bool = False,
@@ -51,12 +72,12 @@ def _list_entity_schemas_for_endpoint_v3(
     """Fetch all entity schemas, including archived ones, from one v3 schema endpoint."""
     return list_all_items_v3(
         benchling_service,
-        f"/api/v3/{endpoint.value}/items",
+        f"{_entity_schema_specific_api_path(endpoint)}/items",
         include_archived,
     )
 
 
-def list_entity_schema_field_definitions_v3(
+def list_entity_schema_field_definitions(
     benchling_service: BenchlingService,
     entity_type: BenchlingEntityType,
     entity_schema_id: str,
@@ -64,14 +85,15 @@ def list_entity_schema_field_definitions_v3(
 ) -> list[dict[str, Any]]:
     """Fetch an entity schema's field definitions, including archived ones, from the v3 API.
     Archived fields are needed because set-field-definitions rejects a list that leaves out any existing field."""
+    endpoint = map_entity_type_to_entity_schema_endpoint(entity_type)
     return list_all_items_v3(
         benchling_service,
-        f"/api/v3/{map_entity_type_to_entity_schema_endpoint(entity_type).value}/{entity_schema_id}/field-definitions/items",
+        f"{_entity_schema_specific_api_path(endpoint)}/{entity_schema_id}/field-definitions/items",
         include_archived=include_archived,
     )
 
 
-def attach_entity_schema_field_definitions_v3(
+def attach_entity_schema_field_definitions(
     benchling_service: BenchlingService, entity_schema: dict[str, Any]
 ) -> dict[str, Any]:
     typename = BenchlingEntityTypeName(entity_schema.get("__typename"))
@@ -79,13 +101,13 @@ def attach_entity_schema_field_definitions_v3(
     entity_schema_id = entity_schema.get("id")
     if entity_schema_id is None:
         raise ValueError("Entity schema does not have an id")
-    entity_schema["fields"] = list_entity_schema_field_definitions_v3(
+    entity_schema["fields"] = list_entity_schema_field_definitions(
         benchling_service, entity_type, str(entity_schema_id)
     )
     return entity_schema
 
 
-def list_entity_schemas_with_fields_v3(
+def list_entity_schemas_with_fields(
     benchling_service: BenchlingService,
     include_archived: bool = False,
     wh_schema_names: set[str] | None = None,
@@ -97,7 +119,7 @@ def list_entity_schemas_with_fields_v3(
     If wh_schema_names_for_fields is given, field definitions are only fetched for those schemas and the rest are returned without fields.
     Pass entity_schemas to reuse an already fetched schema list; fields are attached to those dicts in place."""
     if entity_schemas is None:
-        entity_schemas = list_entity_schemas_v3(benchling_service, include_archived)
+        entity_schemas = list_entity_schemas(benchling_service, include_archived)
     if wh_schema_names is not None:
         entity_schemas = [
             s for s in entity_schemas if s["systemName"] in wh_schema_names
@@ -112,7 +134,7 @@ def list_entity_schemas_with_fields_v3(
     with ThreadPoolExecutor(max_workers=MAX_CONCURRENT_REQUESTS) as executor:
         list(
             executor.map(
-                partial(attach_entity_schema_field_definitions_v3, benchling_service),
+                partial(attach_entity_schema_field_definitions, benchling_service),
                 schemas_needing_fields,
             )
         )
@@ -120,7 +142,7 @@ def list_entity_schemas_with_fields_v3(
     return entity_schemas
 
 
-def create_entity_schema_v3(
+def create_entity_schema(
     benchling_service: BenchlingService,
     entity_type: BenchlingEntityType,
     payload: dict[str, Any],
@@ -130,7 +152,7 @@ def create_entity_schema_v3(
     """
     endpoint = map_entity_type_to_entity_schema_endpoint(entity_type)
     response = benchling_service.api.post_response(
-        url=f"/api/v3/{endpoint.value}",
+        url=_entity_schema_specific_api_path(endpoint),
         body=payload,
         additional_headers=EARLY_ACCESS_HEADER,
     )
@@ -139,7 +161,7 @@ def create_entity_schema_v3(
     return json.loads(response.content)
 
 
-def archive_entity_schema_v3(
+def archive_entity_schema(
     benchling_service: BenchlingService,
     entity_type: BenchlingEntityType,
     entity_schema_id: str,
@@ -150,7 +172,7 @@ def archive_entity_schema_v3(
     """
     endpoint = map_entity_type_to_entity_schema_endpoint(entity_type)
     response = benchling_service.api.patch_response(
-        url=f"/api/v3/{endpoint.value}/{entity_schema_id}",
+        url=f"{_entity_schema_specific_api_path(endpoint)}/{entity_schema_id}",
         body={"archived": True, "archiveReason": archive_reason},
         additional_headers=EARLY_ACCESS_HEADER,
     )
@@ -159,7 +181,7 @@ def archive_entity_schema_v3(
     return json.loads(response.content)
 
 
-def unarchive_entity_schema_v3(
+def unarchive_entity_schema(
     benchling_service: BenchlingService,
     entity_type: BenchlingEntityType,
     entity_schema_id: str,
@@ -169,7 +191,7 @@ def unarchive_entity_schema_v3(
     """
     endpoint = map_entity_type_to_entity_schema_endpoint(entity_type)
     response = benchling_service.api.patch_response(
-        url=f"/api/v3/{endpoint.value}/{entity_schema_id}",
+        url=f"{_entity_schema_specific_api_path(endpoint)}/{entity_schema_id}",
         body={"archived": False},
         additional_headers=EARLY_ACCESS_HEADER,
     )
@@ -178,7 +200,7 @@ def unarchive_entity_schema_v3(
     return json.loads(response.content)
 
 
-def update_entity_schema_properties_v3(
+def update_entity_schema_properties(
     benchling_service: BenchlingService,
     entity_type: BenchlingEntityType,
     entity_schema_id: str,
@@ -189,7 +211,7 @@ def update_entity_schema_properties_v3(
     """
     endpoint = map_entity_type_to_entity_schema_endpoint(entity_type)
     response = benchling_service.api.patch_response(
-        url=f"/api/v3/{endpoint.value}/{entity_schema_id}",
+        url=f"{_entity_schema_specific_api_path(endpoint)}/{entity_schema_id}",
         body=payload,
         additional_headers=EARLY_ACCESS_HEADER,
     )
@@ -198,7 +220,7 @@ def update_entity_schema_properties_v3(
     return json.loads(response.content)
 
 
-def update_entity_schema_field_definitions_v3(
+def update_entity_schema_field_definitions(
     benchling_service: BenchlingService,
     entity_type: BenchlingEntityType,
     entity_schema_id: str,
@@ -210,7 +232,7 @@ def update_entity_schema_field_definitions_v3(
     """
     endpoint = map_entity_type_to_entity_schema_endpoint(entity_type)
     response = benchling_service.api.post_response(
-        url=f"/api/v3/{endpoint.value}/{entity_schema_id}:set-field-definitions",
+        url=f"{_entity_schema_specific_api_path(endpoint)}/{entity_schema_id}:set-field-definitions",
         body={"fieldDefinitions": field_definitions},
         additional_headers=EARLY_ACCESS_HEADER,
     )

@@ -4,8 +4,8 @@ from pathlib import Path
 from rich import print
 
 from liminal.connection.benchling_service import BenchlingService
-from liminal.dropdowns.api_v3 import list_dropdowns_v3
-from liminal.entity_schemas.utils_v3 import get_converted_entity_schemas
+from liminal.dropdowns.api import list_dropdowns
+from liminal.entity_schemas.utils import get_converted_entity_schemas
 from liminal.enums import BenchlingEntityType, BenchlingFieldType
 from liminal.mappers import map_benchling_type_to_python_type
 from liminal.orm.name_template import NameTemplate
@@ -243,7 +243,7 @@ def _get_dropdown_name_to_classname_map(
     benchling_service: BenchlingService,
 ) -> dict[str, str]:
     """Gets the dropdown name to classname map by querying Benchling dropdowns and using the dropdown name to create the classname."""
-    benchling_dropdowns = list_dropdowns_v3(benchling_service, include_archived=False)
+    benchling_dropdowns = list_dropdowns(benchling_service, include_archived=False)
     return {
         dropdown["name"]: to_pascal_case(dropdown["name"])
         for dropdown in benchling_dropdowns

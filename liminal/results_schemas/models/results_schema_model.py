@@ -8,7 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from liminal.connection.benchling_service import BenchlingService
 from liminal.enums import BenchlingFieldDefinitionType
-from liminal.results_schemas.api_v3 import list_results_schemas_with_fields_v3
+from liminal.results_schemas.api import list_results_schemas_with_fields
 
 
 class ResultsSchemaFieldLinkDefinitionModel(BaseModel):
@@ -72,7 +72,7 @@ class ResultsSchemaModel(BaseModel):
         list[dict[str, Any]]
             A list of results schemas, in their raw JSON format.
         """
-        return list_results_schemas_with_fields_v3(benchling_service)
+        return list_results_schemas_with_fields(benchling_service)
 
     @classmethod
     def get_all(

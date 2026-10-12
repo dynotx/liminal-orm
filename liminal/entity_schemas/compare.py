@@ -17,7 +17,7 @@ from liminal.entity_schemas.operations import (
     UpdateEntitySchemaField,
     UpdateEntitySchemaNameTemplate,
 )
-from liminal.entity_schemas.utils_v3 import get_converted_entity_schemas
+from liminal.entity_schemas.utils import get_converted_entity_schemas
 from liminal.enums import BenchlingFieldType
 from liminal.enums.benchling_naming_strategy import BenchlingNamingStrategy
 from liminal.orm.base_model import BaseModel

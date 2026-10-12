@@ -1,16 +1,13 @@
-from functools import lru_cache
 from typing import Any
-
-from benchling_sdk.models import EntitySchema
 
 from liminal.base.properties.base_field_properties import BaseFieldProperties
 from liminal.connection import BenchlingService
 from liminal.dropdowns.utils import get_benchling_dropdown_id_name_map
-from liminal.entity_schemas.entity_schema_models_v3 import (
+from liminal.entity_schemas.entity_schema_models import (
     EntitySchemaFieldModel,
     EntitySchemaModel,
 )
-from liminal.entity_schemas.api_v3 import list_entity_schemas_v3
+from liminal.entity_schemas.api import list_entity_schemas
 from liminal.enums import BenchlingNamingStrategy
 from liminal.enums import (
     BenchlingLinkDefinitionType,
@@ -38,7 +35,7 @@ def get_converted_entity_schemas(
     If wh_schema_names_for_fields is given, only those schemas have their fields fetched.
     If it is None, all schemas are fetched with their fields.
     """
-    schemas_data = list_entity_schemas_v3(benchling_service, include_archived)
+    schemas_data = list_entity_schemas(benchling_service, include_archived)
     entity_schema_id_to_name_map = {s["id"]: s["systemName"] for s in schemas_data}
     all_schemas = EntitySchemaModel.get_all(
         benchling_service,
@@ -176,18 +173,7 @@ def convert_entity_schema_field_to_field_properties(
     return BaseFieldProperties(**field_props)
 
 
-@lru_cache
-def get_benchling_entity_schemas(
-    benchling_service: BenchlingService,
-) -> list[EntitySchema]:
-    return [
-        s
-        for schemas in benchling_service.schemas.list_entity_schemas()
-        for s in schemas
-    ]
-
-
 def get_benchling_entity_schema_id_to_system_name_map(
     benchling_service: BenchlingService,
 ) -> dict[str, str]:
-    return {s["id"]: s["systemName"] for s in list_entity_schemas_v3(benchling_service)}
+    return {s["id"]: s["systemName"] for s in list_entity_schemas(benchling_service)}

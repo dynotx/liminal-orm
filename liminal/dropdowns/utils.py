@@ -4,7 +4,7 @@ from benchling_sdk.models import ArchiveRecord
 from benchling_sdk.models import Dropdown, DropdownOption, DropdownSummary
 
 from liminal.connection import BenchlingService
-from liminal.dropdowns.api_v3 import list_dropdowns_with_options_v3
+from liminal.dropdowns.api import list_dropdowns_with_options
 
 
 def get_benchling_dropdown_id_name_map(
@@ -46,7 +46,7 @@ def get_benchling_dropdown_by_name(
     return benchling_service.dropdowns.get_by_id(dropdown.id)
 
 
-def _convert_dropdown_from_v3(
+def _convert_dropdown_from_v3_to_v2_sdk(
     dropdown: dict[str, Any], include_archived: bool
 ) -> Dropdown:
     options = dropdown.get("options", [])
@@ -77,7 +77,7 @@ def get_benchling_dropdowns_dict(
     include_archived: bool = False,
     dropdown_names_for_options: set[str] | None = None,
 ) -> dict[str, Dropdown]:
-    dropdowns = list_dropdowns_with_options_v3(
+    dropdowns = list_dropdowns_with_options(
         benchling_service, dropdown_names_for_options=dropdown_names_for_options
     )
 
@@ -87,7 +87,9 @@ def get_benchling_dropdowns_dict(
         ]
 
     return {
-        dropdown["name"]: _convert_dropdown_from_v3(dropdown, include_archived)
+        dropdown["name"]: _convert_dropdown_from_v3_to_v2_sdk(
+            dropdown, include_archived
+        )
         for dropdown in dropdowns
     }
 

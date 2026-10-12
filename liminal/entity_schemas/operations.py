@@ -7,21 +7,21 @@ from liminal.base.properties.base_name_template import BaseNameTemplate
 from liminal.base.properties.base_schema_properties import BaseSchemaProperties
 from liminal.connection import BenchlingService
 from liminal.dropdowns.utils import get_benchling_dropdown_id_name_map
-from liminal.entity_schemas.api_v3 import (
-    archive_entity_schema_v3,
-    create_entity_schema_v3,
-    list_entity_schemas_v3,
-    unarchive_entity_schema_v3,
-    update_entity_schema_field_definitions_v3,
-    update_entity_schema_properties_v3,
+from liminal.entity_schemas.api import (
+    archive_entity_schema,
+    create_entity_schema,
+    list_entity_schemas,
+    unarchive_entity_schema,
+    update_entity_schema_field_definitions,
+    update_entity_schema_properties,
 )
-from liminal.entity_schemas.entity_schema_models_v3 import (
+from liminal.entity_schemas.entity_schema_models import (
     EntitySchemaFieldInputModel,
     EntitySchemaInputModel,
     EntitySchemaModel,
     NameTemplateInputModel,
 )
-from liminal.entity_schemas.utils_v3 import (
+from liminal.entity_schemas.utils import (
     convert_entity_schema_field_to_field_properties,
     convert_entity_schema_to_internal_schema,
     get_benchling_entity_schema_id_to_system_name_map,
@@ -74,7 +74,7 @@ class CreateEntitySchema(BaseOperation):
         create_model = EntitySchemaInputModel.from_benchling_props(
             self._validated_schema_properties, self.fields, benchling_service
         )
-        return create_entity_schema_v3(
+        return create_entity_schema(
             benchling_service,
             self._validated_schema_properties.entity_type,
             create_model.model_dump(exclude_none=True),
@@ -107,7 +107,7 @@ class CreateEntitySchema(BaseOperation):
                 )
 
     def _validate_create(self, benchling_service: BenchlingService) -> None:
-        all_schemas = list_entity_schemas_v3(benchling_service, include_archived=True)
+        all_schemas = list_entity_schemas(benchling_service, include_archived=True)
         if self._validated_schema_properties.name in [
             schema["name"] for schema in all_schemas
         ]:
@@ -173,9 +173,7 @@ class ArchiveEntitySchema(BaseOperation):
     def execute(self, benchling_service: BenchlingService) -> dict[str, Any]:
         entity_schema = self._validate(benchling_service)
         entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
-        return archive_entity_schema_v3(
-            benchling_service, entity_type, entity_schema.id
-        )
+        return archive_entity_schema(benchling_service, entity_type, entity_schema.id)
 
     def describe_operation(self) -> str:
         return f"{self.wh_schema_name}: Archiving entity schema."
@@ -203,9 +201,7 @@ class UnarchiveEntitySchema(BaseOperation):
     def execute(self, benchling_service: BenchlingService) -> dict[str, Any]:
         entity_schema = self._validate(benchling_service)
         entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
-        return unarchive_entity_schema_v3(
-            benchling_service, entity_type, entity_schema.id
-        )
+        return unarchive_entity_schema(benchling_service, entity_type, entity_schema.id)
 
     def describe_operation(self) -> str:
         return f"{self.wh_schema_name}: Unarchiving entity schema."
@@ -241,7 +237,7 @@ class UpdateEntitySchema(BaseOperation):
             self.update_props.model_dump(exclude_unset=True)
         )
         entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
-        return update_entity_schema_properties_v3(
+        return update_entity_schema_properties(
             benchling_service,
             entity_type,
             entity_schema.id,
@@ -265,7 +261,7 @@ class UpdateEntitySchema(BaseOperation):
             )
 
     def _validate(self, benchling_service: BenchlingService) -> EntitySchemaModel:
-        all_schemas = list_entity_schemas_v3(benchling_service, include_archived=True)
+        all_schemas = list_entity_schemas(benchling_service, include_archived=True)
         entity_schema = EntitySchemaModel.get_one(
             benchling_service, self.wh_schema_name, all_schemas
         )
@@ -311,7 +307,7 @@ class UpdateEntitySchemaNameTemplate(BaseOperation):
         entity_type = map_entity_schema_type_to_entity_type(entity_schema.typename)
         entity_schema.update_name_template(self.update_name_template)
         assert entity_schema.nameTemplate is not None
-        return update_entity_schema_properties_v3(
+        return update_entity_schema_properties(
             benchling_service,
             entity_type,
             entity_schema.id,
@@ -407,7 +403,7 @@ class CreateEntitySchemaField(BaseOperation):
             for f in entity_schema.fields
         ]
         fields_for_update.insert(index_to_insert, new_field)
-        return update_entity_schema_field_definitions_v3(
+        return update_entity_schema_field_definitions(
             benchling_service,
             entity_type,
             entity_schema.id,
@@ -465,7 +461,7 @@ class ArchiveEntitySchemaField(BaseOperation):
             EntitySchemaFieldInputModel.from_field_model(f)
             for f in updated_entity_schema.fields
         ]
-        return update_entity_schema_field_definitions_v3(
+        return update_entity_schema_field_definitions(
             benchling_service,
             entity_type,
             entity_schema.id,
@@ -515,7 +511,7 @@ class UnarchiveEntitySchemaField(BaseOperation):
             EntitySchemaFieldInputModel.from_field_model(f)
             for f in entity_schema.fields
         ]
-        return update_entity_schema_field_definitions_v3(
+        return update_entity_schema_field_definitions(
             benchling_service,
             entity_type,
             entity_schema.id,
@@ -553,7 +549,7 @@ class UpdateEntitySchemaField(BaseOperation):
             for f in entity_schema.fields
         ]
 
-        return update_entity_schema_field_definitions_v3(
+        return update_entity_schema_field_definitions(
             benchling_service,
             entity_type,
             entity_schema.id,
@@ -650,7 +646,7 @@ class ReorderEntitySchemaFields(BaseOperation):
             EntitySchemaFieldInputModel.from_field_model(f)
             for f in updated_entity_schema.fields
         ]
-        return update_entity_schema_field_definitions_v3(
+        return update_entity_schema_field_definitions(
             benchling_service,
             entity_type,
             entity_schema.id,

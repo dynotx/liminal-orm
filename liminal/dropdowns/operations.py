@@ -13,7 +13,7 @@ from benchling_sdk.models import (
 
 from liminal.base.base_operation import BaseOperation
 from liminal.connection import BenchlingService
-from liminal.dropdowns.api_v3 import (
+from liminal.dropdowns.api import (
     archive_dropdown,
     create_dropdown,
     unarchive_dropdown,

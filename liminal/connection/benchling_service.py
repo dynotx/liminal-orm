@@ -19,7 +19,7 @@ from liminal.enums import (
 )
 
 if TYPE_CHECKING:
-    from liminal.entity_schemas.entity_schema_models_v3 import EntitySchemaModel
+    from liminal.entity_schemas.entity_schema_models import EntitySchemaModel
 
 LOGGER = logging.getLogger(__name__)
 logging.getLogger("httpx").setLevel(logging.WARNING)
@@ -142,7 +142,7 @@ class BenchlingService(Benchling):
     def _get_remote_liminal_schema(self) -> "EntitySchemaModel | None":
         """Fetches the liminal_remote entity schema with its field definitions.
         Returns None if the schema doesn't exist."""
-        from liminal.entity_schemas.entity_schema_models_v3 import EntitySchemaModel
+        from liminal.entity_schemas.entity_schema_models import EntitySchemaModel
 
         return EntitySchemaModel.get_one(self, REMOTE_LIMINAL_SCHEMA_NAME)
 
