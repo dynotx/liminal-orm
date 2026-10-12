@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#v450" class="md-skip">
+        <a href="#v500" class="md-skip">
           Skip to content
         </a>
       
@@ -93,16 +93,18 @@
           <div class="md-banner__inner md-grid md-typeset">
             
             
-  <!-- the following line is displayed in the announcement bar -->
-<!-- keep length under 164 characters (less HTML tags) to fit on 1280px desktop window -->
-Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see release notes <a href="https://dynotx.github.io/liminal-orm/release-notes/#v450">here</a>).
+  <!-- the close button must come before the text so its float aligns it with the first line -->
 <button class="md-banner__button md-icon" aria-label="Don't show this again" id="close-banner">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z">
         </path>
     </svg>
 </button>
-
+<!-- the following line is displayed in the announcement bar -->
+<!-- keep length under 164 characters (less HTML tags) to fit on 1280px desktop window -->
+<strong>Liminal v5 release is out, now fully migrated to the v3 Benchling API!! See the release notes <a href="https://dynotx.github.io/liminal-orm/release-notes/#v500">here</a>.</strong>
+<!-- <br>
+<em>Join our online webinar Thursday, October 22nd at 4:30 PM EDT to learn more about Liminal and how it helps perform AI-assisted schema migrations safely. Link <a href="WEBINAR_URL">here</a>.</em> -->
 <script>
     document.getElementById('close-banner').addEventListener('click', function () {
         this.parentElement.style.display = 'none';
@@ -1136,6 +1138,90 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#v500" class="md-nav__link">
+    <span class="md-ellipsis">
+      v5.0.0
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="v5.0.0">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      🗒️ Summary
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#upgrade-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Upgrade Steps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⛏️ Changes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⛏️ Changes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#breaking-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Breaking Changes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#internal-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Internal Changes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#non-breaking-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Non-breaking Changes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prs" class="md-nav__link">
+    <span class="md-ellipsis">
+      PRs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v450" class="md-nav__link">
     <span class="md-ellipsis">
       v4.5.0
@@ -1146,7 +1232,7 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
+  <a href="#summary_1" class="md-nav__link">
     <span class="md-ellipsis">
       🗒️ Summary
     </span>
@@ -1179,39 +1265,6 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#summary_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      🗒️ Summary
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#upgrade-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Upgrade Steps
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#v320" class="md-nav__link">
-    <span class="md-ellipsis">
-      v3.2.0
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="v3.2.0">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#summary_2" class="md-nav__link">
     <span class="md-ellipsis">
       🗒️ Summary
@@ -1235,13 +1288,13 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
 </li>
       
         <li class="md-nav__item">
-  <a href="#v310" class="md-nav__link">
+  <a href="#v320" class="md-nav__link">
     <span class="md-ellipsis">
-      v3.1.0
+      v3.2.0
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="v3.1.0">
+    <nav class="md-nav" aria-label="v3.2.0">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1268,13 +1321,13 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
 </li>
       
         <li class="md-nav__item">
-  <a href="#v300" class="md-nav__link">
+  <a href="#v310" class="md-nav__link">
     <span class="md-ellipsis">
-      v3.0.0
+      v3.1.0
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="v3.0.0">
+    <nav class="md-nav" aria-label="v3.1.0">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1301,13 +1354,13 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
 </li>
       
         <li class="md-nav__item">
-  <a href="#v200" class="md-nav__link">
+  <a href="#v300" class="md-nav__link">
     <span class="md-ellipsis">
-      v2.0.0
+      v3.0.0
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="v2.0.0">
+    <nav class="md-nav" aria-label="v3.0.0">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1334,6 +1387,39 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
 </li>
       
         <li class="md-nav__item">
+  <a href="#v200" class="md-nav__link">
+    <span class="md-ellipsis">
+      v2.0.0
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="v2.0.0">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#summary_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      🗒️ Summary
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#upgrade-steps_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Upgrade Steps
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v110" class="md-nav__link">
     <span class="md-ellipsis">
       v1.1.0
@@ -1344,7 +1430,7 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#upgrade-steps_5" class="md-nav__link">
+  <a href="#upgrade-steps_6" class="md-nav__link">
     <span class="md-ellipsis">
       Upgrade Steps
     </span>
@@ -1398,6 +1484,90 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#v500" class="md-nav__link">
+    <span class="md-ellipsis">
+      v5.0.0
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="v5.0.0">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      🗒️ Summary
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#upgrade-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Upgrade Steps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⛏️ Changes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⛏️ Changes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#breaking-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Breaking Changes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#internal-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Internal Changes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#non-breaking-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Non-breaking Changes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prs" class="md-nav__link">
+    <span class="md-ellipsis">
+      PRs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v450" class="md-nav__link">
     <span class="md-ellipsis">
       v4.5.0
@@ -1408,7 +1578,7 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
+  <a href="#summary_1" class="md-nav__link">
     <span class="md-ellipsis">
       🗒️ Summary
     </span>
@@ -1441,39 +1611,6 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#summary_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      🗒️ Summary
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#upgrade-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Upgrade Steps
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#v320" class="md-nav__link">
-    <span class="md-ellipsis">
-      v3.2.0
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="v3.2.0">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#summary_2" class="md-nav__link">
     <span class="md-ellipsis">
       🗒️ Summary
@@ -1497,13 +1634,13 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
 </li>
       
         <li class="md-nav__item">
-  <a href="#v310" class="md-nav__link">
+  <a href="#v320" class="md-nav__link">
     <span class="md-ellipsis">
-      v3.1.0
+      v3.2.0
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="v3.1.0">
+    <nav class="md-nav" aria-label="v3.2.0">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1530,13 +1667,13 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
 </li>
       
         <li class="md-nav__item">
-  <a href="#v300" class="md-nav__link">
+  <a href="#v310" class="md-nav__link">
     <span class="md-ellipsis">
-      v3.0.0
+      v3.1.0
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="v3.0.0">
+    <nav class="md-nav" aria-label="v3.1.0">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1563,13 +1700,13 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
 </li>
       
         <li class="md-nav__item">
-  <a href="#v200" class="md-nav__link">
+  <a href="#v300" class="md-nav__link">
     <span class="md-ellipsis">
-      v2.0.0
+      v3.0.0
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="v2.0.0">
+    <nav class="md-nav" aria-label="v3.0.0">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1596,6 +1733,39 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
 </li>
       
         <li class="md-nav__item">
+  <a href="#v200" class="md-nav__link">
+    <span class="md-ellipsis">
+      v2.0.0
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="v2.0.0">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#summary_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      🗒️ Summary
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#upgrade-steps_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Upgrade Steps
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v110" class="md-nav__link">
     <span class="md-ellipsis">
       v1.1.0
@@ -1606,7 +1776,7 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#upgrade-steps_5" class="md-nav__link">
+  <a href="#upgrade-steps_6" class="md-nav__link">
     <span class="md-ellipsis">
       Upgrade Steps
     </span>
@@ -1641,9 +1811,49 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
   <h1>Release notes</h1>
 
 <p>For full release notes, please visit the <a href="https://github.com/dynotx/liminal-orm/releases">GitHub Releases page</a>. Release versions follow <a href="https://semver.org/">semantic versioning</a>. This page will document migration steps needed for major and minor version changes.</p>
+<h2 id="v500">v5.0.0</h2>
+<p><a href="https://github.com/dynotx/liminal-orm/releases/tag/5.0.0"><img alt="github" src="https://img.shields.io/badge/github-v5.0.0-blue" /></a> <a href="https://pypi.org/project/liminal-orm/5.0.0/"><img alt="pypi" src="https://img.shields.io/pypi/v/liminal-orm/5.0.0.svg" /></a></p>
+<h3 id="summary">🗒️ Summary</h3>
+<p>v5.0.0 release fully migrates Liminal to the v3 Benchling API, a big milestone in Liminal's roadmap! This removes the dependencies on Benchling's internal API, and migrates the underlying and data models to match Benchling's v3 endpoints. Most notably, <code>BenchlingConnection</code> no longer should have <code>internal_api_admin_email</code> and <code>internal_api_admin_password</code> set. These properties are denoted as deprecated, and will be officially removed from the class in the v6 Liminal release.</p>
+<p>With this release, the technical decision was made to maintain Liminal's interface, in order to limit the amount of breaking changes for users with existing schemas defined in code. This means that certain enums and properties in Liminal's interface may be different compared to Benchling's v3 API in some cases, but ultimately the functionality remains the same. Liminal was originally built on Benchling's v2 API and internal API. Benchling's v3 API endpoints have modfied the response shape and property names in some cases. After this Liminal v5 release has time to settle and Benchling's v3 API becomes more stable, the decision may be made to refactor Liminal's interface to mirror Benchling's v3 API 1-to-1. </p>
+<p>It is also important to note that Benchling's v3 API currently has strict Rate Limits. Each v3 endpoint is assigned a rate limit tier, and the List endpoints are limited to 50 requests per minute. The rate limit budget replenishes at roughly 0.8 requests per second, and any request that gets sent past the rate limit responds with a HTTP 429 Error. As a result, Liminal v5 commands with heavy endpoint usage may be slower than Liminal v4, especially for tenants with many schemas and dropodwns. As Benchling gathers usage statistics of v3 endpoints, this rate limit is likely to change.</p>
+<h3 id="upgrade-steps">🚀 Upgrade Steps</h3>
+<ol>
+<li>Remove <code>internal_api_admin_email</code>, <code>internal_api_admin_password</code>, and <code>playwright_data_dir</code> from <code>BenchlingConnection</code> definitions.</li>
+<li>Remove <code>use_internal_api</code> from <code>BenchlingService</code> definitions.</li>
+<li>Run <code>liminal current &lt;benchling_tenant_name&gt;</code> to test. Reach out if you have any issues or questions!</li>
+</ol>
+<h3 id="changes">⛏️ Changes</h3>
+<h4 id="breaking-changes">Breaking Changes</h4>
+<ul>
+<li>Authentication and connnecting with the BenchlingService</li>
+<li><code>internal_api_admin_email</code> and <code>internal_api_admin_password</code> properties in <code>BenchlingConnection</code> have been removed. <code>use_internal_api</code> property in <code>BenchlingService</code> has also been removed. Liminal no longer connects the Benchling's internal API, so the authentication properties are no longer needed.</li>
+<li>Sequence Constraints</li>
+<li>Benchling's v3 API currently is unable to set sequence constraints. The v3 API cannot differentiate between <code>bases (ignore case)</code> and <code>bases (exact match)</code>. This will have to be defined through the Benchling UI until this is supported in the v3 API.</li>
+<li>Updated <code>SchemaProperties</code> validation; setting invalid schema-specific properties will now raise an error.</li>
+</ul>
+<h4 id="internal-changes">Internal Changes</h4>
+<ul>
+<li>Removed pre-v3 enums <code>BenchlingAPIFieldType</code>, <code>BenchlingFolderItemType</code>, <code>BenchlingSequenceType</code>.</li>
+<li>Removed <code>TagSchemaModel</code>, v2 <code>EntitySchemaModel</code>, and linked classes for pre-v3 data models.</li>
+</ul>
+<h4 id="non-breaking-changes">Non-breaking Changes</h4>
+<ul>
+<li>Removed <code>playwright</code>, <code>bs4</code>, <code>lxml</code>, and <code>requests</code> dependencies.</li>
+<li>Added new <code>UnarchiveDropdownOption</code> operation.</li>
+</ul>
+<h4 id="prs">PRs</h4>
+<ul>
+<li>PR <a href="https://github.com/dynotx/liminal-orm/pull/239">#239</a>: removes unused dependencies.</li>
+<li>PR <a href="https://github.com/dynotx/liminal-orm/pull/238">#238</a>: removes all code that depended on Benchling's internal API.</li>
+<li>PR <a href="https://github.com/dynotx/liminal-orm/pull/233">#233</a>: migrates results schemas to the v3 API.</li>
+<li>PR <a href="https://github.com/dynotx/liminal-orm/pull/232">#232</a>: migrates entity schemas to the v3 API.</li>
+<li>PR <a href="https://github.com/dynotx/liminal-orm/pull/213">#213</a>: migrates dropdowns to the v3 API.</li>
+<li>PR <a href="https://github.com/dynotx/liminal-orm/pull/236">#236</a>: adds v3 API helpers (pagination, rate limiting, async task polling).</li>
+</ul>
 <h2 id="v450">v4.5.0</h2>
 <p><a href="https://github.com/dynotx/liminal-orm/releases/tag/4.5.0"><img alt="github" src="https://img.shields.io/badge/github-v4.5.0-blue" /></a> <a href="https://pypi.org/project/liminal-orm/4.5.0/"><img alt="pypi" src="https://img.shields.io/pypi/v/liminal-orm/4.5.0.svg" /></a></p>
-<h3 id="summary">🗒️ Summary</h3>
+<h3 id="summary_1">🗒️ Summary</h3>
 <p>v4.5.0 release adds support for using Liminal with Benchling tenants where SSO is required or optional. When SSO is enabled, Liminal can authenticate access to Benchling’s internal API with the user's credentials. Liminal uses Playwright, a widely used Python package for automating modern browsers, web testing, and scripting.</p>
 <p>In your env.py file, internal_api_admin_email and internal_api_admin_password no longer need to be set in the BenchlingConnection class. If they are unset and SSO is required or optional in your Benchling tenant, Liminal will open a Playwright browser session and prompt the user to log into their SSO. After the user finishes logging in, Liminal will use the authenticated Benchling session to access Benchling’s internal API</p>
 <ul>
@@ -1656,9 +1866,9 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
 </ol>
 <h2 id="v400">v4.0.0</h2>
 <p><a href="https://github.com/dynotx/liminal-orm/releases/tag/4.0.0"><img alt="github" src="https://img.shields.io/badge/github-v4.0.0-blue" /></a> <a href="https://pypi.org/project/liminal-orm/4.0.0/"><img alt="pypi" src="https://img.shields.io/pypi/v/liminal-orm/4.0.0.svg" /></a></p>
-<h3 id="summary_1">🗒️ Summary</h3>
+<h3 id="summary_2">🗒️ Summary</h3>
 <p>The v4.0.0 brings the ability to define results schemas in code using Liminal. Results tables are used to capture experimental and assay data in lab notebooks. With a single command, you can define all of your results schemas as classes in your codebase using Liminal's framework. This enables a simple and strongly-typed way of accessing this data, and the ability to create custom validation rules for your results. For full details, check out the <a href="../reference/results-schemas">results schemas</a> documentation! This release also adds functionality to the <code>liminal generate-files</code> command to allow for more flexibility (run <code>liminal generate-files --help</code> for full details). Support for deprecated features has been extended to the release of v5.0.0.</p>
-<h3 id="upgrade-steps">Upgrade Steps</h3>
+<h3 id="upgrade-steps_1">Upgrade Steps</h3>
 <ul>
 <li>
 <p>PR <a href="https://github.com/dynotx/liminal-orm/pull/133">#133</a>: results schemas!</p>
@@ -1669,7 +1879,7 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
 </ul>
 <h2 id="v320">v3.2.0</h2>
 <p><a href="https://github.com/dynotx/liminal-orm/releases/tag/3.2.0"><img alt="github" src="https://img.shields.io/badge/github-v3.2.0-blue" /></a> <a href="https://pypi.org/project/liminal-orm/3.2.0/"><img alt="pypi" src="https://img.shields.io/pypi/v/liminal-orm/3.2.0.svg" /></a></p>
-<h3 id="summary_2">🗒️ Summary</h3>
+<h3 id="summary_3">🗒️ Summary</h3>
 <p>This release brings Liminal's CLI and logic closer to <a href="https://alembic.sqlalchemy.org/en/latest/api/commands.html">Alembic's patterns</a>, making it more familiar for users. It also fixes a couple bugs in a backwards compatible manner.</p>
 <ul>
 <li>
@@ -1688,7 +1898,7 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
 <p>Bug fixes with multi_relationship function and imports.</p>
 </li>
 </ul>
-<h3 id="upgrade-steps_1">Upgrade Steps</h3>
+<h3 id="upgrade-steps_2">Upgrade Steps</h3>
 <p>There are no upgrade steps for this release, but there are deprecation warnings that need to be resolved by the v4.0.0 release.</p>
 <ul>
 <li>
@@ -1700,9 +1910,9 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
 </ul>
 <h2 id="v310">v3.1.0</h2>
 <p><a href="https://github.com/dynotx/liminal-orm/releases/tag/3.1.0"><img alt="github" src="https://img.shields.io/badge/github-v3.1.0-blue" /></a> <a href="https://pypi.org/project/liminal-orm/3.1.0/"><img alt="pypi" src="https://img.shields.io/pypi/v/liminal-orm/3.1.0.svg" /></a></p>
-<h3 id="summary_3">🗒️ Summary</h3>
+<h3 id="summary_4">🗒️ Summary</h3>
 <p>This release adds the ability to define tenant-specific configuration flags for entity schemas. The goal of this is to reflect Benchling's tenant level configuration flags and propagate the logic across Liminal. We have started with the <code>schemas_enable_change_warehouse_name</code> flag. When set to <code>True</code>, this flag allows users to change the warehouse name of entity schemas and fields and migrate the changes to your tenants.</p>
-<h3 id="upgrade-steps_2">Upgrade Steps</h3>
+<h3 id="upgrade-steps_3">Upgrade Steps</h3>
 <ul>
 <li>
 <p>PR <a href="https://github.com/dynotx/liminal-orm/pull/120">#120</a>: adds ability to define tenant-specific configuration flags for entity schemas.</p>
@@ -1713,7 +1923,7 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
 </ul>
 <h2 id="v300">v3.0.0</h2>
 <p><a href="https://github.com/dynotx/liminal-orm/releases/tag/3.0.0"><img alt="github" src="https://img.shields.io/badge/github-v3.0.0-blue" /></a> <a href="https://pypi.org/project/liminal-orm/3.0.0/"><img alt="pypi" src="https://img.shields.io/pypi/v/liminal-orm/3.0.0.svg" /></a></p>
-<h3 id="summary_4">🗒️ Summary</h3>
+<h3 id="summary_5">🗒️ Summary</h3>
 <p>v3.0.0 release brings Liminal's coverage of entity schemas to 100% parity with Benchling, a big milestone in Liminal's roadmap!! Any property that can be defined on Entity Schemas in Benchling can now be defined and migrated through Liminal. With this release, user's will now be able to define unit aware fields and "Show bases in expanded view" in their Liminal models defined in code.</p>
 <ul>
 <li><code>show_bases_in_expanded_view</code> has been added to the <code>SchemaProperties</code> parameters
@@ -1725,7 +1935,7 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
 <img width="587" alt="Screenshot 2025-02-20 at 8 25 30 AM" src="https://github.com/user-attachments/assets/a4f6fe8c-652c-4fa0-89b0-abe45fa6d7a3" /></li>
 </ul>
 <p>Next up are results schemas 🚀</p>
-<h3 id="upgrade-steps_3">Upgrade Steps</h3>
+<h3 id="upgrade-steps_4">Upgrade Steps</h3>
 <ul>
 <li>PR <a href="https://github.com/dynotx/liminal-orm/pull/114">#114</a>: adds ability to define unit aware fields for entity schema fields.</li>
 <li>
@@ -1736,7 +1946,7 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
 </li>
 </ul>
 <h2 id="v200">v2.0.0</h2>
-<h3 id="summary_5">🗒️ Summary</h3>
+<h3 id="summary_6">🗒️ Summary</h3>
 <p>v2.0.0 brings Liminal closer to reaching 100% parity with Benchling Entity Schemas. This release introduces the ability to define namesets, chip naming properties, and constraints on your Liminal entity schema models. Validation has also gone through a major change making it MUCH easier to define custom business logic as validation rules for entities. Now, users can use the <code>@liminal_validator</code> decorator to define validation functions within Liminal models. When TestSchema.validate() is run, these decorated functions are run on all queried entity rows from the Benchling warehouse, catching any <code>Exceptions</code> raised and returned a <code>BenchlingValidatorReport</code>.</p>
 <ul>
 <li><code>constraint_fields</code>, <code>include_registry_id_in_chips</code>, <code>use_registry_id_as_label</code> added to SchemaProperties parameters. <code>__name_template__</code> can now be defined on Liminal models
@@ -1759,7 +1969,7 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cook time is required if cook temp is set&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>Next release will aim to finish off coverage for Entity Schemas!</p>
-<h3 id="upgrade-steps_4">Upgrade Steps</h3>
+<h3 id="upgrade-steps_5">Upgrade Steps</h3>
 <ul>
 <li>PR <a href="https://github.com/dynotx/liminal-orm/pull/88">#88</a>: adds ability to defined name templates for entity schemas</li>
 <li>PR <a href="https://github.com/dynotx/liminal-orm/pull/84">#84</a>: adds ability to define chip naming for entity schemas</li>
@@ -1778,7 +1988,7 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
 </ul>
 <h2 id="v110">v1.1.0</h2>
 <p><a href="https://github.com/dynotx/liminal-orm/releases/tag/1.1.0"><img alt="github" src="https://img.shields.io/badge/github-v1.1.0-blue" /></a> <a href="https://pypi.org/project/liminal-orm/1.1.0/"><img alt="pypi" src="https://img.shields.io/pypi/v/liminal-orm/1.1.0.svg" /></a></p>
-<h3 id="upgrade-steps_5">Upgrade Steps</h3>
+<h3 id="upgrade-steps_6">Upgrade Steps</h3>
 <ul>
 <li>PR <a href="https://github.com/dynotx/liminal-orm/pull/64">#64</a>: makes query function optional in schema classes.<ul>
 <li>Remove query functions from schema classes, unless you have custom logic.</li>

@@ -95,16 +95,18 @@
           <div class="md-banner__inner md-grid md-typeset">
             
             
-  <!-- the following line is displayed in the announcement bar -->
-<!-- keep length under 164 characters (less HTML tags) to fit on 1280px desktop window -->
-Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see release notes <a href="https://dynotx.github.io/liminal-orm/release-notes/#v450">here</a>).
+  <!-- the close button must come before the text so its float aligns it with the first line -->
 <button class="md-banner__button md-icon" aria-label="Don't show this again" id="close-banner">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z">
         </path>
     </svg>
 </button>
-
+<!-- the following line is displayed in the announcement bar -->
+<!-- keep length under 164 characters (less HTML tags) to fit on 1280px desktop window -->
+<strong>Liminal v5 release is out, now fully migrated to the v3 Benchling API!! See the release notes <a href="https://dynotx.github.io/liminal-orm/release-notes/#v500">here</a>.</strong>
+<!-- <br>
+<em>Join our online webinar Thursday, October 22nd at 4:30 PM EDT to learn more about Liminal and how it helps perform AI-assisted schema migrations safely. Link <a href="WEBINAR_URL">here</a>.</em> -->
 <script>
     document.getElementById('close-banner').addEventListener('click', function () {
         this.parentElement.style.display = 'none';
@@ -1247,14 +1249,14 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
   <h1>Benchling session</h1>
 
 <h2 id="benchlingservice-class">BenchlingService: <a href="https://github.com/dynotx/liminal-orm/blob/main/liminal/connection/benchling_service.py">class</a></h2>
-<p>The BenchlingService class takes in a BenchlingConnection object and is used to directly interact with Benchling's SDK, internal API, and Postgres warehouse. This class is surfaced for users so that there is one standard interface for interacting with Benchling around your codebase. Liminal's BenchlingService handles all session management and is a subclass of Benchling's SDK, so all functionality of Benchling's SDK is available.</p>
+<p>The BenchlingService class takes in a BenchlingConnection object and is used to directly interact with Benchling's SDK and Postgres warehouse. This class is surfaced for users so that there is one standard interface for interacting with Benchling around your codebase. Liminal's BenchlingService handles all session management and is a subclass of Benchling's SDK, so all functionality of Benchling's SDK is available.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">liminal.connection</span> <span class="kn">import</span> <span class="n">BenchlingConnection</span>
 <span class="kn">from</span> <span class="nn">liminal.connection</span> <span class="kn">import</span> <span class="n">BenchlingService</span>
 
 <span class="n">connection</span> <span class="o">=</span> <span class="n">BenchlingConnection</span><span class="p">(</span>
     <span class="o">...</span>
 <span class="p">)</span>
-<span class="n">benchling_service</span> <span class="o">=</span> <span class="n">BenchlingService</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">use_internal_api</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_warehouse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># enable all connections</span>
+<span class="n">benchling_service</span> <span class="o">=</span> <span class="n">BenchlingService</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">use_db</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># enable all connections</span>
 
 <span class="c1"># Use Benchling SDK</span>
 <span class="n">entity</span> <span class="o">=</span> <span class="n">benchling_service</span><span class="o">.</span><span class="n">custom_entities</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="s2">&quot;my-entity-id&quot;</span><span class="p">)</span>
@@ -1274,12 +1276,14 @@ Liminal v4.5.0 release out! Now supporting Benchling SSO authentication (see rel
 <p>Whether to connect to the Benchling SDK. Defaults to True. (See Benchling SDK documentation <a href="https://docs.benchling.com/docs/getting-started-with-the-sdk">here</a>)</p>
 </li>
 <li>
-<p><strong>use_internal_api: bool</strong></p>
-<p>Whether to connect to the Benchling internal API. Defaults to False.</p>
+<p><strong>use_db: bool</strong></p>
+<p>Whether to connect to the Benchling Postgres warehouse. Defaults to False. See SQLAlchemy documentation <a href="https://www.sqlalchemy.org/">here</a> for more information.</p>
 </li>
 <li>
-<p><strong>use_warehouse: bool</strong></p>
-<p>Whether to connect to the Benchling Postgres warehouse. Defaults to False. See SQLAlchemy documentation <a href="https://www.sqlalchemy.org/">here</a> for more information.</p>
+<p><strong>client_decorator: Optional[BenchlingApiClientDecorator] = None</strong></p>
+<p>An optional function that receives the default BenchlingApiClient and returns a
+customized one. Forwarded to the Benchling SDK. A common use is raising the HTTP
+timeout, which otherwise defaults to 10 seconds: <code>lambda c: c.with_timeout(60)</code>.</p>
 </li>
 </ul>
 
