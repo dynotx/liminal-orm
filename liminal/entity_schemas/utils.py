@@ -5,6 +5,7 @@ from benchling_sdk.models import EntitySchema
 from liminal.base.properties.base_field_properties import BaseFieldProperties
 from liminal.connection import BenchlingService
 from liminal.dropdowns.utils import get_benchling_dropdown_id_name_map
+from liminal.entity_schemas.api_v3 import list_entity_schemas_v3
 from liminal.entity_schemas.tag_schema_models import TagSchemaFieldModel, TagSchemaModel
 from liminal.enums import BenchlingAPIFieldType, BenchlingNamingStrategy
 from liminal.enums.benchling_entity_type import BenchlingEntityType
@@ -147,3 +148,9 @@ def get_benchling_entity_schemas(
         for schemas in benchling_service.schemas.list_entity_schemas()
         for s in schemas
     ]
+
+
+def get_benchling_entity_schema_id_to_system_name_map(
+    benchling_service: BenchlingService,
+) -> dict[str, str]:
+    return {s["id"]: s["systemName"] for s in list_entity_schemas_v3(benchling_service)}

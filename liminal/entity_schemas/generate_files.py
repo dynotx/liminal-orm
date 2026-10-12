@@ -4,8 +4,8 @@ from pathlib import Path
 from rich import print
 
 from liminal.connection.benchling_service import BenchlingService
-from liminal.dropdowns.utils import get_benchling_dropdowns_dict
-from liminal.entity_schemas.utils import get_converted_tag_schemas
+from liminal.dropdowns.api_v3 import list_dropdowns_v3
+from liminal.entity_schemas.utils_v3 import get_converted_entity_schemas
 from liminal.enums import BenchlingEntityType, BenchlingFieldType
 from liminal.mappers import convert_benchling_type_to_python_type
 from liminal.orm.name_template import NameTemplate
@@ -72,7 +72,7 @@ def generate_all_entity_schema_files(
         write_path.mkdir(parents=True, exist_ok=True)
         print(f"[green]Created directory: {write_path}")
 
-    models = get_converted_tag_schemas(benchling_service)
+    models = get_converted_entity_schemas(benchling_service)
     has_date = False
     subdirectory_map: dict[str, list[tuple[str, str]]] = {}
     subdirectory_num_files_written: dict[str, int] = {}
@@ -168,7 +168,7 @@ def generate_all_entity_schema_files(
         if name_template != NameTemplate():
             import_strings.append("from liminal.orm.name_template import NameTemplate")
             parts_imports = [
-                f"from liminal.orm.name_template_parts import {', '.join(set([part.__class__.__name__ for part in name_template.parts]))}"
+                f"from liminal.orm.name_template_parts import {', '.join(sorted(set([part.__class__.__name__ for part in name_template.parts])))}"
             ]
             import_strings.extend(parts_imports)
         for col_name, col in columns.items():
@@ -243,8 +243,9 @@ def _get_dropdown_name_to_classname_map(
     benchling_service: BenchlingService,
 ) -> dict[str, str]:
     """Gets the dropdown name to classname map by querying Benchling dropdowns and using the dropdown name to create the classname."""
-    benchling_dropdowns = get_benchling_dropdowns_dict(benchling_service)
+    benchling_dropdowns = list_dropdowns_v3(benchling_service, include_archived=False)
     return {
-        dropdown_name: to_pascal_case(dropdown_name)
-        for dropdown_name in benchling_dropdowns.keys()
+        dropdown["name"]: to_pascal_case(dropdown["name"])
+        for dropdown in benchling_dropdowns
+        if not dropdown.get("archived", False)
     }

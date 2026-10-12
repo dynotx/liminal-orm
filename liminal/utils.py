@@ -2,10 +2,16 @@ import json
 import random
 import re
 import string
+import threading
+import time
+from http import HTTPStatus
 from typing import Any
 from urllib.parse import quote
 
+from benchling_sdk.services.v2.stable.api_service import ApiService
 import requests
+from benchling_sdk.errors import BenchlingError
+from benchling_sdk.helpers.retry_helpers import RetryStrategy
 from tenacity import (
     retry,
     retry_if_exception_type,
@@ -22,6 +28,21 @@ MAX_PAGE_SIZE = 100
 
 # Larger bursts of parallel requests get rate limited by Benchling and stall on retry backoff.
 MAX_CONCURRENT_REQUESTS = 8
+
+# Benchling's v3 list endpoints are TIER_4_LIMIT. They allow 50 requests a minute per user that refills at ~0.8 requests/second,
+RATE_LIMIT_BURST = 50
+RATE_LIMIT_REQUESTS_PER_SECOND = 0.8
+MAX_RATE_LIMITED_ATTEMPTS = 10
+
+# 429s are handled by the rate limiter, so the SDK only retries transient server errors.
+_RETRY_SERVER_ERRORS_ONLY = RetryStrategy(
+    max_tries=10,
+    status_codes_to_retry=(
+        HTTPStatus.BAD_GATEWAY,
+        HTTPStatus.SERVICE_UNAVAILABLE,
+        HTTPStatus.GATEWAY_TIMEOUT,
+    ),
+)
 
 TASK_POLL_INTERVAL_SECONDS = 1
 TASK_TIMEOUT_SECONDS = 300
@@ -115,22 +136,90 @@ def await_queued_response(
         raise ValueError("Failed request: ", response_json)
 
 
+class RateLimiter:
+    """Thread-safe token bucket. Each request reserves a token and sleeps until it is available,
+    so concurrent callers are spaced out evenly instead of all retrying at once."""
+
+    def __init__(self, requests_per_second: float, burst: int) -> None:
+        self.requests_per_second = requests_per_second
+        self.burst = burst
+        self._tokens = float(burst)
+        self._updated_at = time.monotonic()
+        self._lock = threading.Lock()
+
+    def _refill(self) -> None:
+        now = time.monotonic()
+        self._tokens = min(
+            self.burst,
+            self._tokens + (now - self._updated_at) * self.requests_per_second,
+        )
+        self._updated_at = now
+
+    def acquire(self) -> None:
+        with self._lock:
+            self._refill()
+            self._tokens -= 1
+            wait = -self._tokens / self.requests_per_second if self._tokens < 0 else 0
+        if wait:
+            time.sleep(wait)
+
+    def on_rate_limited(self) -> None:
+        """Benchling's budget is lower than ours (e.g. other clients are using it), so drop any saved-up burst."""
+        with self._lock:
+            self._refill()
+            self._tokens = min(self._tokens, 0)
+
+
+_rate_limiters: dict[str, RateLimiter] = {}
+_rate_limiters_lock = threading.Lock()
+
+
+def get_rate_limiter(benchling_service: BenchlingService) -> RateLimiter:
+    """Benchling's limit applies across requests to a tenant, so every caller in the process shares one limiter per tenant."""
+    with _rate_limiters_lock:
+        tenant = benchling_service.benchling_tenant
+        if tenant not in _rate_limiters:
+            _rate_limiters[tenant] = RateLimiter(
+                RATE_LIMIT_REQUESTS_PER_SECOND, RATE_LIMIT_BURST
+            )
+        return _rate_limiters[tenant]
+
+
+def rate_limited_get_v3(benchling_service: BenchlingService, url: str) -> Any:
+    """GET a v3 endpoint, paced by the tenant's rate limiter. On a 429, wait for the next token rather than backing off exponentially."""
+    limiter = get_rate_limiter(benchling_service)
+    api = ApiService(benchling_service.api.client, _RETRY_SERVER_ERRORS_ONLY)
+    for attempt in range(MAX_RATE_LIMITED_ATTEMPTS):
+        limiter.acquire()
+        try:
+            return api.get_response(url=url, additional_headers=EARLY_ACCESS_HEADER)
+        except BenchlingError as e:
+            if (
+                e.status_code != HTTPStatus.TOO_MANY_REQUESTS
+                or attempt == MAX_RATE_LIMITED_ATTEMPTS - 1
+            ):
+                raise
+            limiter.on_rate_limited()
+
+
 def list_all_items_v3(
-    benchling_service: BenchlingService, url: str
+    benchling_service: BenchlingService,
+    url: str,
+    include_archived: bool = False,
+    page_size: int | None = MAX_PAGE_SIZE,
 ) -> list[dict[str, Any]]:
     """Fetch every item from a v3 list endpoint, following nextToken pagination."""
-    separator = "&" if "?" in url else "?"
-    base_url = f"{url}{separator}pageSize={MAX_PAGE_SIZE}"
+    query_params = [f"archived.anyOf={'true,false' if include_archived else 'false'}"]
+    if page_size:
+        query_params.append(f"pageSize={page_size}")
+    base_url = f"{url}?{'&'.join(query_params)}"
     items: list[dict[str, Any]] = []
     next_token: str | None = None
     while True:
         page_url = base_url
         if next_token:
             page_url += f"&nextToken={quote(next_token)}"
-        response = benchling_service.api.get_response(
-            url=page_url,
-            additional_headers=EARLY_ACCESS_HEADER,
-        )
+        response = rate_limited_get_v3(benchling_service, page_url)
         parsed_response = response.parsed
         if parsed_response is None:
             raise ValueError(f"No response body returned for {url}.")

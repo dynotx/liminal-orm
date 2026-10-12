@@ -138,6 +138,13 @@ class BenchlingService(Benchling):
         assert len(registries) == 1
         return registries[0].id
 
+    @property
+    def organization_id(self) -> str:
+        # This assumes there is only one registry (which has always been the case at DynoTx)
+        registries = self.registry.registries()
+        assert len(registries) == 1
+        return registries[0].owner.id
+
     def __enter__(self) -> Session:
         self._session = self.get_session()
         return self._session
@@ -399,13 +406,12 @@ class BenchlingService(Benchling):
                 raise ValueError(
                     f"Failed to sign in to Benchling: {signin_response.reason}. Ensure your email and password are correct."
                 )
-            if not signin_response.headers.get("Set-Cookie"):
+            # The session cookie is set on the post-signin redirect, not necessarily the final response.
+            session_cookie = next(
+                (c.value for c in session.cookies if c.name == "session"), None
+            )
+            if not session_cookie:
                 raise ValueError(
-                    f"Failed to sign in to Benchling: {signin_response.text}"
+                    f"Failed to sign in to Benchling: no session cookie returned (status {signin_response.status_code}, final URL {signin_response.url}). Ensure your email and password are correct."
                 )
-        return (
-            signin_response.headers["Set-Cookie"]
-            .split("; Secure")[0]
-            .removeprefix("session="),
-            csrf_token,
-        )
+        return session_cookie, csrf_token
