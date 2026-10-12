@@ -1,5 +1,49 @@
 For full release notes, please visit the [GitHub Releases page](https://github.com/dynotx/liminal-orm/releases). Release versions follow [semantic versioning](https://semver.org/). This page will document migration steps needed for major and minor version changes.
 
+## v5.0.0
+
+[![github](https://img.shields.io/badge/github-v5.0.0-blue)](https://github.com/dynotx/liminal-orm/releases/tag/5.0.0) [![pypi](https://img.shields.io/pypi/v/liminal-orm/5.0.0.svg)](https://pypi.org/project/liminal-orm/5.0.0/)
+
+### 🗒️ Summary
+
+v5.0.0 release fully migrates Liminal to the v3 Benchling API, a big milestone in Liminal's roadmap! This removes the dependencies on Benchling's internal API, and migrates the underlying and data models to match Benchling's v3 endpoints. Most notably, `BenchlingConnection` no longer should have `internal_api_admin_email` and `internal_api_admin_password` set. These properties are denoted as deprecated, and will be officially removed from the class in the v6 Liminal release.
+
+With this release, the technical decision was made to maintain Liminal's interface, in order to limit the amount of breaking changes for users with existing schemas defined in code. This means that certain enums and properties in Liminal's interface may be different compared to Benchling's v3 API in some cases, but ultimately the functionality remains the same. Liminal was originally built on Benchling's v2 API and internal API. Benchling's v3 API endpoints have modfied the response shape and property names in some cases. After this Liminal v5 release has time to settle and Benchling's v3 API becomes more stable, the decision may be made to refactor Liminal's interface to mirror Benchling's v3 API 1-to-1. 
+
+It is also important to note that Benchling's v3 API currently has strict Rate Limits. Each v3 endpoint is assigned a rate limit tier, and the List endpoints are limited to 50 requests per minute. The rate limit budget replenishes at roughly 0.8 requests per second, and any request that gets sent past the rate limit responds with a HTTP 429 Error. As a result, Liminal v5 commands with heavy endpoint usage may be slower than Liminal v4, especially for tenants with many schemas and dropodwns. As Benchling gathers usage statistics of v3 endpoints, this rate limit is likely to change.
+
+### 🚀 Upgrade Steps
+
+1. Remove `internal_api_admin_email`, `internal_api_admin_password`, and `playwright_data_dir` from `BenchlingConnection` definitions.
+2. Remove `use_internal_api` from `BenchlingService` definitions.
+3. Run `liminal current <benchling_tenant_name>` to test. Reach out if you have any issues or questions!
+
+### ⛏️ Changes
+
+#### Breaking Changes
+- Authentication and connnecting with the BenchlingService
+  - `internal_api_admin_email` and `internal_api_admin_password` properties in `BenchlingConnection` have been removed. `use_internal_api` property in `BenchlingService` has also been removed. Liminal no longer connects the Benchling's internal API, so the authentication properties are no longer needed.
+- Sequence Constraints
+  - Benchling's v3 API currently is unable to set sequence constraints. The v3 API cannot differentiate between `bases (ignore case)` and `bases (exact match)`. This will have to be defined through the Benchling UI until this is supported in the v3 API.
+- Updated `SchemaProperties` validation; setting invalid schema-specific properties will now raise an error.
+
+#### Internal Changes
+- Removed pre-v3 enums `BenchlingAPIFieldType`, `BenchlingFolderItemType`, `BenchlingSequenceType`.
+- Removed `TagSchemaModel`, v2 `EntitySchemaModel`, and linked classes for pre-v3 data models.
+
+#### Non-breaking Changes
+- Removed `playwright`, `bs4`, `lxml`, and `requests` dependencies.
+- Added new `UnarchiveDropdownOption` operation.
+
+#### PRs
+- PR [#239](https://github.com/dynotx/liminal-orm/pull/239): removes unused dependencies.
+- PR [#238](https://github.com/dynotx/liminal-orm/pull/238): removes all code that depended on Benchling's internal API.
+- PR [#233](https://github.com/dynotx/liminal-orm/pull/233): migrates results schemas to the v3 API.
+- PR [#232](https://github.com/dynotx/liminal-orm/pull/232): migrates entity schemas to the v3 API.
+- PR [#213](https://github.com/dynotx/liminal-orm/pull/213): migrates dropdowns to the v3 API.
+- PR [#236](https://github.com/dynotx/liminal-orm/pull/236): adds v3 API helpers (pagination, rate limiting, async task polling).
+
+
 ## v4.5.0
 
 [![github](https://img.shields.io/badge/github-v4.5.0-blue)](https://github.com/dynotx/liminal-orm/releases/tag/4.5.0) [![pypi](https://img.shields.io/pypi/v/liminal-orm/4.5.0.svg)](https://pypi.org/project/liminal-orm/4.5.0/)
