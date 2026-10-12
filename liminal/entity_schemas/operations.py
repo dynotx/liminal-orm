@@ -221,7 +221,7 @@ class UnarchiveEntitySchema(BaseOperation):
 
 
 class UpdateEntitySchema(BaseOperation):
-    order: ClassVar[int] = 110
+    order: ClassVar[int] = 120
 
     def __init__(
         self,
@@ -290,7 +290,7 @@ class UpdateEntitySchema(BaseOperation):
 
 
 class UpdateEntitySchemaNameTemplate(BaseOperation):
-    order: ClassVar[int] = 120
+    order: ClassVar[int] = 110
 
     def __init__(
         self,

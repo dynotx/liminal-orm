@@ -16,8 +16,8 @@ Order of operations based on order class var:
     9. CreateEntitySchema
     10. UnarchiveEntitySchema
     11. CreateEntitySchemaField
-    12. UpdateEntitySchema
-    13. UpdateEntitySchemaNameTemplate
+    12. UpdateEntitySchemaNameTemplate
+    13. UpdateEntitySchema
     14. UnarchiveEntitySchemaField
     15. UpdateEntitySchemaField
     16. ArchiveEntitySchemaField
