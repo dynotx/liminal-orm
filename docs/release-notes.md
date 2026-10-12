@@ -36,6 +36,10 @@ It is also important to note that Benchling's v3 API currently has strict Rate L
 - Added new `UnarchiveDropdownOption` operation.
 
 #### PRs
+- PR [#243](https://github.com/dynotx/liminal-orm/pull/243): collection of bug fixes.
+- PR [#242](https://github.com/dynotx/liminal-orm/pull/242): refactors and removes _v3 suffixes.
+- PR [#241](https://github.com/dynotx/liminal-orm/pull/241): renames mapper function names.
+- PR [#240](https://github.com/dynotx/liminal-orm/pull/240): updates documentation for v5.0.0 release.
 - PR [#239](https://github.com/dynotx/liminal-orm/pull/239): removes unused dependencies.
 - PR [#238](https://github.com/dynotx/liminal-orm/pull/238): removes all code that depended on Benchling's internal API.
 - PR [#233](https://github.com/dynotx/liminal-orm/pull/233): migrates results schemas to the v3 API.
