@@ -9,7 +9,7 @@ nav:
       - getting-started/first-migration.md
       - getting-started/downgrading.md
       - getting-started/synchronizing-results-schemas.md
-      - getting-started/tutorials.md
+      - getting-started/video-tutorials.md
   - Reference:
       - reference/benchling-connection.md
       - reference/benchling-session.md
