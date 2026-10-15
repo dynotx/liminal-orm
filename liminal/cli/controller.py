@@ -1,9 +1,13 @@
 from pathlib import Path
+from typing import Any
 
 from rich import print
 
+from liminal.base.compare_operation import CompareOperation
 from liminal.connection.benchling_service import BenchlingService
+from liminal.dropdowns.compare import compare_dropdowns
 from liminal.dropdowns.generate_files import generate_all_dropdown_files
+from liminal.entity_schemas.compare import compare_entity_schemas
 from liminal.entity_schemas.generate_files import generate_all_entity_schema_files
 from liminal.migrate.components import execute_operations, get_full_migration_operations
 from liminal.migrate.revisions_timeline import RevisionsTimeline
@@ -43,6 +47,68 @@ def generate_all_files(
         generate_all_entity_schema_files(benchling_service, write_path, overwrite)
     if results_schemas_flag:
         generate_all_results_schema_files(benchling_service, write_path, overwrite)
+
+
+def diff_benchling_tenant(
+    benchling_service: BenchlingService,
+    dropdowns_flag: bool = True,
+    entity_schemas_flag: bool = True,
+) -> dict[str, Any]:
+    """Compares locally defined schemas to a Benchling tenant.
+
+    This is read-only and does not make any changes to the Benchling tenant or
+    write any files.
+
+    Parameters
+    ----------
+    benchling_service : BenchlingService
+        The Benchling service object that is connected to a specified Benchling tenant.
+    dropdowns_flag : bool
+        Whether to compare dropdowns.
+    entity_schemas_flag : bool
+        Whether to compare entity schemas.
+
+    Returns
+    -------
+    dict[str, Any]
+        A machine-readable report of the comparison.
+    """
+    tenant = benchling_service.benchling_tenant
+    sections: dict[str, dict[str, list[CompareOperation]] | None] = {
+        "dropdowns": None,
+        "entity_schemas": None,
+    }
+    if dropdowns_flag:
+        sections["dropdowns"] = compare_dropdowns(benchling_service)
+    if entity_schemas_flag:
+        sections["entity_schemas"] = compare_entity_schemas(benchling_service)
+
+    report: dict[str, Any] = {"tenant": tenant, "total_differences": 0}
+    for section_name, comparison in sections.items():
+        compared = comparison is not None
+        differences = [
+            {
+                "name": name,
+                "operation": compare_op.op.__class__.__name__,
+                "description": compare_op.op.describe(),
+            }
+            for name, compare_op in sorted(
+                (
+                    (name, compare_op)
+                    for name, compare_ops in (comparison or {}).items()
+                    for compare_op in compare_ops
+                ),
+                key=lambda difference: difference[1],
+            )
+        ]
+        report[section_name] = {
+            "compared": compared,
+            "in_sync": len(differences) == 0 if compared else None,
+            "differences": differences,
+        }
+        report["total_differences"] += len(differences)
+    report["in_sync"] = report["total_differences"] == 0
+    return report
 
 
 def autogenerate_revision_file(

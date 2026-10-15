@@ -1,5 +1,7 @@
 #!/usr/bin/env python
+import json
 from pathlib import Path
+import sys
 from typing import Any
 
 import typer
@@ -8,6 +10,7 @@ from typer.core import TyperGroup
 
 from liminal.cli.controller import (
     autogenerate_revision_file,
+    diff_benchling_tenant,
     downgrade_benchling_tenant,
     generate_all_files,
     upgrade_benchling_tenant,
@@ -177,6 +180,71 @@ def head(
 
 
 @app.command(
+    name="diff",
+    help="Compares the locally defined dropdowns and entity schemas to the given Benchling tenant. Exit codes: 0=in sync, 1=error, 2=differences found.",
+)
+def diff(
+    benchling_tenant: str = typer.Argument(
+        ..., help="Benchling tenant (or alias) to connect to."
+    ),
+    dropdowns_flag: bool = typer.Option(
+        False,
+        "-d",
+        "--dropdowns",
+        help="Only compare dropdowns.",
+    ),
+    entity_schemas_flag: bool = typer.Option(
+        False,
+        "-es",
+        "--entity-schemas",
+        help="Only compare entity schemas.",
+    ),
+    json_output: bool = typer.Option(
+        False,
+        "--json",
+        help="Write a machine-readable comparison report to stdout.",
+    ),
+) -> None:
+    benchling_connection = read_local_liminal_dir(LIMINAL_DIR_PATH, benchling_tenant)
+    benchling_service = BenchlingService(benchling_connection)
+    if not dropdowns_flag and not entity_schemas_flag:
+        dropdowns_flag = True
+        entity_schemas_flag = True
+    report = diff_benchling_tenant(
+        benchling_service, dropdowns_flag, entity_schemas_flag
+    )
+    if json_output:
+        typer.echo(json.dumps(report, sort_keys=True))
+    else:
+        for key, label in (
+            ("dropdowns", "Dropdowns"),
+            ("entity_schemas", "Entity schemas"),
+        ):
+            section = report[key]
+            if not section["compared"]:
+                continue
+            if section["in_sync"]:
+                print(f"[bold green]{label} are in sync for {report['tenant']} tenant.")
+                continue
+            print(
+                f"[bold yellow]{label}: {len(section['differences'])} difference(s) for {report['tenant']} tenant."
+            )
+            for index, difference in enumerate(section["differences"], start=1):
+                print(f"  {index}. {difference['description']}")
+
+        if report["in_sync"]:
+            print(
+                f"[bold green]No differences found. {report['tenant']} is in sync with code."
+            )
+        else:
+            print(
+                f"[bold yellow]{report['total_differences']} total difference(s) found between code and {report['tenant']}. Run `liminal revision {report['tenant']} '<description>'` to generate a revision file that resolves them."
+            )
+    if not report["in_sync"]:
+        raise typer.Exit(code=2)
+
+
+@app.command(
     name="revision",
     help="Generates a revision file with a list of operations to bring the given Benchling tenant up to date with the locally defined schemas. Writes revision file to liminal/versions/.",
 )
@@ -327,5 +395,5 @@ def live_test(
         )
 
 
-print("Starting Liminal CLI...")
+print("Starting Liminal CLI...", file=sys.stderr)
 app()
