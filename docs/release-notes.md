@@ -16,7 +16,7 @@ It is also important to note that Benchling's v3 API currently has strict Rate L
 
 1. Remove `internal_api_admin_email`, `internal_api_admin_password`, and `playwright_data_dir` from `BenchlingConnection` definitions.
 2. Remove `use_internal_api` from `BenchlingService` definitions.
-3. Run `liminal current <benchling_tenant_name>` to test. Reach out if you have any issues or questions!
+3. Run `liminal diff <benchling_tenant_name>` to test. Reach out if you have any issues or questions!
 
 ### ⛏️ Changes
 
