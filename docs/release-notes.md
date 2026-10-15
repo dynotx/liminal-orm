@@ -21,15 +21,13 @@ It is also important to note that Benchling's v3 API currently has strict Rate L
 ### ⛏️ Changes
 
 #### Breaking Changes
-- Authentication and connnecting with the BenchlingService
   - `internal_api_admin_email` and `internal_api_admin_password` properties in `BenchlingConnection` have been removed. `use_internal_api` property in `BenchlingService` has also been removed. Liminal no longer connects the Benchling's internal API, so the authentication properties are no longer needed.
-- Sequence Constraints
   - Benchling's v3 API currently is unable to set sequence constraints. The v3 API cannot differentiate between `bases (ignore case)` and `bases (exact match)`. This will have to be defined through the Benchling UI until this is supported in the v3 API.
-- Updated `SchemaProperties` validation; setting invalid schema-specific properties will now raise an error.
 
 #### Internal Changes
 - Removed pre-v3 enums `BenchlingAPIFieldType`, `BenchlingFolderItemType`, `BenchlingSequenceType`.
 - Removed `TagSchemaModel`, v2 `EntitySchemaModel`, and linked classes for pre-v3 data models.
+- Updated `SchemaProperties` validation; setting invalid schema-specific properties will now raise an error.
 
 #### Non-breaking Changes
 - Removed `playwright`, `bs4`, `lxml`, and `requests` dependencies.
