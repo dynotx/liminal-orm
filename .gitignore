@@ -19,4 +19,5 @@ site/
 # for local testing
 test_liminal/
 
-.history
+.history/
+.cursor/
