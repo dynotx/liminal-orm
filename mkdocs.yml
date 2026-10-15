@@ -10,6 +10,7 @@ nav:
       - getting-started/downgrading.md
       - getting-started/synchronizing-results-schemas.md
       - getting-started/video-tutorials.md
+      - AI Agent Skill: getting-started/ai-agent-skill.md
   - Reference:
       - reference/benchling-connection.md
       - reference/benchling-session.md
