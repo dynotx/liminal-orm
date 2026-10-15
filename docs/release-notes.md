@@ -13,10 +13,10 @@ With this release, the technical decision was made to maintain Liminal's interfa
 It is also important to note that Benchling's v3 API currently has strict Rate Limits. Each v3 endpoint is assigned a rate limit tier, and the List endpoints are limited to 50 requests per minute. The rate limit budget replenishes at roughly 0.8 requests per second, and any request that gets sent past the rate limit responds with a HTTP 429 Error. As a result, Liminal v5 commands with heavy endpoint usage may be slower than Liminal v4, especially for tenants with many schemas and dropodwns. As Benchling gathers usage statistics of v3 endpoints, this rate limit is likely to change.
 
 ### 🚀 Upgrade Steps
-
-1. Remove `internal_api_admin_email`, `internal_api_admin_password`, and `playwright_data_dir` from `BenchlingConnection` definitions.
-2. Remove `use_internal_api` from `BenchlingService` definitions.
-3. Run `liminal diff <benchling_tenant_name>` to test. Reach out if you have any issues or questions!
+1. Run `uv add liminal-orm@5.1.0` or `pip install liminal-orm==5.1.0` to upgrade to the latest Liminal release.
+2. Remove `internal_api_admin_email`, `internal_api_admin_password`, and `playwright_data_dir` from `BenchlingConnection` definitions.
+3. Remove `use_internal_api` from `BenchlingService` definitions.
+4. Run `liminal diff <benchling_tenant_name>` to test. (if you have any issues or questions, reach out!)
 
 ### ⛏️ Changes
 
