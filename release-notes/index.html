@@ -628,6 +628,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/ai-agent-skill/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AI Agent Skill
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1819,23 +1840,22 @@
 <p>It is also important to note that Benchling's v3 API currently has strict Rate Limits. Each v3 endpoint is assigned a rate limit tier, and the List endpoints are limited to 50 requests per minute. The rate limit budget replenishes at roughly 0.8 requests per second, and any request that gets sent past the rate limit responds with a HTTP 429 Error. As a result, Liminal v5 commands with heavy endpoint usage may be slower than Liminal v4, especially for tenants with many schemas and dropodwns. As Benchling gathers usage statistics of v3 endpoints, this rate limit is likely to change.</p>
 <h3 id="upgrade-steps">🚀 Upgrade Steps</h3>
 <ol>
+<li>Run <code>uv add liminal-orm@5.1.0</code> or <code>pip install liminal-orm==5.1.0</code> to upgrade to the latest Liminal release.</li>
 <li>Remove <code>internal_api_admin_email</code>, <code>internal_api_admin_password</code>, and <code>playwright_data_dir</code> from <code>BenchlingConnection</code> definitions.</li>
 <li>Remove <code>use_internal_api</code> from <code>BenchlingService</code> definitions.</li>
-<li>Run <code>liminal current &lt;benchling_tenant_name&gt;</code> to test. Reach out if you have any issues or questions!</li>
+<li>Run <code>liminal diff &lt;benchling_tenant_name&gt;</code> to test. (if you have any issues or questions, reach out!)</li>
 </ol>
 <h3 id="changes">⛏️ Changes</h3>
 <h4 id="breaking-changes">Breaking Changes</h4>
 <ul>
-<li>Authentication and connnecting with the BenchlingService</li>
 <li><code>internal_api_admin_email</code> and <code>internal_api_admin_password</code> properties in <code>BenchlingConnection</code> have been removed. <code>use_internal_api</code> property in <code>BenchlingService</code> has also been removed. Liminal no longer connects the Benchling's internal API, so the authentication properties are no longer needed.</li>
-<li>Sequence Constraints</li>
 <li>Benchling's v3 API currently is unable to set sequence constraints. The v3 API cannot differentiate between <code>bases (ignore case)</code> and <code>bases (exact match)</code>. This will have to be defined through the Benchling UI until this is supported in the v3 API.</li>
-<li>Updated <code>SchemaProperties</code> validation; setting invalid schema-specific properties will now raise an error.</li>
 </ul>
 <h4 id="internal-changes">Internal Changes</h4>
 <ul>
 <li>Removed pre-v3 enums <code>BenchlingAPIFieldType</code>, <code>BenchlingFolderItemType</code>, <code>BenchlingSequenceType</code>.</li>
 <li>Removed <code>TagSchemaModel</code>, v2 <code>EntitySchemaModel</code>, and linked classes for pre-v3 data models.</li>
+<li>Updated <code>SchemaProperties</code> validation; setting invalid schema-specific properties will now raise an error.</li>
 </ul>
 <h4 id="non-breaking-changes">Non-breaking Changes</h4>
 <ul>
