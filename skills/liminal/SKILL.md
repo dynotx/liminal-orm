@@ -10,7 +10,7 @@ Liminal defines Benchling dropdowns, entity schemas, and results schemas as Pyth
 ## Non-negotiable rules
 
 1. **Every write to Benchling requires explicit human approval first.** Follow the [Benchling write approval gate](#benchling-write-approval-gate) before each one. No exceptions, including test and dev tenants.
-2. **Migrations are always two steps with a human gate in between.** Run `liminal revision ...`, show the user the generated revision file, and **stop**. Only run `liminal upgrade ...` after the user explicitly approves that specific revision file. Never chain `revision` and `upgrade` in one command, script, or turn, even if the user asked to "just migrate".
+2. **Migrations are always two steps with a human gate in between, and that gate is a single approval.** Run `liminal revision ...`, review the file, then present one combined [review and upgrade approval request](#review-and-approval-one-approval-per-tenant) (review results, confidence score, and the exact `liminal upgrade` command) and **stop**. Only run `liminal upgrade ...` after the user explicitly approves that request. Never chain `revision` and `upgrade` in one command, script, or turn, even if the user asked to "just migrate". Don't ask the user to approve the revision file and then separately approve the upgrade.
 3. **Never answer interactive prompts on the user's behalf** (e.g. piping `yes` into `liminal head --reset`). Ask the user and let them confirm.
 4. **Never re-run a failed `upgrade` unchanged.** See [If an upgrade fails](#if-an-upgrade-fails).
 5. **Never write secrets into `liminal/env.py`.** Read credentials from environment variables or a secrets manager.
@@ -51,6 +51,7 @@ Before every Benchling write:
 ### Scope of an approval
 
 - An approval covers **one command, against one tenant, for the exact operations shown**. It doesn't carry over to another tenant (approving `test` doesn't approve `prod`), another revision, or a retry.
+- For a migration, the combined review and upgrade request is the approval for that upgrade. One "approve" covers reviewing the revision file and running the exact `liminal upgrade` command shown. Don't add a second confirmation.
 - **Ask again** if anything changes after approval: the revision file is edited, the descriptor changes (e.g. `head` now resolves to a newer revision), or a previous attempt failed.
 - Instructions given ahead of time ("migrate everything", "you have permission to upgrade prod", "don't ask me again") are **not** a substitute for the per-write approval request. Acknowledge them, then still ask at each write.
 - Never run Benchling writes unattended: no `--yes`-style piping, no background jobs, no CI changes, and no scripts that bundle several writes behind a single approval.
@@ -217,7 +218,7 @@ Search the whole repository, not just the schema package, for every identifier t
 - **Tests and fixtures** that construct models or assert on field names.
 - **Package exports**: `__init__.py` files and `env.py` imports for new or deleted modules.
 
-List anything outside the repository that may be affected (dashboards, other services, Benchling-side configuration) and tell the user. You cannot fix those yourself.
+Only search within the repository. Don't check or report on anything outside it.
 
 ### 4. Verify the code before generating the revision
 
@@ -234,11 +235,10 @@ Copy this checklist and track progress:
 - [ ] Preflight: `liminal current <tenant>` == `liminal head`
 - [ ] Inspect `liminal diff <tenant>` output; investigate every unexpected difference
 - [ ] Step 1: `liminal revision <tenant> "<description>"` (approval gate first if this is a fresh timeline)
-- [ ] Review: revision file checked against the review checklist
-- [ ] GATE: user explicitly approved the revision file contents
-- [ ] GATE: approval request for `liminal upgrade <test_tenant> <revision_id>` approved
+- [ ] Review: revision file checked against the review checklist, coherence check done (code and other schemas), confidence score computed
+- [ ] GATE (single approval): combined review + `liminal upgrade <test_tenant> <revision_id>` request approved
 - [ ] Step 2: upgrade test tenant → user verifies in Benchling
-- [ ] GATE: approval request for `liminal upgrade <prod_tenant> <revision_id>` approved
+- [ ] GATE (single approval): combined review + `liminal upgrade <prod_tenant> <revision_id>` request approved
 - [ ] Step 2: upgrade prod tenant → user verifies in Benchling
 - [ ] `liminal current <tenant>` shows the new revision on every tenant
 - [ ] Schema changes + code changes + revision file committed together in one PR
@@ -273,7 +273,7 @@ If the output says dropdowns and entity schemas are in sync and `upgrade()` is e
 
 ### Review checklist
 
-Go through every operation and report the results to the user:
+Go through every operation. Report only failures, fixes, and risks; don't list passing items:
 
 - [ ] Every operation in `upgrade()` maps to a change the user asked for, and nothing they asked for is missing.
 - [ ] **No unexpected `ArchiveEntitySchema` / `ArchiveDropdown` / `ArchiveEntitySchemaField` / `ArchiveDropdownOption` operations.** These usually mean a class isn't imported in `env.py`, or the code is stale compared with what someone changed in the Benchling UI. If you find any, stop and investigate. Don't edit them away without understanding why.
@@ -285,20 +285,75 @@ Go through every operation and report the results to the user:
 - [ ] `downgrade()` is the exact inverse of `upgrade()`, in reverse order. Fix it if you hand-edited `upgrade()`.
 - [ ] `down_revision` equals the previous head and the tenant's current revision.
 - [ ] Flag risky changes to the user: archiving fields or options that hold data, making fields required, changing field types, and anything that affects downstream consumers identified in groundwork step 3.
+- [ ] **Coherence with the codebase and the rest of the Benchling schemas.** Run the [coherence check](#coherence-check) below. A migration that is valid on its own can still break something else.
 
-Then **stop**. Present a plain-language summary of each operation, the file path, and any flagged risks, and ask the user to confirm. If they reject it, edit the code or the revision file and review again, or delete the unapplied revision with `liminal head --reset` (the user confirms the prompt).
+### Coherence check
+
+Do this for every revision, before scoring. Search the whole repo (not just the schema package) and the full set of schema and dropdown classes imported by `env.py`, using the identifiers each operation touches: class name, warehouse name, display name, dropdown name, and option strings.
+
+- [ ] **No dangling references to removed things.** For each archived schema, field, dropdown, or option, nothing still references it: no `entity_link=` / `dropdown=` / `parent_link=` in other schemas (including results schemas), no `constraint_fields`, name-template `FieldPart`, relationship, validator, `__init__` parameter, query, test, fixture, or app payload.
+- [ ] **No broken targets for new things.** Every new `entity_link`, `dropdown`, or `parent_link` points to a schema or dropdown that exists (in code and on the tenant) and is not archived. Each new schema or dropdown is imported by `env.py`.
+- [ ] **Code and tenant models agree.** The model class, its `__init__`, validators, and exports match the revision (same fields, names, types, required flags, `is_multi`). Run `liminal diff <tenant>`; after the upgrade it should report in sync, and no unrelated differences should remain.
+- [ ] **No contradictory data models.** Check the new state against the other schemas: no duplicate or conflicting field names or warehouse names for the same concept across related schemas, no `required=True` field that existing creators (code, apps, other schemas' links) can't populate, no type mismatch between a field and the field it links to or is queried alongside, and a name template that only uses fields that still exist.
+- [ ] **Downstream consumers in the repo are updated.** Warehouse queries, dbt models, apps, and integrations in this repo that read the affected names or values are updated in the same change. Only check within the repo; don't flag or score anything outside it.
+
+For each failed item, say what you found (file and line) and fix it or ask the user. Don't mark an item as passed unless you searched for it; if you couldn't search within the repo, report it as **unverified**. Don't report passing items.
+
+### Confidence score
+
+After the checklist, give a confidence score from 0 to 100 for whether the user should run the upgrade, and a verdict: **Upgrade** (90-100), **Upgrade with caution** (70-89), or **Do not upgrade yet** (below 70). Start at 100 and subtract:
+
+| Finding | Deduction |
+|---|---|
+| Unexpected archive operation, or any operation not tied to the requested change | -40 (stop and investigate; verdict is **Do not upgrade yet** until resolved) |
+| Autogenerate rename not yet converted to an update operation | -40 |
+| `downgrade()` is not the exact inverse of `upgrade()` | -25 |
+| `down_revision` doesn't match the tenant's current revision | -50 |
+| Requested change missing from `upgrade()` | -30 |
+| Archives a field, option, or schema that may hold data | -20 |
+| Makes a field required, or changes a field type, `is_multi`, or `entity_link` | -15 each |
+| Dangling reference to something the revision archives or renames (in code or another schema) | -40 each (verdict is **Do not upgrade yet** until fixed) |
+| New `entity_link` / `dropdown` / `parent_link` target missing, archived, or not imported by `env.py` | -40 |
+| Model code (class, `__init__`, validators) doesn't match the revision | -30 |
+| Contradictory data model found (conflicting names, unpopulatable required field, type mismatch, name template using a removed field) | -25 each |
+| Coherence check item left unverified inside the repo (didn't search) | -15 each |
+| Tests, type checker, or linter not run or failing | -10 |
+| `liminal diff` showed unexplained differences | -15 |
+| Target is prod and the revision hasn't been applied to a test tenant first | -10 |
+
+Show the score with the deductions that produced it, e.g. `Confidence: 100/100 (Upgrade): additive optional field, clean inverse, no archives`. The score is advice only. It never replaces the approval request, and a high score doesn't let you skip it.
+
+### Review and approval: one approval per tenant
+
+Don't ask the user to approve the revision file and then ask again to approve the upgrade. Send **one** message containing the review results and the upgrade approval request, then **stop**:
+
+```
+Revision review: <revision_id> (<file path>)
+Issues:      <only failed or unverified checklist/coherence items with file and line, or "none">
+Operations:  <numbered plain-language list of upgrade() operations>
+Confidence:  <score>/100 (<verdict>): <deductions or "no deductions">
+
+Approval needed: Benchling write
+Tenant:    <tenant> (<prod | test | dev>)
+Command:   liminal upgrade <tenant> <revision_id>
+Revision:  <revision_id>, <file path>
+Changes:   <same numbered list as Operations>
+Risks:     <flagged risks, or "none identified">
+Rollback:  liminal downgrade <tenant> <down_revision>
+Reply "approve" to run this exact command, or tell me what to change.
+```
+
+A single "approve" covers both the file review and running that upgrade. Run it right away; don't ask again. If the verdict is **Do not upgrade yet**, say so, explain why, and offer fixes rather than asking for approval. If the user rejects the revision, edit the code or the revision file and review again, or delete the unapplied revision with `liminal head --reset` (the user confirms the prompt).
 
 ### Step 2: apply the revision (one approval per tenant)
 
-Approving the revision file's contents doesn't approve running it. Each upgrade needs its own approval request.
-
-Apply to the test tenant first and target the specific reviewed revision_id rather than `head`, so nothing unreviewed sneaks in. Send the approval request, stop, and run this only after explicit approval:
+Apply to the test tenant first and target the specific reviewed revision_id rather than `head`, so nothing unreviewed sneaks in. The combined review and approval request above is the only approval needed for that tenant. Run this only after explicit approval:
 
 ```bash
 liminal upgrade test c3a9cd009713
 ```
 
-Report the result and have the user verify the change in the Benchling UI. Then send a **new** approval request for production, stop, and run this only after explicit approval:
+Report the result and have the user verify the change in the Benchling UI. Then send a **new** combined request for production (a different tenant needs its own approval), stop, and run this only after explicit approval:
 
 ```bash
 liminal upgrade prod c3a9cd009713
