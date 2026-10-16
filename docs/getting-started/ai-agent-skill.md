@@ -5,7 +5,7 @@ Liminal provides an SKILL.md file that instructs AI agents how to safely manage 
 
 ## Download
 
-Download [SKILL.md](https://raw.githubusercontent.com/dynotx/liminal-orm/main/skills/liminal/SKILL.md), then copy it into your repository at the following locations:
+<a href="../../assets/SKILL.md" download="SKILL.md">Download SKILL.md</a>, then copy it into your repository at the following locations:
 
 ## Codex
 

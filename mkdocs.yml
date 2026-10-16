@@ -59,6 +59,8 @@ theme:
     - content.tabs.link
     - header.autohide
     - navigation.footer
+hooks:
+  - docs/hooks.py
 markdown_extensions:
   - admonition
   - pymdownx.details
