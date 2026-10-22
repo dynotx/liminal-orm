@@ -24,8 +24,6 @@ def convert_result_schema_field_to_field_properties(
     dropdowns_map: dict[str, str],
     unit_id_to_name_map: dict[str, str],
 ) -> BaseFieldProperties:
-    field_type = map_field_definition_type_to_field_type(field.typename)
-
     link_definition_id = field.linkDefinition.id if field.linkDefinition else None
     unit_id = (
         field.unit.get("id")
@@ -40,12 +38,18 @@ def convert_result_schema_field_to_field_properties(
     ):
         dropdown_link = dropdowns_map.get(link_definition_id)
 
-    entity_link = None
-    if (
-        BenchlingFieldDefinitionType.is_entity_link(field.typename)
-        and link_definition_id
-    ):
-        entity_link = entity_schema_id_to_system_name_map.get(link_definition_id)
+    links_to_entity_schema = (
+        field.linkDefinition is not None
+        and field.linkDefinition.typename.is_entity_schema_type()
+    )
+    field_type = map_field_definition_type_to_field_type(
+        field.typename, links_to_entity_schema
+    )
+    entity_link = (
+        entity_schema_id_to_system_name_map.get(link_definition_id)
+        if links_to_entity_schema
+        else None
+    )
 
     return BaseFieldProperties(
         name=field.name,
