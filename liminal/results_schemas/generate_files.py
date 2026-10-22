@@ -11,7 +11,7 @@ from liminal.enums import BenchlingFieldType
 from liminal.mappers import map_benchling_type_to_python_type
 from liminal.orm.base_model import BaseModel
 from liminal.results_schemas.utils import get_converted_results_schemas
-from liminal.utils import to_pascal_case, to_snake_case
+from liminal.utils import to_python_identifier, to_pascal_case, to_snake_case
 
 TAB = "    "
 
@@ -68,8 +68,11 @@ def generate_all_results_schema_files(
         column_strings = []
         dropdowns = []
         relationship_strings = []
-        for col_name, col in field_properties_dict.items():
+        for wh_col_name, col in field_properties_dict.items():
+            col_name = to_python_identifier(wh_col_name)
             column_props = col.column_dump()
+            if col_name != wh_col_name:
+                column_props["_warehouse_name"] = wh_col_name
             dropdown_classname = None
             if col.dropdown_link:
                 dropdown_classname = dropdown_name_to_classname_map[col.dropdown_link]
@@ -116,17 +119,19 @@ def generate_all_results_schema_files(
                         import_strings.append(
                             "from liminal.orm.relationship import multi_relationship"
                         )
-        for col_name, col in field_properties_dict.items():
+        for wh_col_name, col in field_properties_dict.items():
+            col_name = to_python_identifier(wh_col_name)
             if not col.required and col.type:
                 init_strings.append(
                     f"""{TAB}{col_name}: {map_benchling_type_to_python_type(col.type).__name__} | None = None,"""
                 )
         init_strings.append("):")
-        for col_name in field_properties_dict.keys():
+        for col_name in [to_python_identifier(n) for n in field_properties_dict.keys()]:
             init_strings.append(f"{TAB}self.{col_name} = {col_name}")
         if len(dropdowns) > 0:
             import_strings.append(f"from ..dropdowns import {', '.join(dropdowns)}")
-        for col_name, col in field_properties_dict.items():
+        for wh_col_name, col in field_properties_dict.items():
+            col_name = to_python_identifier(wh_col_name)
             if col.dropdown_link:
                 init_strings.append(
                     TAB
