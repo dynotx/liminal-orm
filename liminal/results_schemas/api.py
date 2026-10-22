@@ -14,7 +14,10 @@ def list_results_schemas(
     benchling_service: BenchlingService,
 ) -> list[dict[str, Any]]:
     """Fetch result schemas from the v3 API."""
-    return list_all_items_v3(benchling_service, f"{_RESULT_SCHEMA_API_PATH}/items")
+    result_schemas = list_all_items_v3(
+        benchling_service, f"{_RESULT_SCHEMA_API_PATH}/items"
+    )
+    return [s for s in result_schemas if benchling_service._is_in_registry_scope(s)]
 
 
 def list_result_schema_field_definitions(
