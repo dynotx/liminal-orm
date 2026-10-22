@@ -9,7 +9,7 @@ from liminal.entity_schemas.utils import get_converted_entity_schemas
 from liminal.enums import BenchlingEntityType, BenchlingFieldType
 from liminal.mappers import map_benchling_type_to_python_type
 from liminal.orm.name_template import NameTemplate
-from liminal.utils import to_pascal_case, to_snake_case
+from liminal.utils import to_module_name, to_pascal_case
 
 
 def get_entity_mixin(entity_type: BenchlingEntityType) -> str:
@@ -88,7 +88,7 @@ def generate_all_entity_schema_files(
 
     for schema_properties, name_template, columns in models:
         classname = to_pascal_case(schema_properties.name)
-        filename = to_snake_case(schema_properties.name) + ".py"
+        filename = to_module_name(schema_properties.name) + ".py"
         columns = {key: columns[key] for key in columns}
         import_strings = [
             "from sqlalchemy import Column as SqlColumn",
