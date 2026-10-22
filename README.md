@@ -103,7 +103,7 @@ Liminal ORM is distributed under the [Apache License, Version 2.0](./LICENSE.md)
 ## [Direct Contact](#direct-contact)
 
 - Liminal Community Slack group: [Join here](https://join.slack.com/t/liminalorm/shared_invite/zt-3fu79tf06-oqL1000p8BAOG6B3yOOXNA)
-- Email: <opensource@dynotx.com>
+- Email: <ndamania00@gmail.com>
 - LinkedIn: [Nirmit Damania](https://www.linkedin.com/in/nirmit-damania/)
 
 ## [Acknowledgements](#acknowledgements)
