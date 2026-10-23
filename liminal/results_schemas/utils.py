@@ -101,5 +101,9 @@ def get_benchling_results_schemas(
     benchling_service: BenchlingService,
 ) -> list[AssayResultSchema]:
     return [
-        s for loe in benchling_service.schemas.list_assay_result_schemas() for s in loe
+        s
+        for loe in benchling_service.schemas.list_assay_result_schemas()
+        for s in loe
+        if not benchling_service._is_registry_scoped
+        or s.organization.id == benchling_service.organization_id
     ]

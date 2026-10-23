@@ -1,9 +1,10 @@
 import logging
 import warnings
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from benchling_sdk.auth.client_credentials_oauth2 import ClientCredentialsOAuth2
 from benchling_sdk.benchling import Benchling, BenchlingApiClientDecorator
+from benchling_sdk.errors import BenchlingError
 from benchling_sdk.helpers.retry_helpers import RetryStrategy
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
@@ -26,6 +27,17 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 REMOTE_LIMINAL_SCHEMA_NAME = "liminal_remote"
 REMOTE_REVISION_ID_FIELD_WH_NAME = "revision_id"
+
+
+class RegistryRef(NamedTuple):
+    """The registry a connection writes to, and the organization that owns it."""
+
+    id: str
+    owner_id: str
+
+
+class AmbiguousRegistryError(ValueError):
+    """A lookup matched objects that may sit in different registries, and the connection doesn't name one."""
 
 
 class BenchlingService(Benchling):
@@ -64,6 +76,8 @@ class BenchlingService(Benchling):
             )
         self.connection = connection
         self._session: Session | None = None
+        self._registry: RegistryRef | None = None
+        self._registry_count: int | None = None
         self.use_api = use_api
         self.benchling_tenant = connection.tenant_name
         if use_api:
@@ -103,17 +117,83 @@ class BenchlingService(Benchling):
 
     @property
     def registry_id(self) -> str:
-        # This assumes there is only one registry (which has always been the case at DynoTx)
-        registries = self.registry.registries()
-        assert len(registries) == 1
-        return registries[0].id
+        """The id of the registry this connection writes to. Raises if it can't be determined."""
+        return self._get_registry().id
 
     @property
     def organization_id(self) -> str:
-        # This assumes there is only one registry (which has always been the case at DynoTx)
-        registries = self.registry.registries()
-        assert len(registries) == 1
-        return registries[0].owner.id
+        """The id of the organization that owns this connection's registry. Raises if it can't be determined."""
+        return self._get_registry().owner_id
+
+    @property
+    def _is_registry_scoped(self) -> bool:
+        """Whether this connection is scoped to one registry through `registry_id`."""
+        return self.connection.registry_id is not None
+
+    @property
+    def _has_unresolved_registry(self) -> bool:
+        """Whether the tenant has more than one registry and this connection doesn't name one.
+        Lookups by name can then match objects in several registries."""
+        return self._find_registry() is None
+
+    def _is_in_registry_scope(self, record: dict[str, Any]) -> bool:
+        """Whether a v3 API record belongs to this connection's registry or its organization.
+        Always True when the connection isn't scoped to a registry."""
+        if not self._is_registry_scoped:
+            return True
+        registry_id = (record.get("registry") or {}).get("id")
+        if registry_id:
+            return registry_id == self.registry_id
+        organization_id = (record.get("organization") or {}).get("id")
+        if organization_id:
+            return organization_id == self.organization_id
+        return False
+
+    def _ensure_unambiguous(self, matches: list[Any], description: str) -> None:
+        """Raises when a lookup matches more than one object on a tenant whose registry isn't set,
+        because the matches may sit in different registries and Liminal would have to guess."""
+        if len(matches) > 1 and self._has_unresolved_registry:
+            raise AmbiguousRegistryError(
+                f"Tenant {self.benchling_tenant}: found {len(matches)} {description}. "
+                "The tenant has more than one registry, so set registry_id on the BenchlingConnection to choose one."
+            )
+
+    def _find_registry(self) -> RegistryRef | None:
+        """Resolves the connection's registry once. Returns None when the tenant has several registries
+        and the connection doesn't set registry_id."""
+        if self._registry_count is None:
+            if self.connection.registry_id is not None:
+                self._registry = self._get_registry_by_id(self.connection.registry_id)
+                self._registry_count = 1
+            else:
+                registries = self.registry.registries()
+                self._registry_count = len(registries)
+                if len(registries) == 1:
+                    self._registry = RegistryRef(
+                        registries[0].id, registries[0].owner.id
+                    )
+        return self._registry
+
+    def _get_registry_by_id(self, registry_id: str) -> RegistryRef:
+        from liminal.utils import rate_limited_get_v3
+
+        try:
+            response = rate_limited_get_v3(self, f"/api/v3/registry/{registry_id}")
+        except BenchlingError as e:
+            raise ValueError(
+                f"Tenant {self.benchling_tenant}: registry {registry_id} not found ({e.status_code})."
+            ) from e
+        registry = response.parsed
+        return RegistryRef(registry["id"], registry["owner"]["id"])
+
+    def _get_registry(self) -> RegistryRef:
+        registry = self._find_registry()
+        if registry is None:
+            raise ValueError(
+                f"Tenant {self.benchling_tenant} has {self._registry_count} registries. "
+                "Set registry_id on the BenchlingConnection to choose one."
+            )
+        return registry
 
     def __enter__(self) -> Session:
         self._session = self.get_session()

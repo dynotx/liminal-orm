@@ -531,14 +531,11 @@ class EntitySchemaModel(BaseModel):
     ) -> EntitySchemaModel:
         if schemas_data is None:
             schemas_data = list_entity_schemas(benchling_service, include_archived=True)
-        schema = next(
-            (
-                schema
-                for schema in schemas_data
-                if schema["systemName"] == wh_schema_name
-            ),
-            None,
+        matches = [s for s in schemas_data if s["systemName"] == wh_schema_name]
+        benchling_service._ensure_unambiguous(
+            matches, f"entity schemas with warehouse name {wh_schema_name}"
         )
+        schema = matches[0] if matches else None
         if schema is None:
             raise ValueError(
                 f"Schema {wh_schema_name} not found in Benchling {benchling_service.benchling_tenant}."
