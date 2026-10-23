@@ -1,4 +1,5 @@
 import json
+import keyword
 import random
 import re
 import string
@@ -72,6 +73,14 @@ def to_snake_case(input_string: str) -> str:
     words = re.split(r"[ /_\-]", input_string)
     words = [word for word in words if word]
     return "_".join(re.sub(r"[^a-zA-Z0-9]", "", word).lower() for word in words)
+
+
+def to_python_identifier(name: str) -> str:
+    """
+    Make a warehouse name safe to use as a Python attribute/argument name.
+    Python keywords (e.g. `yield`) get a trailing underscore (`yield_`).
+    """
+    return f"{name}_" if keyword.iskeyword(name) else name
 
 
 def to_module_name(input_string: str) -> str:

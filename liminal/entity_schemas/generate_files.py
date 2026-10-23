@@ -9,7 +9,7 @@ from liminal.entity_schemas.utils import get_converted_entity_schemas
 from liminal.enums import BenchlingEntityType, BenchlingFieldType
 from liminal.mappers import map_benchling_type_to_python_type
 from liminal.orm.name_template import NameTemplate
-from liminal.utils import to_module_name, to_pascal_case
+from liminal.utils import to_module_name, to_python_identifier, to_pascal_case
 
 
 def get_entity_mixin(entity_type: BenchlingEntityType) -> str:
@@ -109,8 +109,11 @@ def generate_all_entity_schema_files(
         column_strings = []
         dropdowns = []
         relationship_strings = []
-        for col_name, col in columns.items():
+        for wh_col_name, col in columns.items():
+            col_name = to_python_identifier(wh_col_name)
             column_props = col.column_dump()
+            if col_name != wh_col_name:
+                column_props["_warehouse_name"] = wh_col_name
             dropdown_classname = None
             if col.dropdown_link:
                 dropdown_classname = dropdown_name_to_classname_map[col.dropdown_link]
@@ -155,13 +158,14 @@ def generate_all_entity_schema_files(
                         import_strings.append(
                             "from liminal.orm.relationship import multi_relationship"
                         )
-        for col_name, col in columns.items():
+        for wh_col_name, col in columns.items():
+            col_name = to_python_identifier(wh_col_name)
             if not col.required and col.type:
                 init_strings.append(
                     f"""{TAB}{col_name}: {map_benchling_type_to_python_type(col.type).__name__} | None = None,"""
                 )
         init_strings.append("):")
-        for col_name in columns.keys():
+        for col_name in [to_python_identifier(n) for n in columns.keys()]:
             init_strings.append(f"{TAB}self.{col_name} = {col_name}")
         if len(dropdowns) > 0:
             import_strings.append(f"from ...dropdowns import {', '.join(dropdowns)}")
@@ -171,7 +175,8 @@ def generate_all_entity_schema_files(
                 f"from liminal.orm.name_template_parts import {', '.join(sorted(set([part.__class__.__name__ for part in name_template.parts])))}"
             ]
             import_strings.extend(parts_imports)
-        for col_name, col in columns.items():
+        for wh_col_name, col in columns.items():
+            col_name = to_python_identifier(wh_col_name)
             if col.dropdown_link:
                 init_strings.append(
                     TAB
