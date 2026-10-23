@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from functools import lru_cache
 from typing import Any
 
@@ -484,7 +485,8 @@ class EntitySchemaModel(BaseModel):
     availableRegistrationNamingOptions: list[BenchlingNamingStrategy] | None = None
     constraint: EntitySchemaConstraintModel | None = None
     nameTemplate: NameTemplateModel | None = None
-    containerNameTemplate: NameTemplateModel | None = None
+    # TODO(#263): Add coverage for containerNameTemplate.
+    containerNameTemplate: dict[str, Any] | None = None
     showResidues: bool | None = None
     typedIconId: str | None = None
     allowMeasuredIngredients: bool | None = None
@@ -519,7 +521,10 @@ class EntitySchemaModel(BaseModel):
                 try:
                     filtered_schemas.append(cls.model_validate(schema))
                 except Exception as e:
-                    print(f"Error validating schema {schema['systemName']}: {e}")
+                    warnings.warn(
+                        f"Skipping schema {schema['systemName']}: failed validation: {e}",
+                        stacklevel=2,
+                    )
         return filtered_schemas
 
     @classmethod
