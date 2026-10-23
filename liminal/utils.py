@@ -56,10 +56,14 @@ def generate_random_id(length: int = 8) -> str:
 def to_pascal_case(input_string: str) -> str:
     """
     Convert a string to PascalCase. Filters out any non-alphanumeric characters.
+    Prefixes with `N` (for Number) if it starts with a digit to avoid invalid Python variable names.
     """
     words = re.split(r"[ /_\-]", input_string)
     # Then remove any non-alphanumeric characters and capitalize each word
-    return "".join(re.sub(r"[^a-zA-Z0-9]", "", word).capitalize() for word in words)
+    result = "".join(re.sub(r"[^a-zA-Z0-9]", "", word).capitalize() for word in words)
+    if result and result[0].isdigit():
+        result = "N" + result
+    return result
 
 
 def to_snake_case(input_string: str) -> str:
@@ -77,6 +81,18 @@ def to_python_identifier(name: str) -> str:
     Python keywords (e.g. `yield`) get a trailing underscore (`yield_`).
     """
     return f"{name}_" if keyword.iskeyword(name) else name
+
+
+def to_module_name(input_string: str) -> str:
+    """
+    Convert a string to a valid Python module name (snake_case, prefixed with `n_` if it
+    starts with a digit). Use for generated filenames and imports only; use
+    to_snake_case for warehouse name comparisons.
+    """
+    result = to_snake_case(input_string)
+    if result and result[0].isdigit():
+        result = "n_" + result
+    return result
 
 
 def to_string_val(input_val: Any) -> str:
@@ -103,18 +119,18 @@ def is_valid_wh_name(wh_name: str) -> bool:
 
 def is_valid_prefix(prefix: str) -> bool:
     """
-    This checks if the given prefix is valid for an entity schema.
-    It must be contain only alphanumeric characters and underscores, be less than 33 characters, and end with an alphabetic character.
+    Checks if the given prefix is valid for an entity schema.
+    It must contain only alphanumeric characters, underscores, hyphens, and periods,
+    be at most 32 characters, and not end in a digit.
     """
     valid = (
-        all(c.isalnum() or c == "_" or c == "-" for c in prefix)
+        bool(re.compile(r"^[a-zA-Z0-9._-]*$").fullmatch(prefix))
         and len(prefix) <= 32
-        and not prefix[-1].isdigit()
-        and " " not in prefix
+        and bool(re.compile(r"^[^ ]*[^ \d]$").fullmatch(prefix))
     )
     if not valid:
         raise ValueError(
-            f"Invalid prefix '{prefix}'. The prefix should only contain alphabetic characters or underscores, not end end in a digit, and not contain whitespace."
+            f"Invalid prefix '{prefix}'. The prefix should only contain alphanumeric characters, underscores, hyphens, or periods, not end in a digit, and not contain whitespace."
         )
     return valid
 

@@ -11,7 +11,7 @@ from liminal.enums import BenchlingFieldType
 from liminal.mappers import map_benchling_type_to_python_type
 from liminal.orm.base_model import BaseModel
 from liminal.results_schemas.utils import get_converted_results_schemas
-from liminal.utils import to_python_identifier, to_pascal_case, to_snake_case
+from liminal.utils import to_python_identifier, to_pascal_case, to_module_name
 
 TAB = "    "
 
@@ -52,10 +52,10 @@ def generate_all_results_schema_files(
     for schema_properties, field_properties_dict in results_schemas:
         has_date = False
         warehouse_name = schema_properties.warehouse_name
-        file_name = to_snake_case(warehouse_name) + ".py"
+        file_name = to_module_name(warehouse_name) + ".py"
         schema_name = to_pascal_case(warehouse_name)
         init_file_imports.append(
-            f"from .{to_snake_case(warehouse_name)} import {schema_name}"
+            f"from .{to_module_name(warehouse_name)} import {schema_name}"
         )
         import_strings = [
             "from sqlalchemy import Column as SqlColumn",
