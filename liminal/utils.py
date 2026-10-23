@@ -55,10 +55,14 @@ def generate_random_id(length: int = 8) -> str:
 def to_pascal_case(input_string: str) -> str:
     """
     Convert a string to PascalCase. Filters out any non-alphanumeric characters.
+    Prefixes with `N` (for Number) if it starts with a digit to avoid invalid Python variable names.
     """
     words = re.split(r"[ /_\-]", input_string)
     # Then remove any non-alphanumeric characters and capitalize each word
-    return "".join(re.sub(r"[^a-zA-Z0-9]", "", word).capitalize() for word in words)
+    result = "".join(re.sub(r"[^a-zA-Z0-9]", "", word).capitalize() for word in words)
+    if result and result[0].isdigit():
+        result = "N" + result
+    return result
 
 
 def to_snake_case(input_string: str) -> str:
@@ -68,6 +72,18 @@ def to_snake_case(input_string: str) -> str:
     words = re.split(r"[ /_\-]", input_string)
     words = [word for word in words if word]
     return "_".join(re.sub(r"[^a-zA-Z0-9]", "", word).lower() for word in words)
+
+
+def to_module_name(input_string: str) -> str:
+    """
+    Convert a string to a valid Python module name (snake_case, prefixed with `n_` if it
+    starts with a digit). Use for generated filenames and imports only; use
+    to_snake_case for warehouse name comparisons.
+    """
+    result = to_snake_case(input_string)
+    if result and result[0].isdigit():
+        result = "n_" + result
+    return result
 
 
 def to_string_val(input_val: Any) -> str:

@@ -6,7 +6,7 @@ from rich import print
 
 from liminal.connection import BenchlingService
 from liminal.dropdowns.utils import get_benchling_dropdowns_dict
-from liminal.utils import to_pascal_case, to_snake_case
+from liminal.utils import to_module_name, to_pascal_case
 
 
 def generate_all_dropdown_files(
@@ -47,7 +47,7 @@ class {classname}(BaseDropdown):
     __benchling_name__ = {json.dumps(dropdown_name, ensure_ascii=False)}
     __allowed_values__ = {options_list}
 """
-        filename = to_snake_case(dropdown_name) + ".py"
+        filename = to_module_name(dropdown_name) + ".py"
         if overwrite or not (write_path / filename).exists():
             with open(write_path / filename, "w") as file:
                 file.write(dropdown_content)
