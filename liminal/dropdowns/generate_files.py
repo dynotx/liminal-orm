@@ -1,3 +1,4 @@
+import json
 import shutil
 from pathlib import Path
 
@@ -36,14 +37,14 @@ def generate_all_dropdown_files(
     num_files_written = 0
     for dropdown_name, dropdown_options in dropdowns.items():
         dropdown_values = [option.name for option in dropdown_options.options]
-        options_list = str(dropdown_values).replace("'", '"')
+        options_list = json.dumps(dropdown_values, ensure_ascii=False)
         classname = to_pascal_case(dropdown_name)
         dropdown_content = f"""
 from liminal.base.base_dropdown import BaseDropdown
 
 
 class {classname}(BaseDropdown):
-    __benchling_name__ = "{dropdown_name}"
+    __benchling_name__ = {json.dumps(dropdown_name, ensure_ascii=False)}
     __allowed_values__ = {options_list}
 """
         filename = to_snake_case(dropdown_name) + ".py"
