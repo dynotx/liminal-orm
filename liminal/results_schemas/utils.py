@@ -8,7 +8,7 @@ from liminal.dropdowns.utils import get_benchling_dropdown_id_name_map
 from liminal.entity_schemas.utils import (
     get_benchling_entity_schema_id_to_system_name_map,
 )
-from liminal.enums.benchling_field_definition_type import BenchlingFieldDefinitionType
+from liminal.enums import BenchlingLinkDefinitionType
 from liminal.mappers import map_field_definition_type_to_field_type
 from liminal.orm.results_schema_properties import ResultsSchemaProperties
 from liminal.results_schemas.models.results_schema_model import (
@@ -24,28 +24,30 @@ def convert_result_schema_field_to_field_properties(
     dropdowns_map: dict[str, str],
     unit_id_to_name_map: dict[str, str],
 ) -> BaseFieldProperties:
-    field_type = map_field_definition_type_to_field_type(field.typename)
-
-    link_definition_id = field.linkDefinition.id if field.linkDefinition else None
     unit_id = (
         field.unit.get("id")
         if isinstance(field.unit, dict)
         else getattr(field.unit, "id", None)
     )
 
-    dropdown_link = None
-    if (
-        BenchlingFieldDefinitionType.is_dropdown_link(field.typename)
-        and link_definition_id
-    ):
-        dropdown_link = dropdowns_map.get(link_definition_id)
-
-    entity_link = None
-    if (
-        BenchlingFieldDefinitionType.is_entity_link(field.typename)
-        and link_definition_id
-    ):
-        entity_link = entity_schema_id_to_system_name_map.get(link_definition_id)
+    links_to_entity_schema = (
+        field.linkDefinition is not None
+        and field.linkDefinition.typename.is_entity_schema_type()
+    )
+    field_type = map_field_definition_type_to_field_type(
+        field.typename, links_to_entity_schema
+    )
+    entity_link = (
+        entity_schema_id_to_system_name_map.get(field.linkDefinition.id)
+        if links_to_entity_schema
+        else None
+    )
+    dropdown_link = (
+        dropdowns_map.get(field.linkDefinition.id)
+        if field.linkDefinition
+        and field.linkDefinition.typename == BenchlingLinkDefinitionType.DROPDOWN
+        else None
+    )
 
     return BaseFieldProperties(
         name=field.name,
