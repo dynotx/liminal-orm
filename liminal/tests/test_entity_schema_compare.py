@@ -16,6 +16,7 @@ from liminal.entity_schemas.operations import (
     UpdateEntitySchemaNameTemplate,
 )
 from liminal.enums import BenchlingFieldType
+from liminal.enums.benchling_naming_strategy import BenchlingNamingStrategy
 from liminal.orm.name_template import NameTemplate
 from liminal.orm.name_template_parts import TextPart
 
@@ -158,6 +159,8 @@ class TestCompareEntitySchemas:
             missing_field[0][2].pop("string_field_req")
             mock_get_benchling_entity_schemas.return_value = missing_field
             invalid_models = compare_entity_schemas(mock_benchling_sdk)
+            # Only new schemas override the default operation order.
+            assert all(c.order is None for c in invalid_models["mock_entity"])
             assert len(invalid_models["mock_entity"]) == 1
             assert isinstance(
                 invalid_models["mock_entity"][0].op, CreateEntitySchemaField
@@ -400,3 +403,72 @@ class TestCompareEntitySchemas:
                 invalid_models["mock_entity"][0].op, UpdateEntitySchemaNameTemplate
             )
             assert invalid_models["mock_entity"][0].op.update_name_template.parts == []
+
+    def test_compare_benchling_schemas_create_link_order(  # type: ignore[no-untyped-def]
+        self, mock_cell_line_subclasses
+    ) -> None:
+        """A new schema's name template can use a parent's lot number, so it runs after the parent link is set."""
+        with (
+            patch(
+                "liminal.entity_schemas.compare.get_converted_entity_schemas"
+            ) as mock_get_benchling_entity_schemas,
+            patch(
+                "liminal.orm.base_model.BaseModel.get_all_subclasses"
+            ) as mock_get_all_subclasses,
+        ):
+            mock_get_all_subclasses.return_value = mock_cell_line_subclasses
+            mock_get_benchling_entity_schemas.return_value = []
+            compared = compare_entity_schemas(Mock())
+            batch_ops = [c.op for c in sorted(compared["cl_batch"])]
+
+            assert [type(op) for op in batch_ops] == [
+                CreateEntitySchema,
+                UpdateEntitySchema,
+                UpdateEntitySchemaField,
+                UpdateEntitySchemaNameTemplate,
+                UpdateEntitySchema,
+            ]
+            create, rename, link, template, naming = batch_ops
+            assert isinstance(create, CreateEntitySchema)
+            assert isinstance(rename, UpdateEntitySchema)
+            assert isinstance(link, UpdateEntitySchemaField)
+            assert isinstance(template, UpdateEntitySchemaNameTemplate)
+            assert isinstance(naming, UpdateEntitySchema)
+
+            # The link is created without a target, so parent_link waits for the target.
+            created_field = create.fields[0]
+            assert "entity_link" not in created_field.model_fields_set
+            assert "parent_link" not in created_field.model_fields_set
+
+            assert rename.wh_schema_name == "cell_line_batch"
+            assert rename.update_props.model_dump(exclude_unset=True) == {
+                "warehouse_name": "cl_batch"
+            }
+
+            assert link.wh_schema_name == "cl_batch"
+            assert link.update_props.entity_link == "cell_line"
+            assert link.update_props.parent_link is True
+
+            assert template.wh_schema_name == "cl_batch"
+            assert naming.wh_schema_name == "cl_batch"
+            assert naming.update_props.model_dump(exclude_unset=True) == {
+                "naming_strategies": {
+                    BenchlingNamingStrategy.REPLACE_NAMES_WITH_TEMPLATE
+                }
+            }
+
+            # Across schemas, every field update runs before any new schema's template.
+            all_ops = [
+                c.op for c in sorted(compared["cl_batch"] + compared["cell_line"])
+            ]
+            last_field_update = max(
+                i
+                for i, op in enumerate(all_ops)
+                if isinstance(op, UpdateEntitySchemaField)
+            )
+            first_template = min(
+                i
+                for i, op in enumerate(all_ops)
+                if isinstance(op, UpdateEntitySchemaNameTemplate)
+            )
+            assert last_field_update < first_template

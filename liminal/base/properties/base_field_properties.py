@@ -96,6 +96,11 @@ class BaseFieldProperties(BaseModel):
             self.__pydantic_fields_set__.remove("unit_name")
         return self
 
+    def unset_parent_link(self) -> BaseFieldProperties:
+        if "parent_link" in self.__pydantic_fields_set__:
+            self.__pydantic_fields_set__.remove("parent_link")
+        return self
+
     def set_type(self, new_type: BenchlingFieldType) -> BaseFieldProperties:
         self.type = new_type
         return self

@@ -519,3 +519,54 @@ def mock_benchling_subclasses(mock_benchling_dropdown) -> list[type[BaseModel]]:
             self.list_dropdown_field = list_dropdown_field
 
     return [MockEntityOne, MockEntityTwo]
+
+
+@pytest.fixture
+def mock_cell_line_subclasses() -> list[type[BaseModel]]:
+    """A parent schema and a batch schema whose name uses the parent's lot number."""
+    from liminal.orm.name_template_parts import (
+        FieldPart,
+        ParentLotNumberPart,
+        SeparatorPart,
+    )
+
+    class CellLine(BaseModel):
+        __schema_properties__ = SchemaProperties(
+            name="Cell Line",
+            warehouse_name="cell_line",
+            prefix="CL",
+            entity_type=BenchlingEntityType.CUSTOM_ENTITY,
+            naming_strategies=[BenchlingNamingStrategy.NEW_IDS],
+        )
+        species: SqlColumn = Column(name="Species", type=Type.TEXT, required=False)
+
+        def __init__(self, species: str | None = None) -> None:
+            self.species = species
+
+    class CellLineBatch(BaseModel):
+        __schema_properties__ = SchemaProperties(
+            name="Cell Line Batch",
+            warehouse_name="cl_batch",
+            prefix="CLB",
+            entity_type=BenchlingEntityType.CUSTOM_ENTITY,
+            naming_strategies=[BenchlingNamingStrategy.REPLACE_NAMES_WITH_TEMPLATE],
+        )
+        __name_template__ = NameTemplate(
+            parts=[
+                FieldPart(wh_field_name="parent_cell_line"),
+                SeparatorPart(value="-"),
+                ParentLotNumberPart(wh_field_name="parent_cell_line"),
+            ]
+        )
+        parent_cell_line: SqlColumn = Column(
+            name="Parent Cell Line",
+            type=Type.ENTITY_LINK,
+            required=False,
+            entity_link="cell_line",
+            parent_link=True,
+        )
+
+        def __init__(self, parent_cell_line: str | None = None) -> None:
+            self.parent_cell_line = parent_cell_line
+
+    return [CellLine, CellLineBatch]
