@@ -123,7 +123,7 @@ def generate_files(
     benchling_connection = read_local_liminal_dir(LIMINAL_DIR_PATH, benchling_tenant)
     benchling_service = BenchlingService(benchling_connection)
     if not write_path.exists():
-        write_path.mkdir(parents=True, exist_ok=True)
+        write_path.mkdir(parents=True)
         print(f"[green]Created directory: {write_path}")
     if not entity_schemas_flag and not dropdowns_flag and not results_schemas_flag:
         entity_schemas_flag = True
