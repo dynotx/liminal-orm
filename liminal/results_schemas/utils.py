@@ -97,13 +97,12 @@ def get_converted_results_schemas(
 
 
 @lru_cache
-def get_benchling_results_schemas(
+def list_benchling_results_schemas_v2_cached(
     benchling_service: BenchlingService,
 ) -> list[AssayResultSchema]:
     return [
         s
         for loe in benchling_service.schemas.list_assay_result_schemas()
         for s in loe
-        if not benchling_service._is_registry_scoped
-        or s.organization.id == benchling_service.organization_id
+        if s.organization.id == benchling_service.organization_id
     ]

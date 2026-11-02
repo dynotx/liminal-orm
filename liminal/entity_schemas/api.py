@@ -50,19 +50,18 @@ def list_entity_schemas(
         for future in as_completed(futures):
             entity_schemas.extend(future.result())
 
-    return [s for s in entity_schemas if benchling_service._is_in_registry_scope(s)]
+    return entity_schemas
 
 
 @lru_cache
-def list_entity_schemas_cached(
+def list_entity_schemas_v2_cached(
     benchling_service: BenchlingService,
 ) -> list[EntitySchema]:
     return [
         s
         for schemas in benchling_service.schemas.list_entity_schemas()
         for s in schemas
-        if not benchling_service._is_registry_scoped
-        or s.registry_id == benchling_service.registry_id
+        if s.registry_id == benchling_service.registry_id
     ]
 
 
@@ -76,6 +75,7 @@ def _list_entity_schemas_for_endpoint(
         benchling_service,
         f"{_entity_schema_specific_api_path(endpoint)}/items",
         include_archived,
+        registry_scoped=True,
     )
 
 

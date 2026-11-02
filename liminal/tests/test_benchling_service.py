@@ -1,5 +1,9 @@
+from collections.abc import Iterator
+from types import SimpleNamespace
 from typing import cast
+from unittest.mock import patch
 
+import pytest
 from benchling_api_client.v2.benchling_client import BenchlingApiClient
 
 from liminal.connection.benchling_connection import BenchlingConnection
@@ -15,6 +19,16 @@ def _connection() -> BenchlingConnection:
         api_client_id="test-id",
         api_client_secret="test-secret",
     )
+
+
+@pytest.fixture(autouse=True)
+def _single_registry_tenant() -> Iterator[None]:
+    """BenchlingService lists the tenant's registries on init, so serve one instead of calling Benchling."""
+    page = SimpleNamespace(
+        parsed={"items": [{"id": "src_main", "owner": {"id": "ent_main"}}]}
+    )
+    with patch("liminal.utils.rate_limited_get_v3", return_value=page):
+        yield
 
 
 class TestBenchlingServiceClientDecorator:

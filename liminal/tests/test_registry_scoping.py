@@ -1,20 +1,15 @@
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
 from types import SimpleNamespace
 from typing import Any
 from unittest.mock import patch
 
 import pytest
-from benchling_sdk.errors import BenchlingError
 
 from liminal.connection.benchling_connection import BenchlingConnection
-from liminal.connection.benchling_service import (
-    AmbiguousRegistryError,
-    BenchlingService,
-)
+from liminal.connection.benchling_service import BenchlingService
 from liminal.dropdowns.api import list_dropdowns
-from liminal.dropdowns.operations import CreateDropdown
-from liminal.dropdowns.utils import get_benchling_dropdowns_dict
 from liminal.entity_schemas.api import list_entity_schemas
-from liminal.entity_schemas.entity_schema_models import EntitySchemaModel
 from liminal.enums import BenchlingEntitySchemaEndpointType
 from liminal.results_schemas.api import list_results_schemas
 
@@ -27,25 +22,36 @@ OTHER = SimpleNamespace(
 _TENANT_REGISTRIES: list[Any] = []
 
 
-@pytest.fixture(autouse=True)
-def _fake_registry_api(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Serves the v2 registry list and the v3 registry lookup from _TENANT_REGISTRIES."""
-    monkeypatch.setattr(
-        BenchlingService,
-        "registry",
-        property(lambda _self: SimpleNamespace(registries=lambda: _TENANT_REGISTRIES)),
+def _registry_page() -> Any:
+    return SimpleNamespace(
+        parsed={
+            "items": [
+                {"id": r.id, "owner": {"id": r.owner.id}} for r in _TENANT_REGISTRIES
+            ]
+        }
     )
 
-    def fake_get(_service: Any, url: str) -> Any:
-        registry_id = url.rsplit("/", 1)[-1]
-        for r in _TENANT_REGISTRIES:
-            if r.id == registry_id:
-                return SimpleNamespace(parsed={"id": r.id, "owner": {"id": r.owner.id}})
-        raise BenchlingError(
-            status_code=404, headers={}, json=None, content=None, parsed=None
-        )
 
-    monkeypatch.setattr("liminal.utils.rate_limited_get_v3", fake_get)
+@contextmanager
+def _v3_api(handler: Callable[[str], list[dict[str, Any]]]) -> Iterator[None]:
+    """Serves the v3 registry list from _TENANT_REGISTRIES and every other v3 list from handler."""
+
+    def fake_get(_service: Any, url: str) -> Any:
+        if url.startswith("/api/v3/registry?"):
+            return _registry_page()
+        return SimpleNamespace(parsed={"items": handler(url)})
+
+    with patch("liminal.utils.rate_limited_get_v3", side_effect=fake_get):
+        yield
+
+
+@pytest.fixture(autouse=True)
+def _fake_registry_api(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Serves the v3 registry list from _TENANT_REGISTRIES."""
+    monkeypatch.setattr(
+        "liminal.utils.rate_limited_get_v3",
+        lambda _service, _url: _registry_page(),
+    )
 
 
 def _service(registries: list[Any], registry_id: str | None = None) -> BenchlingService:
@@ -79,167 +85,125 @@ def _dropdown(name: str, registry: Any) -> dict[str, Any]:
 
 
 class TestRegistryResolution:
-    def test_single_registry_without_name_is_unchanged(self) -> None:
+    def test_single_registry_without_name_resolves(self) -> None:
         service = _service([MAIN])
         assert service.registry_id == "src_main"
         assert service.organization_id == "ent_main"
-        assert not service._is_registry_scoped
-        assert not service._has_unresolved_registry
 
-    def test_several_registries_without_name_raise_clear_error(self) -> None:
-        service = _service([MAIN, OTHER])
-        assert service._has_unresolved_registry
-        with pytest.raises(ValueError, match="Set registry_id"):
-            service.registry_id
-        with pytest.raises(ValueError, match="Set registry_id"):
-            service.organization_id
+    def test_several_registries_without_name_fail_on_init(self) -> None:
+        with pytest.raises(ValueError, match="does not allow ambiguous registries"):
+            _service([MAIN, OTHER])
+
+    def test_single_registry_with_name_is_not_ambiguous(self) -> None:
+        service = _service([MAIN], registry_id="src_main")
+        assert not service.has_ambiguous_registries()
+        assert service.registry_id == "src_main"
+
+    def test_several_registries_with_name_are_not_ambiguous(self) -> None:
+        service = _service([MAIN, OTHER], registry_id="src_main")
+        assert not service.has_ambiguous_registries()
 
     def test_registry_id_selects_registry_and_owner(self) -> None:
         service = _service([MAIN, OTHER], registry_id="src_other")
         assert service.registry_id == "src_other"
         assert service.organization_id == "ent_other"
-        assert not service._has_unresolved_registry
 
-    def test_unknown_registry_id_raises(self) -> None:
+    def test_unknown_registry_id_raises_on_access_not_init(self) -> None:
         service = _service([MAIN, OTHER], registry_id="src_missing")
         with pytest.raises(ValueError, match="registry src_missing not found"):
             service.registry_id
 
-    def test_registry_id_is_fetched_from_v3(self) -> None:
-        connection = BenchlingConnection(
-            tenant_name="test-tenant",
-            api_client_id="test-id",
-            api_client_secret="test-secret",
-            registry_id="src_other",
-        )
-        service = BenchlingService(connection, use_api=False)
-        response = SimpleNamespace(
-            parsed={"id": "src_other", "owner": {"id": "ent_other"}}
-        )
-        with patch("liminal.utils.rate_limited_get_v3", return_value=response) as get:
-            assert service.organization_id == "ent_other"
-            assert service.registry_id == "src_other"
-        get.assert_called_once_with(service, "/api/v3/registry/src_other")
+    def test_registries_are_listed_once(self) -> None:
+        with patch(
+            "liminal.utils.rate_limited_get_v3", return_value=_registry_page()
+        ) as get:
+            service = _service([MAIN, OTHER], registry_id="src_other")
+            service.registry_id
+            service.organization_id
+        get.assert_called_once()
 
 
 class TestScopeFilter:
-    def test_unscoped_keeps_every_record(self) -> None:
-        service = _service([MAIN, OTHER])
-        assert service._is_in_registry_scope(_schema("plasmid", OTHER))
-        assert service._is_in_registry_scope({"id": "no_owner"})
-
-    def test_scoped_matches_registry_then_organization(self) -> None:
+    def test_registry_scope_matches_registry_only(self) -> None:
         service = _service([MAIN, OTHER], registry_id="src_main")
-        assert service._is_in_registry_scope(_schema("plasmid", MAIN))
-        assert not service._is_in_registry_scope(_schema("plasmid", OTHER))
-        assert service._is_in_registry_scope({"organization": {"id": "ent_main"}})
-        assert not service._is_in_registry_scope({"organization": {"id": "ent_other"}})
-        assert not service._is_in_registry_scope({"id": "no_owner"})
+        assert service.is_in_registry_scope(_schema("plasmid", MAIN))
+        assert not service.is_in_registry_scope(_schema("plasmid", OTHER))
+        assert not service.is_in_registry_scope({"organization": {"id": "ent_main"}})
+        assert not service.is_in_registry_scope({"id": "no_owner"})
+
+    def test_single_registry_without_name_scopes_to_it(self) -> None:
+        service = _service([MAIN])
+        assert service.is_in_registry_scope(_schema("plasmid", MAIN))
+        assert not service.is_in_registry_scope(_schema("plasmid", OTHER))
+
+
+def _results_schema(registry: Any) -> dict[str, Any]:
+    return {
+        "id": f"assaysch_{registry.id}",
+        "systemName": "assay",
+        "organization": {"id": registry.owner.id},
+    }
+
+
+def _list_entity_schemas(service: BenchlingService) -> list[dict[str, Any]]:
+    first_endpoint = next(iter(BenchlingEntitySchemaEndpointType))
+    records = [_schema("plasmid", MAIN), _schema("plasmid", OTHER)]
+
+    def handler(url: str) -> list[dict[str, Any]]:
+        return records if url.startswith(f"/api/v3/{first_endpoint.value}/") else []
+
+    with _v3_api(handler):
+        return list_entity_schemas(service)
+
+
+def _list_dropdowns(service: BenchlingService) -> list[dict[str, Any]]:
+    records = [_dropdown("Species", MAIN), _dropdown("Species", OTHER)]
+    with _v3_api(lambda _url: records):
+        return list_dropdowns(service)
+
+
+def _list_results_schemas(service: BenchlingService) -> list[dict[str, Any]]:
+    records = [_results_schema(MAIN), _results_schema(OTHER)]
+    with _v3_api(lambda _url: records):
+        return list_results_schemas(service)
+
+
+# Each lister returns records from both MAIN and OTHER. `owner_of` reads the scoping value off a
+# record and `scope_of` gives the value a registry should produce: the registry id for entity
+# schemas and dropdowns, the owning organization id for results schemas.
+_LISTERS = pytest.mark.parametrize(
+    "lister, owner_of, scope_of",
+    [
+        (_list_entity_schemas, lambda r: r["registry"]["id"], lambda reg: reg.id),
+        (_list_dropdowns, lambda r: r["registry"]["id"], lambda reg: reg.id),
+        (
+            _list_results_schemas,
+            lambda r: r["organization"]["id"],
+            lambda reg: reg.owner.id,
+        ),
+    ],
+    ids=["entity_schemas", "dropdowns", "results_schemas"],
+)
 
 
 class TestListFunctions:
-    def test_entity_schemas_are_scoped(self) -> None:
-        records = [_schema("plasmid", MAIN), _schema("plasmid", OTHER)]
-        first_endpoint = next(iter(BenchlingEntitySchemaEndpointType))
+    @_LISTERS
+    def test_one_registry_without_name_keeps_only_that_registry(
+        self, lister: Callable, owner_of: Callable, scope_of: Callable
+    ) -> None:
+        results = lister(_service([MAIN]))
+        assert [owner_of(r) for r in results] == [scope_of(MAIN)]
 
-        def fake_list(_service: Any, endpoint: Any, _include_archived: bool) -> list:
-            return records if endpoint == first_endpoint else []
+    @_LISTERS
+    def test_two_registries_without_name_raise(
+        self, lister: Callable, owner_of: Callable, scope_of: Callable
+    ) -> None:
+        with pytest.raises(ValueError, match="does not allow ambiguous registries"):
+            lister(_service([MAIN, OTHER]))
 
-        with patch(
-            "liminal.entity_schemas.api._list_entity_schemas_for_endpoint",
-            side_effect=fake_list,
-        ):
-            scoped = list_entity_schemas(
-                _service([MAIN, OTHER], registry_id="src_main")
-            )
-            unscoped = list_entity_schemas(_service([MAIN, OTHER]))
-
-        assert [s["registry"]["id"] for s in scoped] == ["src_main"]
-        assert len(unscoped) == 2
-
-    def test_dropdowns_are_scoped(self) -> None:
-        records = [_dropdown("Species", MAIN), _dropdown("Species", OTHER)]
-        with patch("liminal.dropdowns.api.list_all_items_v3", return_value=records):
-            scoped = list_dropdowns(_service([MAIN, OTHER], registry_id="src_other"))
-        assert [d["registry"]["id"] for d in scoped] == ["src_other"]
-
-    def test_results_schemas_are_scoped_by_organization(self) -> None:
-        records = [
-            {
-                "id": "assaysch_1",
-                "systemName": "assay",
-                "organization": {"id": "ent_main"},
-            },
-            {
-                "id": "assaysch_2",
-                "systemName": "assay",
-                "organization": {"id": "ent_other"},
-            },
-        ]
-        with patch(
-            "liminal.results_schemas.api.list_all_items_v3", return_value=records
-        ):
-            scoped = list_results_schemas(
-                _service([MAIN, OTHER], registry_id="src_main")
-            )
-        assert [s["id"] for s in scoped] == ["assaysch_1"]
-
-
-class TestAmbiguousLookups:
-    @pytest.fixture(autouse=True)
-    def _skip_field_fetch(self) -> Any:
-        with (
-            patch(
-                "liminal.entity_schemas.entity_schema_models.attach_entity_schema_field_definitions",
-                side_effect=lambda _service, schema: schema,
-            ),
-            patch.object(EntitySchemaModel, "model_validate", side_effect=lambda s: s),
-        ):
-            yield
-
-    def test_repeated_name_on_unresolved_tenant_raises(self) -> None:
-        schemas = [_schema("plasmid", MAIN), _schema("plasmid", OTHER)]
-        with pytest.raises(AmbiguousRegistryError, match="2 entity schemas"):
-            EntitySchemaModel.get_one(_service([MAIN, OTHER]), "plasmid", schemas)
-
-    def test_repeated_name_on_single_registry_tenant_is_unchanged(self) -> None:
-        schemas = [_schema("plasmid", MAIN), _schema("plasmid", MAIN)]
-        schema: Any = EntitySchemaModel.get_one(_service([MAIN]), "plasmid", schemas)
-        assert schema is schemas[0]
-
-    def test_dropdowns_dict_raises_on_shared_names(self) -> None:
-        records = [_dropdown("Species", MAIN), _dropdown("Species", OTHER)]
-        with (
-            patch(
-                "liminal.dropdowns.utils.list_dropdowns_with_options",
-                return_value=records,
-            ),
-            pytest.raises(AmbiguousRegistryError, match="Species"),
-        ):
-            get_benchling_dropdowns_dict(_service([MAIN, OTHER]))
-
-
-class TestCreateValidation:
-    def test_create_dropdown_without_registry_fails_before_writing(self) -> None:
-        with (
-            patch(
-                "liminal.dropdowns.operations.dropdown_exists_in_benchling",
-                return_value=False,
-            ),
-            pytest.raises(ValueError, match="choose where to create this dropdown"),
-        ):
-            CreateDropdown("Species", ["Human"]).validate(_service([MAIN, OTHER]))
-
-    def test_create_dropdown_validation_is_unchanged_for_single_registry(self) -> None:
-        with patch(
-            "liminal.dropdowns.operations.dropdown_exists_in_benchling"
-        ) as exists:
-            CreateDropdown("Species", ["Human"]).validate(_service([MAIN]))
-        exists.assert_not_called()
-
-    def test_unarchiving_existing_dropdown_still_validates(self) -> None:
-        with patch(
-            "liminal.dropdowns.operations.dropdown_exists_in_benchling",
-            return_value=True,
-        ):
-            CreateDropdown("Species", ["Human"]).validate(_service([MAIN, OTHER]))
+    @_LISTERS
+    def test_two_registries_with_name_keep_only_that_registry(
+        self, lister: Callable, owner_of: Callable, scope_of: Callable
+    ) -> None:
+        results = lister(_service([MAIN, OTHER], registry_id="src_other"))
+        assert [owner_of(r) for r in results] == [scope_of(OTHER)]
