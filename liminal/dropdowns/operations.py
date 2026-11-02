@@ -23,7 +23,7 @@ from liminal.dropdowns.api import (
 from liminal.dropdowns.utils import (
     dropdown_exists_in_benchling,
     get_benchling_dropdown_by_name,
-    get_benchling_dropdown_summary_by_name,
+    get_benchling_dropdown_id_by_name,
     get_schemas_with_dropdown,
 )
 
@@ -125,7 +125,7 @@ class UpdateDropdownName(BaseOperation):
         self.new_dropdown_name = new_dropdown_name
 
     def execute(self, benchling_service: BenchlingService) -> dict[str, Any]:
-        dropdown = get_benchling_dropdown_summary_by_name(
+        dropdown_id = get_benchling_dropdown_id_by_name(
             benchling_service, self.dropdown_name
         )
         if dropdown_exists_in_benchling(benchling_service, self.new_dropdown_name):
@@ -133,7 +133,7 @@ class UpdateDropdownName(BaseOperation):
                 f"Dropdown {self.new_dropdown_name} already exists in Benchling."
             )
         return update_dropdown_name(
-            benchling_service, dropdown.id, self.new_dropdown_name
+            benchling_service, dropdown_id, self.new_dropdown_name
         )
 
     def describe_operation(self) -> str:

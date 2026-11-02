@@ -2,7 +2,7 @@ from abc import ABC
 from typing import Any
 
 from liminal.connection.benchling_service import BenchlingService
-from liminal.dropdowns.utils import get_benchling_dropdown_summaries
+from liminal.dropdowns.api import list_dropdowns
 
 
 class BaseDropdown(ABC):
@@ -52,15 +52,17 @@ class BaseDropdown(ABC):
         str
             The id of the dropdown.
         """
-        all_dropdowns = get_benchling_dropdown_summaries(benchling_service)
-        dropdowns_found_by_name = [
-            d for d in all_dropdowns if d.name == cls.__benchling_name__
-        ]
-        if len(dropdowns_found_by_name) == 0:
+        dropdown = next(
+            (
+                d
+                for d in list_dropdowns(benchling_service)
+                if d["name"] == cls.__benchling_name__
+            ),
+            None,
+        )
+        if dropdown is None:
             raise ValueError(f"No dropdowns found with name '{cls.__benchling_name__}'")
-        else:
-            dropdown = dropdowns_found_by_name[0]
-            return dropdown.id
+        return dropdown["id"]
 
     @classmethod
     def validate(cls, *values: str | None) -> None:
