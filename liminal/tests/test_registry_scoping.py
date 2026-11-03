@@ -140,18 +140,23 @@ class TestRegistryResolution:
 
 
 class TestScopeFilter:
-    def test_registry_scope_matches_registry_then_organization(self) -> None:
+    def test_registry_scope_matches_registry(self) -> None:
         service = _service([MAIN, OTHER], registry_id="src_main")
         assert service.is_in_registry_scope(_dropdown("Species", MAIN))
         assert not service.is_in_registry_scope(_dropdown("Species", OTHER))
-        assert service.is_in_registry_scope(_schema("plasmid", MAIN))
-        assert not service.is_in_registry_scope(_schema("plasmid", OTHER))
+        assert not service.is_in_registry_scope(_schema("plasmid", MAIN))
         assert not service.is_in_registry_scope({"id": "no_owner"})
+
+    def test_organization_scope_matches_organization(self) -> None:
+        service = _service([MAIN, OTHER], registry_id="src_main")
+        assert service.is_in_organization_scope(_schema("plasmid", MAIN))
+        assert not service.is_in_organization_scope(_schema("plasmid", OTHER))
+        assert not service.is_in_organization_scope({"id": "no_owner"})
 
     def test_single_registry_without_name_scopes_to_it(self) -> None:
         service = _service([MAIN])
-        assert service.is_in_registry_scope(_schema("plasmid", MAIN))
-        assert not service.is_in_registry_scope(_schema("plasmid", OTHER))
+        assert service.is_in_organization_scope(_schema("plasmid", MAIN))
+        assert not service.is_in_organization_scope(_schema("plasmid", OTHER))
 
 
 def _results_schema(registry: Any) -> dict[str, Any]:

@@ -161,9 +161,7 @@ class BenchlingService(Benchling):
         return self._registries[0]
 
     def is_in_registry_scope(self, record: dict[str, Any]) -> bool:
-        """Whether a v3 API record belongs to this connection's registry or its organization.
-        Always True when the connection is scoped to a registry.
-        """
+        """Whether a v3 API record belongs to this connection's registry."""
         registry_id = (record.get("registry") or {}).get("id")
         if registry_id:
             return registry_id == self.registry_id
