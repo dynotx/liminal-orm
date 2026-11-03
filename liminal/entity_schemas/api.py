@@ -75,7 +75,7 @@ def _list_entity_schemas_for_endpoint(
         benchling_service,
         f"{_entity_schema_specific_api_path(endpoint)}/items",
         include_archived,
-        registry_scoped=True,
+        organization_scoped=True,
     )
 
 
