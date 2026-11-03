@@ -30,29 +30,36 @@ def get_benchling_dropdown_name_to_classname_map(
 def get_benchling_dropdown_summaries(
     benchling_service: BenchlingService,
 ) -> list[DropdownSummary]:
-    return [
+    summaries = [
         dropdown
         for sublist in benchling_service.dropdowns.list()
         for dropdown in sublist
     ]
+    # The v2 dropdown summary has no registry, so scope it by the ids the v3 list returns.
+    scoped_ids = {
+        d["id"] for d in list_dropdowns(benchling_service, include_archived=True)
+    }
+    return [d for d in summaries if d.id in scoped_ids]
 
 
 def get_benchling_dropdown_summary_by_name(
     benchling_service: BenchlingService, name: str
 ) -> DropdownSummary:
-    for dropdown in get_benchling_dropdown_summaries(benchling_service):
-        if dropdown.name == name:
-            return dropdown
+    matches = [
+        d for d in get_benchling_dropdown_summaries(benchling_service) if d.name == name
+    ]
+    if matches:
+        return matches[0]
     raise Exception(f"Dropdown {name} not found in given list.")
 
 
 def get_benchling_dropdown_by_name(
     benchling_service: BenchlingService, name: str
 ) -> Dropdown:
-    dropdown = None
-    for d in get_benchling_dropdown_summaries(benchling_service):
-        if d.name == name:
-            dropdown = d
+    matches = [
+        d for d in get_benchling_dropdown_summaries(benchling_service) if d.name == name
+    ]
+    dropdown = matches[-1] if matches else None
     if dropdown is None:
         raise Exception(
             f"Dropdown {name} not found in Benchling {benchling_service.benchling_tenant}."

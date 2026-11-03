@@ -45,6 +45,9 @@ class BenchlingConnection(BaseModel):
         DEPRECATED: Liminal no longer uses Playwright to log into Benchling's internal API, so this is ignored. It will be removed in v6.
     fieldsets: bool = False
         Whether your Benchling tenant has access to fieldsets.
+    registry_id: str | None = None
+        The API id of the registry to scope this connection to, e.g. src_abc123. Only needed when the tenant has more than one registry.
+        When set, Liminal reads and writes only the schemas and dropdowns in this registry, and the result schemas owned by its organization.
     config_flags: TenantConfigFlags = TenantConfigFlags()
         Set of config flags that are configured on the tenant level. These can be updated on Benchling's end by contacting their support team.
     """
@@ -59,6 +62,7 @@ class BenchlingConnection(BaseModel):
     internal_api_admin_password: str | None = None
     playwright_data_dir: str | None = None
     fieldsets: bool = False
+    registry_id: str | None = None
     config_flags: TenantConfigFlags = TenantConfigFlags()
 
     @model_validator(mode="before")

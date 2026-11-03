@@ -142,7 +142,6 @@ class ResultsSchemaModel(BaseModel):
                 schema
                 for schema in schemas_data
                 if schema["systemName"] == wh_schema_name
-                # and schema["registryId"] == benchling_service.registry_id
             ),
             None,
         )
