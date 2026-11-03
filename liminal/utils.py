@@ -179,7 +179,7 @@ def rate_limited_get_v3(benchling_service: BenchlingService, url: str) -> Any:
 def list_all_items_v3(
     benchling_service: BenchlingService,
     url: str,
-    include_archived: bool = False,
+    include_archived: bool | None = False,
     page_size: int | None = MAX_PAGE_SIZE,
     registry_scoped: bool = False,
     organization_scoped: bool = False,
@@ -190,7 +190,11 @@ def list_all_items_v3(
     drops items outside the organization that owns the connection's registry. Only use them on
     endpoints whose items carry a registry or an organization respectively, and never while
     resolving the registry itself."""
-    query_params = [f"archived.anyOf={'true,false' if include_archived else 'false'}"]
+    query_params = (
+        []
+        if include_archived is None
+        else [f"archived.anyOf={'true,false' if include_archived else 'false'}"]
+    )
     if page_size:
         query_params.append(f"pageSize={page_size}")
     base_url = f"{url}?{'&'.join(query_params)}"

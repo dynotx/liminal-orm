@@ -108,7 +108,7 @@ class BenchlingService(Benchling):
                 raise ValueError(
                     "use_db is True but warehouse_connection_string not provided in BenchlingConnection."
                 )
-        if self.has_ambiguous_registries():
+        if use_api and self.has_ambiguous_registries():
             raise ValueError(
                 f"Tenant {self.benchling_tenant} has {len(self._registries)} registries. "
                 "Liminal does not allow ambiguous registries. Set registry_id on the BenchlingConnection to choose one."
@@ -136,41 +136,37 @@ class BenchlingService(Benchling):
 
         return [
             RegistryRef(id=r["id"], owner_id=r["owner"]["id"])
-            for r in list_all_items_v3(self, "/api/v3/registry")
+            for r in list_all_items_v3(
+                self, "/api/v3/registry/items", include_archived=None
+            )
         ]
 
     @property
     def _registry_ref(self) -> RegistryRef:
-        if len(self._registries) != 1:
-            if self.connection.registry_id is None:
+        if self.connection.registry_id is not None:
+            registry_ref = next(
+                (r for r in self._registries if r.id == self.connection.registry_id),
+                None,
+            )
+            if registry_ref is None:
                 raise ValueError(
-                    f"Tenant {self.benchling_tenant} has {len(self._registries)} registries. "
-                    "Set registry_id on the BenchlingConnection to choose one."
+                    f"Tenant {self.benchling_tenant}: registry {self.connection.registry_id} not found."
                 )
-            else:
-                registry_ref = next(
-                    (
-                        r
-                        for r in self._registries
-                        if r.id == self.connection.registry_id
-                    ),
-                    None,
-                )
-                if registry_ref is None:
-                    raise ValueError(
-                        f"Tenant {self.benchling_tenant}: registry {self.connection.registry_id} not found."
-                    )
-                return registry_ref
-        else:
-            return self._registries[0]
+            return registry_ref
+        if len(self._registries) != 1:
+            raise ValueError(
+                f"Tenant {self.benchling_tenant} has {len(self._registries)} registries. "
+                "Set registry_id on the BenchlingConnection to choose one."
+            )
+        return self._registries[0]
 
     def is_in_registry_scope(self, record: dict[str, Any]) -> bool:
-        """Whether a v3 API record belongs to this connection's registry or its organization.
-        Always True when the connection is scoped to a registry."""
+        """Whether a v3 API record belongs to this connection's registry.
+        Records without a registry, such as entity schemas, are matched on the registry's organization."""
         registry_id = (record.get("registry") or {}).get("id")
         if registry_id:
             return registry_id == self.registry_id
-        return False
+        return self.is_in_organization_scope(record)
 
     def is_in_organization_scope(self, record: dict[str, Any]) -> bool:
         """Whether a v3 API record belongs to this connection's organization."""
