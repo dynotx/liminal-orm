@@ -37,7 +37,7 @@ def _v3_api(handler: Callable[[str], list[dict[str, Any]]]) -> Iterator[None]:
     """Serves the v3 registry list from _TENANT_REGISTRIES and every other v3 list from handler."""
 
     def fake_get(_service: Any, url: str) -> Any:
-        if url.startswith("/api/v3/registry?"):
+        if url.startswith("/api/v3/registry/items"):
             return _registry_page()
         return SimpleNamespace(parsed={"items": handler(url)})
 
@@ -54,7 +54,9 @@ def _fake_registry_api(monkeypatch: pytest.MonkeyPatch) -> None:
     )
 
 
-def _service(registries: list[Any], registry_id: str | None = None) -> BenchlingService:
+def _service(
+    registries: list[Any], registry_id: str | None = None, use_api: bool = True
+) -> BenchlingService:
     _TENANT_REGISTRIES[:] = registries
     connection = BenchlingConnection(
         tenant_name="test-tenant",
@@ -62,14 +64,14 @@ def _service(registries: list[Any], registry_id: str | None = None) -> Benchling
         api_client_secret="test-secret",
         registry_id=registry_id,
     )
-    return BenchlingService(connection, use_api=False)
+    return BenchlingService(connection, use_api=use_api)
 
 
 def _schema(system_name: str, registry: Any) -> dict[str, Any]:
+    """Entity schema records carry the owning organization but no registry."""
     return {
         "id": f"ts_{system_name}_{registry.id}",
         "systemName": system_name,
-        "registry": {"id": registry.id},
         "organization": {"id": registry.owner.id},
     }
 
@@ -108,6 +110,16 @@ class TestRegistryResolution:
         assert service.registry_id == "src_other"
         assert service.organization_id == "ent_other"
 
+    def test_unknown_registry_id_on_single_registry_raises(self) -> None:
+        service = _service([MAIN], registry_id="src_missing")
+        with pytest.raises(ValueError, match="registry src_missing not found"):
+            service.registry_id
+
+    def test_without_api_registries_are_not_listed_on_init(self) -> None:
+        with patch("liminal.utils.rate_limited_get_v3") as get:
+            _service([MAIN, OTHER], use_api=False)
+        get.assert_not_called()
+
     def test_unknown_registry_id_raises_on_access_not_init(self) -> None:
         service = _service([MAIN, OTHER], registry_id="src_missing")
         with pytest.raises(ValueError, match="registry src_missing not found"):
@@ -121,14 +133,19 @@ class TestRegistryResolution:
             service.registry_id
             service.organization_id
         get.assert_called_once()
+        # The registry list rejects an archived filter.
+        url = get.call_args.args[1]
+        assert url.startswith("/api/v3/registry/items")
+        assert "archived" not in url
 
 
 class TestScopeFilter:
-    def test_registry_scope_matches_registry_only(self) -> None:
+    def test_registry_scope_matches_registry_then_organization(self) -> None:
         service = _service([MAIN, OTHER], registry_id="src_main")
+        assert service.is_in_registry_scope(_dropdown("Species", MAIN))
+        assert not service.is_in_registry_scope(_dropdown("Species", OTHER))
         assert service.is_in_registry_scope(_schema("plasmid", MAIN))
         assert not service.is_in_registry_scope(_schema("plasmid", OTHER))
-        assert not service.is_in_registry_scope({"organization": {"id": "ent_main"}})
         assert not service.is_in_registry_scope({"id": "no_owner"})
 
     def test_single_registry_without_name_scopes_to_it(self) -> None:
@@ -169,12 +186,16 @@ def _list_results_schemas(service: BenchlingService) -> list[dict[str, Any]]:
 
 
 # Each lister returns records from both MAIN and OTHER. `owner_of` reads the scoping value off a
-# record and `scope_of` gives the value a registry should produce: the registry id for entity
-# schemas and dropdowns, the owning organization id for results schemas.
+# record and `scope_of` gives the value a registry should produce: the registry id for dropdowns,
+# the owning organization id for entity schemas and results schemas.
 _LISTERS = pytest.mark.parametrize(
     "lister, owner_of, scope_of",
     [
-        (_list_entity_schemas, lambda r: r["registry"]["id"], lambda reg: reg.id),
+        (
+            _list_entity_schemas,
+            lambda r: r["organization"]["id"],
+            lambda reg: reg.owner.id,
+        ),
         (_list_dropdowns, lambda r: r["registry"]["id"], lambda reg: reg.id),
         (
             _list_results_schemas,
