@@ -106,6 +106,22 @@ class CreateEntitySchema(BaseOperation):
                     f"{self.__class__.__name__} {self._validated_schema_properties.warehouse_name}: On field {field.warehouse_name}, unit {field.unit_name} not found in Benchling Unit Dictionary as a valid unit. Please check the field definition or your Unit Dictionary."
                 )
 
+        if benchling_service._has_unresolved_registry:
+            self._validate_registry_for_create(benchling_service)
+
+    def _validate_registry_for_create(
+        self, benchling_service: BenchlingService
+    ) -> None:
+        """Fails before any write when creating this schema would need a registry the connection doesn't name."""
+        wh_name = self._validated_schema_properties.warehouse_name
+        try:
+            EntitySchemaModel.get_one(benchling_service, wh_name)
+        except ValueError:
+            raise ValueError(
+                f"{self.__class__.__name__} {wh_name}: Tenant {benchling_service.benchling_tenant} has more than one registry. "
+                "Set registry_id on the BenchlingConnection to choose where to create this schema."
+            )
+
     def _validate_create(self, benchling_service: BenchlingService) -> None:
         all_schemas = list_entity_schemas(benchling_service, include_archived=True)
         if self._validated_schema_properties.name in [

@@ -27,9 +27,10 @@ def list_dropdowns(
     benchling_service: BenchlingService, include_archived: bool = True
 ) -> list[dict[str, Any]]:
     """Fetch dropdowns from the v3 API."""
-    return list_all_items_v3(
+    dropdowns = list_all_items_v3(
         benchling_service, f"{_DROPDOWN_API_PATH}/items", include_archived
     )
+    return [d for d in dropdowns if benchling_service._is_in_registry_scope(d)]
 
 
 def list_dropdown_options(

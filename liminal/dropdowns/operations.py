@@ -66,6 +66,16 @@ class CreateDropdown(BaseOperation):
                     f"Dropdown {self.dropdown_name} is different in code versus Benchling."
                 )
 
+    def validate(self, benchling_service: BenchlingService) -> None:
+        if (
+            benchling_service._has_unresolved_registry
+            and not dropdown_exists_in_benchling(benchling_service, self.dropdown_name)
+        ):
+            raise ValueError(
+                f"{self.__class__.__name__} {self.dropdown_name}: Tenant {benchling_service.benchling_tenant} has more than one registry. "
+                "Set registry_id on the BenchlingConnection to choose where to create this dropdown."
+            )
+
     def describe_operation(self) -> str:
         return f"{self.dropdown_name}: Creating dropdown with options {self.dropdown_options}."
 
