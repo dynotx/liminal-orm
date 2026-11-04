@@ -15,10 +15,11 @@ from liminal.entity_schemas.operations import (
     UpdateEntitySchemaField,
     UpdateEntitySchemaNameTemplate,
 )
-from liminal.enums import BenchlingFieldType
+from liminal.enums import BenchlingEntityType, BenchlingFieldType
 from liminal.enums.benchling_naming_strategy import BenchlingNamingStrategy
 from liminal.orm.name_template import NameTemplate
-from liminal.orm.name_template_parts import TextPart
+from liminal.orm.name_template_parts import ParentLotNumberPart, TextPart
+from liminal.orm.schema_properties import SchemaProperties
 
 
 class TestCompareEntitySchemas:
@@ -160,7 +161,7 @@ class TestCompareEntitySchemas:
             mock_get_benchling_entity_schemas.return_value = missing_field
             invalid_models = compare_entity_schemas(mock_benchling_sdk)
             # Only new schemas override the default operation order.
-            assert all(c.order is None for c in invalid_models["mock_entity"])
+            assert all(c.order_override is None for c in invalid_models["mock_entity"])
             assert len(invalid_models["mock_entity"]) == 1
             assert isinstance(
                 invalid_models["mock_entity"][0].op, CreateEntitySchemaField
@@ -435,7 +436,7 @@ class TestCompareEntitySchemas:
             assert isinstance(template, UpdateEntitySchemaNameTemplate)
             assert isinstance(naming, UpdateEntitySchema)
 
-            # The link is created without a target, so parent_link waits for the target.
+            # The link is created without a target, which is set in the follow-up field update.
             created_field = create.fields[0]
             assert "entity_link" not in created_field.model_fields_set
             assert "parent_link" not in created_field.model_fields_set
@@ -450,6 +451,22 @@ class TestCompareEntitySchemas:
             assert link.update_props.parent_link is True
 
             assert template.wh_schema_name == "cl_batch"
+            # The failure in #271: a parent lot number part needs its field to already be a parent link with a target.
+            lot_number_fields = {
+                part.wh_field_name
+                for part in template.update_name_template.parts
+                if isinstance(part, ParentLotNumberPart)
+            }
+            assert lot_number_fields == {"parent_cell_line"}
+            template_index = batch_ops.index(template)
+            parent_links_set_before_template = {
+                op.wh_field_name
+                for op in batch_ops[:template_index]
+                if isinstance(op, UpdateEntitySchemaField)
+                and op.update_props.parent_link is True
+                and op.update_props.entity_link is not None
+            }
+            assert lot_number_fields <= parent_links_set_before_template
             assert naming.wh_schema_name == "cl_batch"
             assert naming.update_props.model_dump(exclude_unset=True) == {
                 "naming_strategies": {
@@ -472,3 +489,147 @@ class TestCompareEntitySchemas:
                 if isinstance(op, UpdateEntitySchemaNameTemplate)
             )
             assert last_field_update < first_template
+
+            # The downgrade runs the reverse operations in the opposite order.
+            downgrade_ops = [
+                c.reverse_op for c in reversed(sorted(compared["cl_batch"]))
+            ]
+            assert [type(op) for op in downgrade_ops] == [
+                UpdateEntitySchema,
+                UpdateEntitySchemaNameTemplate,
+                UpdateEntitySchemaField,
+                UpdateEntitySchema,
+                ArchiveEntitySchema,
+            ]
+            assert isinstance(downgrade_ops[0], UpdateEntitySchema)
+            assert downgrade_ops[0].update_props.model_dump(exclude_unset=True) == {
+                "naming_strategies": {BenchlingNamingStrategy.NEW_IDS}
+            }
+
+    def test_compare_benchling_schemas_add_template_naming_strategy(  # type: ignore[no-untyped-def]
+        self, mock_template_naming_subclass
+    ) -> None:
+        """Adding REPLACE_NAMES_WITH_TEMPLATE sets the name template first, then the naming strategy."""
+        with (
+            patch(
+                "liminal.entity_schemas.compare.get_converted_entity_schemas"
+            ) as mock_get_benchling_entity_schemas,
+            patch(
+                "liminal.orm.base_model.BaseModel.get_all_subclasses"
+            ) as mock_get_all_subclasses,
+        ):
+            mock_get_all_subclasses.return_value = mock_template_naming_subclass
+            benchling_props = SchemaProperties(
+                name="Template Entity",
+                warehouse_name="template_entity",
+                prefix="TemplateEntity",
+                entity_type=BenchlingEntityType.CUSTOM_ENTITY,
+                naming_strategies=[BenchlingNamingStrategy.NEW_IDS],
+            )
+            mock_get_benchling_entity_schemas.return_value = [
+                (benchling_props, NameTemplate(), {})
+            ]
+            compared = compare_entity_schemas(Mock())
+            ops = sorted(compared["template_entity"])
+            assert [type(c.op) for c in ops] == [
+                UpdateEntitySchemaNameTemplate,
+                UpdateEntitySchema,
+            ]
+            template, naming = ops
+            assert isinstance(template.op, UpdateEntitySchemaNameTemplate)
+            assert isinstance(naming.op, UpdateEntitySchema)
+            assert isinstance(naming.reverse_op, UpdateEntitySchema)
+            assert naming.op.update_props.model_dump(exclude_unset=True) == {
+                "naming_strategies": {
+                    BenchlingNamingStrategy.NEW_IDS,
+                    BenchlingNamingStrategy.REPLACE_NAMES_WITH_TEMPLATE,
+                }
+            }
+            assert naming.reverse_op.update_props.model_dump(exclude_unset=True) == {
+                "naming_strategies": {BenchlingNamingStrategy.NEW_IDS}
+            }
+
+            # Other schema property changes stay in the early UpdateEntitySchema, without the template strategy.
+            benchling_props.prefix = "OldPrefix"
+            compared = compare_entity_schemas(Mock())
+            ops = sorted(compared["template_entity"])
+            assert [type(c.op) for c in ops] == [
+                UpdateEntitySchema,
+                UpdateEntitySchemaNameTemplate,
+                UpdateEntitySchema,
+            ]
+            early = ops[0].op
+            assert isinstance(early, UpdateEntitySchema)
+            assert early.update_props.model_dump(exclude_unset=True) == {
+                "prefix": "TemplateEntity"
+            }
+            assert ops[0].reverse_op.update_props.model_dump(  # type: ignore[attr-defined]
+                exclude_unset=True
+            ) == {"prefix": "OldPrefix"}
+
+    def test_compare_benchling_schemas_remove_template_naming_strategy(  # type: ignore[no-untyped-def]
+        self, mock_plain_naming_subclass
+    ) -> None:
+        """Removing REPLACE_NAMES_WITH_TEMPLATE clears the naming strategy before the name template."""
+        with (
+            patch(
+                "liminal.entity_schemas.compare.get_converted_entity_schemas"
+            ) as mock_get_benchling_entity_schemas,
+            patch(
+                "liminal.orm.base_model.BaseModel.get_all_subclasses"
+            ) as mock_get_all_subclasses,
+        ):
+            mock_get_all_subclasses.return_value = mock_plain_naming_subclass
+            benchling_props = SchemaProperties(
+                name="Plain Entity",
+                warehouse_name="plain_entity",
+                prefix="PlainEntity",
+                entity_type=BenchlingEntityType.CUSTOM_ENTITY,
+                naming_strategies=[
+                    BenchlingNamingStrategy.NEW_IDS,
+                    BenchlingNamingStrategy.REPLACE_NAMES_WITH_TEMPLATE,
+                ],
+            )
+            benchling_template = NameTemplate(parts=[TextPart(value="template_text")])
+            mock_get_benchling_entity_schemas.return_value = [
+                (benchling_props, benchling_template, {})
+            ]
+            compared = compare_entity_schemas(Mock())
+            ops = sorted(compared["plain_entity"])
+            assert [type(c.op) for c in ops] == [
+                UpdateEntitySchema,
+                UpdateEntitySchemaNameTemplate,
+            ]
+            naming, template = ops
+            assert isinstance(naming.op, UpdateEntitySchema)
+            assert isinstance(naming.reverse_op, UpdateEntitySchema)
+            assert isinstance(template.op, UpdateEntitySchemaNameTemplate)
+            assert isinstance(template.reverse_op, UpdateEntitySchemaNameTemplate)
+            assert naming.op.update_props.model_dump(exclude_unset=True) == {
+                "naming_strategies": {BenchlingNamingStrategy.NEW_IDS}
+            }
+            assert template.op.update_name_template.parts == []
+
+            # The downgrade restores the name template first, then the naming strategy.
+            assert naming.reverse_op.update_props.model_dump(exclude_unset=True) == {
+                "naming_strategies": {
+                    BenchlingNamingStrategy.NEW_IDS,
+                    BenchlingNamingStrategy.REPLACE_NAMES_WITH_TEMPLATE,
+                }
+            }
+            assert template.reverse_op.update_name_template.parts == [
+                TextPart(value="template_text")
+            ]
+
+    def test_name_template_runs_between_field_update_and_field_archive(self) -> None:
+        orders = {
+            UpdateEntitySchemaField.order,
+            UpdateEntitySchemaNameTemplate.order,
+            ArchiveEntitySchemaField.order,
+        }
+        assert (
+            UpdateEntitySchemaField.order
+            < UpdateEntitySchemaNameTemplate.order
+            < ArchiveEntitySchemaField.order
+        )
+        assert len(orders) == 3

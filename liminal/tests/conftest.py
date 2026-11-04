@@ -570,3 +570,46 @@ def mock_cell_line_subclasses() -> list[type[BaseModel]]:
             self.parent_cell_line = parent_cell_line
 
     return [CellLine, CellLineBatch]
+
+
+@pytest.fixture
+def mock_template_naming_subclass() -> list[type[BaseModel]]:
+    """A schema in code that uses a name template and REPLACE_NAMES_WITH_TEMPLATE."""
+    from liminal.orm.name_template_parts import TextPart
+
+    class TemplateEntity(BaseModel):
+        __schema_properties__ = SchemaProperties(
+            name="Template Entity",
+            warehouse_name="template_entity",
+            prefix="TemplateEntity",
+            entity_type=BenchlingEntityType.CUSTOM_ENTITY,
+            naming_strategies=[
+                BenchlingNamingStrategy.NEW_IDS,
+                BenchlingNamingStrategy.REPLACE_NAMES_WITH_TEMPLATE,
+            ],
+        )
+        __name_template__ = NameTemplate(parts=[TextPart(value="template_text")])
+
+        def __init__(self) -> None:
+            pass
+
+    return [TemplateEntity]
+
+
+@pytest.fixture
+def mock_plain_naming_subclass() -> list[type[BaseModel]]:
+    """A schema in code with no name template and no template based naming strategy."""
+
+    class PlainEntity(BaseModel):
+        __schema_properties__ = SchemaProperties(
+            name="Plain Entity",
+            warehouse_name="plain_entity",
+            prefix="PlainEntity",
+            entity_type=BenchlingEntityType.CUSTOM_ENTITY,
+            naming_strategies=[BenchlingNamingStrategy.NEW_IDS],
+        )
+
+        def __init__(self) -> None:
+            pass
+
+    return [PlainEntity]
