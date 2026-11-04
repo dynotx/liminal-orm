@@ -26,6 +26,9 @@ from liminal.utils import to_snake_case
 
 LOGGER = logging.getLogger(__name__)
 
+# Template based naming strategies need the name template, so the order is overridden to be set right after it.
+NAME_TEMPLATE_NAMING_STRATEGY_ORDER = UpdateEntitySchemaNameTemplate.order + 1
+
 
 def compare_entity_schemas(
     benchling_service: BenchlingService, schema_names: set[str] | None = None
@@ -237,26 +240,50 @@ def compare_entity_schemas(
                         )
                     )
             if benchling_schema_props != model.__schema_properties__:
-                ops.append(
-                    CompareOperation(
-                        op=UpdateEntitySchema(
-                            model.__schema_properties__.warehouse_name,
-                            BaseSchemaProperties(
-                                **benchling_schema_props.merge(
-                                    model.__schema_properties__
-                                )
-                            ),
-                        ),
-                        reverse_op=UpdateEntitySchema(
-                            model.__schema_properties__.warehouse_name,
-                            BaseSchemaProperties(
-                                **model.__schema_properties__.merge(
-                                    benchling_schema_props
-                                )
-                            ),
-                        ),
-                    ),
+                new_schema_props = BaseSchemaProperties(
+                    **benchling_schema_props.merge(model.__schema_properties__)
                 )
+                rollback_schema_props = BaseSchemaProperties(
+                    **model.__schema_properties__.merge(benchling_schema_props)
+                )
+                model_strategies = (
+                    model.__schema_properties__.naming_strategies or set()
+                )
+                benchling_strategies = benchling_schema_props.naming_strategies or set()
+                # A template based naming strategy needs the name template, which runs after UpdateEntitySchema.
+                # So when one is being added, set all the naming strategies in their own operation after the template.
+                if any(
+                    BenchlingNamingStrategy.is_template_based(s)
+                    for s in model_strategies - benchling_strategies
+                ):
+                    new_schema_props.unset_naming_strategies()
+                    rollback_schema_props.unset_naming_strategies()
+                    ops.append(
+                        CompareOperation(
+                            op=UpdateEntitySchema(
+                                model_wh_name,
+                                BaseSchemaProperties(
+                                    naming_strategies=model_strategies
+                                ),
+                            ),
+                            reverse_op=UpdateEntitySchema(
+                                model_wh_name,
+                                BaseSchemaProperties(
+                                    naming_strategies=benchling_strategies
+                                ),
+                            ),
+                            order_override=NAME_TEMPLATE_NAMING_STRATEGY_ORDER,
+                        )
+                    )
+                if new_schema_props.model_dump(exclude_unset=True) != {}:
+                    ops.append(
+                        CompareOperation(
+                            op=UpdateEntitySchema(model_wh_name, new_schema_props),
+                            reverse_op=UpdateEntitySchema(
+                                model_wh_name, rollback_schema_props
+                            ),
+                        ),
+                    )
             if benchling_name_template != model.__name_template__:
                 ops.append(
                     CompareOperation(
@@ -300,8 +327,24 @@ def compare_entity_schemas(
                 for p in field_props
                 if (p.unit_name and p.warehouse_name)
             }
+            # A link field is created without a target, and Benchling only accepts
+            # parent_link on a field that has one, so it is set with the target.
+            parent_links_to_update = {
+                p.warehouse_name
+                for p in field_props
+                if (p.parent_link and p.entity_link and p.warehouse_name)
+            }
             field_props = [
-                f.unset_tooltip().unset_entity_link().unset_unit_name()
+                f.unset_tooltip()
+                .unset_entity_link()
+                .unset_unit_name()
+                .unset_parent_link()
+                for f in field_props
+            ]
+            field_props = [
+                f.unset_parent_link()
+                if f.warehouse_name in parent_links_to_update
+                else f
                 for f in field_props
             ]
             field_props = [
@@ -337,32 +380,20 @@ def compare_entity_schemas(
                 )
             )
             # Benchling api does not allow for setting a custom warehouse_name.
-            # Benchling api also does not allow for setting the name template.
             # Because of this, we need to run a separate UpdateEntitySchema to set the warehouse_name if it is different from the snakecase version of the model name.
-            # We also need to set the template based naming_strategies separately, since the name template must first be set.
-            new_schema_props = BaseSchemaProperties()
-            rollback_schema_props = BaseSchemaProperties()
+            # Later operations on this schema use the model's warehouse_name.
             if model_wh_name != benchling_given_wh_name:
-                new_schema_props.warehouse_name = model_wh_name
-                rollback_schema_props.warehouse_name = benchling_given_wh_name
-            if (
-                model.__schema_properties__.naming_strategies
-                - standard_naming_strategies
-            ):
-                new_schema_props.naming_strategies = (
-                    model.__schema_properties__.naming_strategies
-                )
-                rollback_schema_props.naming_strategies = standard_naming_strategies
-            if new_schema_props.model_dump(exclude_unset=True) != {}:
                 ops.append(
                     CompareOperation(
                         op=UpdateEntitySchema(
                             benchling_given_wh_name,
-                            new_schema_props,
+                            BaseSchemaProperties(warehouse_name=model_wh_name),
                         ),
                         reverse_op=UpdateEntitySchema(
                             model_wh_name,
-                            rollback_schema_props,
+                            BaseSchemaProperties(
+                                warehouse_name=benchling_given_wh_name
+                            ),
                         ),
                     )
                 )
@@ -382,6 +413,9 @@ def compare_entity_schemas(
                     )
                     rollback_field_props.entity_link = None
                     rollback_field_props.type = BenchlingFieldType.ENTITY_LINK
+                if wh_field_name in parent_links_to_update:
+                    new_field_props.parent_link = True
+                    rollback_field_props.parent_link = False
                 if tooltip_value := tooltips_to_update.get(wh_field_name):
                     new_field_props.tooltip = tooltip_value
                     rollback_field_props.tooltip = None
@@ -403,11 +437,12 @@ def compare_entity_schemas(
             )
             # Benchling api also does not allow for setting the name template when Creating an Entity Schema, since it is a different endpoint.
             # Because of this, we need to run a separate UpdateEntitySchemaNameTemplate using the name template endpoint to set the name template on the newly created Entity Schema.
+            # The name template update runs after the field updates above, since a part can need a link target or parent link set there.
             if benchling_given_name_template != model.__name_template__:
                 ops.append(
                     CompareOperation(
                         op=UpdateEntitySchemaNameTemplate(
-                            benchling_given_wh_name,
+                            model_wh_name,
                             BaseNameTemplate(
                                 **benchling_given_name_template.merge(
                                     model.__name_template__
@@ -415,13 +450,35 @@ def compare_entity_schemas(
                             ),
                         ),
                         reverse_op=UpdateEntitySchemaNameTemplate(
-                            benchling_given_wh_name,
+                            model_wh_name,
                             BaseNameTemplate(
                                 **model.__name_template__.merge(
                                     benchling_given_name_template
                                 )
                             ),
                         ),
+                    )
+                )
+            # Template based naming_strategies need the name template, so they are set right after it.
+            if (
+                model.__schema_properties__.naming_strategies
+                - standard_naming_strategies
+            ):
+                ops.append(
+                    CompareOperation(
+                        op=UpdateEntitySchema(
+                            model_wh_name,
+                            BaseSchemaProperties(
+                                naming_strategies=model.__schema_properties__.naming_strategies
+                            ),
+                        ),
+                        reverse_op=UpdateEntitySchema(
+                            model_wh_name,
+                            BaseSchemaProperties(
+                                naming_strategies=standard_naming_strategies
+                            ),
+                        ),
+                        order_override=NAME_TEMPLATE_NAMING_STRATEGY_ORDER,
                     )
                 )
 

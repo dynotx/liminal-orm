@@ -105,6 +105,11 @@ class BaseSchemaProperties(BaseModel):
         self.naming_strategies = value
         return self
 
+    def unset_naming_strategies(self) -> BaseSchemaProperties:
+        if "naming_strategies" in self.__pydantic_fields_set__:
+            self.__pydantic_fields_set__.remove("naming_strategies")
+        return self
+
     def merge(self, new_props: BaseSchemaProperties) -> dict[str, Any]:
         """Creates a diff between the current schema properties and the new schema properties.
         Sets value to None if the values are equal, otherwise sets the value to the new value.
