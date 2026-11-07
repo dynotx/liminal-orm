@@ -104,9 +104,13 @@ class Column(SqlColumn):
             raise ValueError(
                 f"Column {name}: Entity link can only be set if the field type is one of {BenchlingFieldType.get_entity_link_types()}."
             )
-        if parent_link and type not in BenchlingFieldType.get_entity_link_types():
+        if parent_link and type != BenchlingFieldType.ENTITY_LINK:
             raise ValueError(
-                f"Column {name}: Parent link can only be set if the field type is one of {BenchlingFieldType.get_entity_link_types()}."
+                f"Column {name}: Parent link can only be set if the field type is ENTITY_LINK."
+            )
+        if parent_link and not entity_link:
+            raise ValueError(
+                f"Column {name}: Parent link cannot be set without an entity link."
             )
         if type in BenchlingFieldType.get_non_multi_select_types() and is_multi is True:
             raise ValueError(

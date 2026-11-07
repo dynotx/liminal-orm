@@ -65,8 +65,6 @@ class BaseFieldProperties(BaseModel):
         non_multi_types = BenchlingFieldType.get_non_multi_select_types()
         if field_type in non_multi_types:
             unsupported.add("is_multi")
-        if not (has_entity_link and field_type == BenchlingFieldType.ENTITY_LINK):
-            unsupported.add("parent_link")
         if field_type not in BenchlingFieldType.get_number_field_types():
             unsupported.add("unit_name")
         if field_type != BenchlingFieldType.DECIMAL:

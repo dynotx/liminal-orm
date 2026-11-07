@@ -164,7 +164,7 @@ def convert_entity_schema_field_to_field_properties(
         if field.linkDefinition
         and field.linkDefinition.typename == BenchlingLinkDefinitionType.DROPDOWN
         else None,
-        parent_link=field.isParent,
+        parent_link=field.isParent or False,
         entity_link=entity_schema_id_to_name_map.get(field.linkDefinition.id)
         if links_to_entity_schema
         else None,

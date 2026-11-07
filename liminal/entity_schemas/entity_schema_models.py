@@ -130,18 +130,26 @@ class EntitySchemaFieldModel(BaseModel):
         self.description = (
             update_props.tooltip if "tooltip" in update_diff_names else self.description
         )
-        if "entity_link" in update_diff_names and update_props.entity_link:
-            if benchling_service is None:
-                raise ValueError(
-                    "Benchling SDK must be provided to update entity link field."
+        if "entity_link" in update_diff_names:
+            if update_props.entity_link is None:
+                self.linkDefinition = None
+                # Without a target schema the field is a generic entity link, not e.g. a CustomEntityLinkFieldDefinition.
+                if BenchlingFieldDefinitionType.is_entity_link(self.typename):
+                    self.typename = (
+                        BenchlingFieldDefinitionType.ANY_ENTITY_LINK_FIELD_DEFINITION
+                    )
+            else:
+                if benchling_service is None:
+                    raise ValueError(
+                        "Benchling SDK must be provided to update entity link field."
+                    )
+                linked_schema = EntitySchemaModel.get_one_cached(
+                    benchling_service, update_props.entity_link
                 )
-            linked_schema = EntitySchemaModel.get_one_cached(
-                benchling_service, update_props.entity_link
-            )
-            self.linkDefinition = FieldLinkDefinitionModel(
-                id=linked_schema.id,
-                typename=BenchlingLinkDefinitionType(linked_schema.typename.value),
-            )
+                self.linkDefinition = FieldLinkDefinitionModel(
+                    id=linked_schema.id,
+                    typename=BenchlingLinkDefinitionType(linked_schema.typename.value),
+                )
         if "type" in update_diff_names and update_props.type:
             linked_schema_type = (
                 BenchlingEntityTypeName(self.linkDefinition.typename.value)
