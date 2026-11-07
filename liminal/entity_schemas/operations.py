@@ -41,7 +41,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class CreateEntitySchema(BaseOperation):
-    order: ClassVar[int] = 80
+    order: ClassVar[int] = 90
 
     def __init__(
         self,
@@ -193,7 +193,7 @@ class ArchiveEntitySchema(BaseOperation):
 
 
 class UnarchiveEntitySchema(BaseOperation):
-    order: ClassVar[int] = 90
+    order: ClassVar[int] = 100
 
     def __init__(self, wh_schema_name: str) -> None:
         self.wh_schema_name = wh_schema_name
@@ -329,7 +329,7 @@ class UpdateEntitySchemaNameTemplate(BaseOperation):
 
 
 class CreateEntitySchemaField(BaseOperation):
-    order: ClassVar[int] = 100
+    order: ClassVar[int] = 110
 
     def __init__(
         self,
