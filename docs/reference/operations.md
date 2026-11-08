@@ -33,7 +33,7 @@ example_operation.validate()
 | UpdateDropdownOption     | Updates the name of an existing option in a dropdown.                       | 6     |
 | ArchiveDropdownOption    | Archives an existing option in a dropdown.                                  | 7     |
 | ReorderDropdownOptions   | Reorders the options in an existing dropdown.                               | 8     |
-| ArchiveDropdown          | Archives an existing dropdown.                                              | 18    |
+| ArchiveDropdown          | Archives an existing dropdown.                                              | 19    |
 
 ### Entity Schema Operations
 

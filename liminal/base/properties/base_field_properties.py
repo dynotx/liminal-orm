@@ -75,7 +75,7 @@ class BaseFieldProperties(BaseModel):
         self._archived = value
         return self
 
-    def set_warehouse_name(self, wh_name: str) -> BaseFieldProperties:
+    def set_warehouse_name(self, wh_name: str | None) -> BaseFieldProperties:
         self.warehouse_name = wh_name
         return self
 
@@ -94,9 +94,8 @@ class BaseFieldProperties(BaseModel):
             self.__pydantic_fields_set__.remove("unit_name")
         return self
 
-    def unset_parent_link(self) -> BaseFieldProperties:
-        if "parent_link" in self.__pydantic_fields_set__:
-            self.__pydantic_fields_set__.remove("parent_link")
+    def set_parent_link(self, value: bool) -> BaseFieldProperties:
+        self.parent_link = value
         return self
 
     def set_type(self, new_type: BenchlingFieldType) -> BaseFieldProperties:
