@@ -439,7 +439,8 @@ class TestCompareEntitySchemas:
             # The link is created without a target, which is set in the follow-up field update.
             created_field = create.fields[0]
             assert "entity_link" not in created_field.model_fields_set
-            assert "parent_link" not in created_field.model_fields_set
+            # parent_link is created as False, and set to True in the follow-up field update.
+            assert created_field.parent_link is False
 
             assert rename.wh_schema_name == "cell_line_batch"
             assert rename.update_props.model_dump(exclude_unset=True) == {
