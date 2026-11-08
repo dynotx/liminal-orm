@@ -335,14 +335,11 @@ def compare_entity_schemas(
                 if (p.parent_link and p.entity_link and p.warehouse_name)
             }
             field_props = [
-                f.unset_tooltip()
-                .unset_entity_link()
-                .unset_unit_name()
-                .unset_parent_link()
+                f.unset_tooltip().unset_entity_link().unset_unit_name()
                 for f in field_props
             ]
             field_props = [
-                f.unset_parent_link()
+                f.set_parent_link(False)
                 if f.warehouse_name in parent_links_to_update
                 else f
                 for f in field_props

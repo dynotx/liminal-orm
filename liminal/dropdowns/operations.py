@@ -24,7 +24,6 @@ from liminal.dropdowns.utils import (
     dropdown_exists_in_benchling,
     get_benchling_dropdown_by_name,
     get_benchling_dropdown_summary_by_name,
-    get_schemas_with_dropdown,
 )
 
 LOGGER = logging.getLogger(__name__)
@@ -74,7 +73,7 @@ class CreateDropdown(BaseOperation):
 
 
 class ArchiveDropdown(BaseOperation):
-    order: ClassVar[int] = 180
+    order: ClassVar[int] = 190
 
     def __init__(self, dropdown_name: str) -> None:
         self.dropdown_name = dropdown_name
@@ -84,12 +83,6 @@ class ArchiveDropdown(BaseOperation):
         if dropdown.archive_record is not None:
             raise ValueError(f"Dropdown {self.dropdown_name} is already archived.")
         return archive_dropdown(benchling_service, dropdown.id)
-
-    def validate(self, benchling_service: BenchlingService) -> None:
-        if schemas_with_dropdown := get_schemas_with_dropdown(self.dropdown_name):
-            raise ValueError(
-                f"Dropdown {self.dropdown_name} is used in schemas {schemas_with_dropdown}. Cannot archive a dropdown that is in use in non-archived fields."
-            )
 
     def describe_operation(self) -> str:
         return f"{self.dropdown_name}: Archiving dropdown."
