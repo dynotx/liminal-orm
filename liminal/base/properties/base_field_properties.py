@@ -69,8 +69,6 @@ class BaseFieldProperties(BaseModel):
             unsupported.add("unit_name")
         if field_type != BenchlingFieldType.DECIMAL:
             unsupported.add("decimal_places")
-        if not has_entity_link:
-            unsupported.add("parent_link")
         return unsupported
 
     def set_archived(self, value: bool) -> BaseFieldProperties:
