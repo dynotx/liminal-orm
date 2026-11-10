@@ -25,7 +25,7 @@
         ...
     ```
 
-    * **Required**: The `api_client_id` and `api_client_secret` are used to connect to Benchling's SDK. For more information, see the [Benchling API documentation](https://docs.benchling.com/docs/getting-started-benchling-apps#calling-the-api-as-an-app).
+    * **Required**: The `api_client_id` and `api_client_secret` are used to connect to Benchling's SDK. For information on how to access these credentials from your Benchling App with admin privileges, see the [Benchling API documentation](https://docs.benchling.com/docs/getting-started-benchling-apps#calling-the-api-as-an-app).
     * Optional: The `warehouse_connection_string` is used to connect to Benchling's read-only warehouse. If you have warehouse access, set this as the connection string for the warehouse.
     * Optional: The `config_flags` parameter is used to set tenant-specific configuration flags. For more information, see the [BenchlingConnection](../reference/benchling-connection.md) reference.
         * Set `schemas_enable_change_warehouse_name` to `True` if you want to enable changing schema and field warehouse names.
