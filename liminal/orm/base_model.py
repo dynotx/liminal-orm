@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, Generic, Type, TypeVar  # noqa: UP035
 import pandas as pd  # type: ignore
 from sqlalchemy import DATETIME, Boolean, ForeignKey, String
 from sqlalchemy import Column as SqlColumn
-from sqlalchemy.orm import Query, RelationshipProperty, Session, relationship
+from sqlalchemy.orm import Mapped, Query, Session, relationship
 from sqlalchemy.orm.decl_api import declared_attr
 
 from liminal.base.base_dropdown import BaseDropdown
@@ -156,13 +156,13 @@ class BaseModel(Generic[T], Base):
         cls._existing_schema_prefixes.append(cls.__schema_properties__.prefix.lower())
 
     @declared_attr
-    def creator_id(cls) -> SqlColumn:
+    def creator_id(cls) -> Mapped[str | None]:
         return SqlColumn(
             "creator_id$", String, ForeignKey("user$raw.id"), nullable=True
         )
 
     @declared_attr
-    def creator(cls) -> RelationshipProperty:
+    def creator(cls) -> Mapped[Any]:
         return relationship("User", foreign_keys=[cls.creator_id])
 
     id = SqlColumn("id", String, nullable=True, primary_key=True)
