@@ -23,7 +23,7 @@ dependencies = [
     "pandas>=2.2.3,<4; python_version == '3.13'",
     "pydantic>=2,<=2.13",
     "rich>=13.9.2,<14",
-    "sqlalchemy>=1.4.53,<2",
+    "sqlalchemy>=1.4.53,<2.1",
     "tenacity>=8,<10",
     "typer>=0.12.5,<0.13",
     "psycopg2-binary>=2.9.10,<3",
