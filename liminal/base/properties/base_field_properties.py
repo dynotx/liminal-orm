@@ -65,8 +65,6 @@ class BaseFieldProperties(BaseModel):
         non_multi_types = BenchlingFieldType.get_non_multi_select_types()
         if field_type in non_multi_types:
             unsupported.add("is_multi")
-        if not (has_entity_link and field_type == BenchlingFieldType.ENTITY_LINK):
-            unsupported.add("parent_link")
         if field_type not in BenchlingFieldType.get_number_field_types():
             unsupported.add("unit_name")
         if field_type != BenchlingFieldType.DECIMAL:
@@ -77,7 +75,7 @@ class BaseFieldProperties(BaseModel):
         self._archived = value
         return self
 
-    def set_warehouse_name(self, wh_name: str) -> BaseFieldProperties:
+    def set_warehouse_name(self, wh_name: str | None) -> BaseFieldProperties:
         self.warehouse_name = wh_name
         return self
 
@@ -94,6 +92,10 @@ class BaseFieldProperties(BaseModel):
     def unset_unit_name(self) -> BaseFieldProperties:
         if "unit_name" in self.__pydantic_fields_set__:
             self.__pydantic_fields_set__.remove("unit_name")
+        return self
+
+    def set_parent_link(self, value: bool) -> BaseFieldProperties:
+        self.parent_link = value
         return self
 
     def set_type(self, new_type: BenchlingFieldType) -> BaseFieldProperties:

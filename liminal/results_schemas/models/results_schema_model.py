@@ -8,12 +8,13 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from liminal.connection.benchling_service import BenchlingService
 from liminal.enums import BenchlingFieldDefinitionType
+from liminal.enums.benchling_link_definition_type import BenchlingLinkDefinitionType
 from liminal.results_schemas.api import list_results_schemas_with_fields
 
 
 class ResultsSchemaFieldLinkDefinitionModel(BaseModel):
     id: str
-    typename: str = Field(alias="__typename")
+    typename: BenchlingLinkDefinitionType = Field(alias="__typename")
 
     model_config = ConfigDict(populate_by_name=True)
 

@@ -41,7 +41,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class CreateEntitySchema(BaseOperation):
-    order: ClassVar[int] = 80
+    order: ClassVar[int] = 90
 
     def __init__(
         self,
@@ -81,10 +81,10 @@ class CreateEntitySchema(BaseOperation):
         )
 
     def describe_operation(self) -> str:
-        return f"{self._validated_schema_properties.name}: Creating new entity schema with fields: {', '.join([f.warehouse_name for f in self.fields if f.warehouse_name is not None])}."
+        return f"{self._validated_schema_properties.warehouse_name}: Creating new entity schema with fields: {', '.join([f.warehouse_name for f in self.fields if f.warehouse_name is not None])}."
 
     def describe(self) -> str:
-        return f"{self._validated_schema_properties.name}: Schema is defined in code but not in Benchling."
+        return f"{self._validated_schema_properties.warehouse_name}: Schema is defined in code but not in Benchling."
 
     def validate(self, benchling_service: BenchlingService) -> None:
         if (
@@ -154,9 +154,13 @@ class CreateEntitySchema(BaseOperation):
                 schema, entity_schema_id_to_name_map, dropdowns_map, unit_id_to_name_map
             )
         )
+        # Warehouse name exists in the Liminal operation definition but not in Benchling converted list.
+        # Set the warehouse name to None for operation fields to compare properly.
+        cleaned_op_fields = [f.set_warehouse_name(None) for f in self.fields]
+        benchling_fields = [f for _, f in benchling_fields_props.items()]
         if (
             self._validated_schema_properties != benchling_schema_props
-            or self.fields != [f for _, f in benchling_fields_props.items()]
+            or cleaned_op_fields != benchling_fields
         ):
             raise ValueError(
                 f"Entity schema {self._validated_schema_properties.warehouse_name} is different in code versus Benchling. Cannot unarchive."
@@ -165,7 +169,7 @@ class CreateEntitySchema(BaseOperation):
 
 
 class ArchiveEntitySchema(BaseOperation):
-    order: ClassVar[int] = 170
+    order: ClassVar[int] = 180
 
     def __init__(self, wh_schema_name: str) -> None:
         self.wh_schema_name = wh_schema_name
@@ -193,7 +197,7 @@ class ArchiveEntitySchema(BaseOperation):
 
 
 class UnarchiveEntitySchema(BaseOperation):
-    order: ClassVar[int] = 90
+    order: ClassVar[int] = 100
 
     def __init__(self, wh_schema_name: str) -> None:
         self.wh_schema_name = wh_schema_name
@@ -290,7 +294,7 @@ class UpdateEntitySchema(BaseOperation):
 
 
 class UpdateEntitySchemaNameTemplate(BaseOperation):
-    order: ClassVar[int] = 110
+    order: ClassVar[int] = 150
 
     def __init__(
         self,
@@ -329,7 +333,7 @@ class UpdateEntitySchemaNameTemplate(BaseOperation):
 
 
 class CreateEntitySchemaField(BaseOperation):
-    order: ClassVar[int] = 100
+    order: ClassVar[int] = 110
 
     def __init__(
         self,
@@ -442,7 +446,7 @@ class CreateEntitySchemaField(BaseOperation):
 
 
 class ArchiveEntitySchemaField(BaseOperation):
-    order: ClassVar[int] = 150
+    order: ClassVar[int] = 160
 
     def __init__(
         self, wh_schema_name: str, wh_field_name: str, index: int | None = None
@@ -634,7 +638,7 @@ class UpdateEntitySchemaField(BaseOperation):
 
 
 class ReorderEntitySchemaFields(BaseOperation):
-    order: ClassVar[int] = 160
+    order: ClassVar[int] = 170
 
     def __init__(self, wh_schema_name: str, new_order: list[str]) -> None:
         self.wh_schema_name = wh_schema_name
