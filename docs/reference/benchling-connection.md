@@ -48,7 +48,7 @@ connection = BenchlingConnection(
     The API id of the registry to scope this connection to, for example `src_abc123`. Only needed when the tenant has more than one registry. When set, Liminal reads and writes only the entity schemas and dropdowns in that registry, and the results schemas owned by the registry's organization. For a tenant with multiple registries and no `registry_id` set, Liminal raises an error in `BenchlingService`.
 
     !!! tip
-        For a tenant with several registries, give each registry its own Liminal directory (`env.py` and `versions/`), with one `BenchlingConnection` per tenant that sets that registry's `registry_id`. Each registry then keeps its own revision history in its own `liminal_remote` schema.
+        For a tenant with several registries, give each registry its own Liminal directory (`env.py` and `versions/`), with one `BenchlingConnection` per tenant that defines that registry's `registry_id`. Each registry then keeps its own revision history in its own `liminal_remote` schema.
 
 - **config_flags: TenantConfigFlags = TenantConfigFlags()**
 
