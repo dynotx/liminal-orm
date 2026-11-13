@@ -554,7 +554,7 @@ class EntitySchemaModel(BaseModel):
         )
         if schema is None:
             raise ValueError(
-                f"Schema {wh_schema_name} not found in Benchling {benchling_service.benchling_tenant}."
+                f"Schema {wh_schema_name} not found in Benchling {benchling_service.tenant_registry_name}."
             )
         schema_with_fields = attach_entity_schema_field_definitions(
             benchling_service, schema

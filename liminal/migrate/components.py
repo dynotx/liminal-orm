@@ -30,11 +30,11 @@ def get_full_migration_operations(
         ]
         if len(dropdown_operations) == 0:
             print(
-                f"[bold]Dropdowns are in sync for {benchling_service.benchling_tenant} tenant!"
+                f"[bold]Dropdowns are in sync for {benchling_service.tenant_registry_name}!"
             )
         else:
             print(
-                f"[bold]Dropdowns are out of sync for {benchling_service.benchling_tenant} tenant."
+                f"[bold]Dropdowns are out of sync for {benchling_service.tenant_registry_name}."
             )
 
     if not entity_schema_names or len(entity_schema_names) > 0:
@@ -48,11 +48,11 @@ def get_full_migration_operations(
         ]
         if len(entity_schema_operations) == 0:
             print(
-                f"[bold]Entity schemas are in sync for {benchling_service.benchling_tenant} tenant!"
+                f"[bold]Entity schemas are in sync for {benchling_service.tenant_registry_name}!"
             )
         else:
             print(
-                f"[bold]Entity schemas are out of sync for {benchling_service.benchling_tenant} tenant."
+                f"[bold]Entity schemas are out of sync for {benchling_service.tenant_registry_name}."
             )
 
     all_operations: list[CompareOperation] = (

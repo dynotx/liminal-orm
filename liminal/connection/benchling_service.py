@@ -117,6 +117,11 @@ class BenchlingService(Benchling):
             )
 
     @property
+    def tenant_registry_name(self) -> str:
+        """The name of the tenant and registry this service is connected to. Raises if it can't be determined."""
+        return f"[Tenant {self.benchling_tenant}: Registry {self.registry_name}]"
+
+    @property
     def session(self) -> Session:
         """Returns a session made by the sessionmaker"""
         return self.get_session()
@@ -125,6 +130,11 @@ class BenchlingService(Benchling):
     def registry_id(self) -> str:
         """The id of the registry this connection writes to. Raises if it can't be determined."""
         return self._registry_ref.id
+
+    @cached_property
+    def registry_name(self) -> str:
+        """The name of the registry this connection writes to. Raises if it can't be determined."""
+        return self._registry_ref.name
 
     @cached_property
     def organization_id(self) -> str:

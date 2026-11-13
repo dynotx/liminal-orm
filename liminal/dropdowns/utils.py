@@ -36,7 +36,7 @@ def get_benchling_dropdown_id_by_name(
     )
     if dropdown is None:
         raise ValueError(
-            f"Dropdown {name} not found in Benchling tenant {benchling_service.benchling_tenant}."
+            f"Dropdown {name} not found in Benchling {benchling_service.tenant_registry_name}."
         )
     return dropdown["id"]
 

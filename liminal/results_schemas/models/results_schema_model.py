@@ -147,7 +147,7 @@ class ResultsSchemaModel(BaseModel):
         )
         if schema is None:
             raise ValueError(
-                f"Schema {wh_schema_name} not found in Benchling {benchling_service.benchling_tenant}."
+                f"Schema {wh_schema_name} not found in Benchling {benchling_service.tenant_registry_name}."
             )
         return cls.model_validate(schema)
 
