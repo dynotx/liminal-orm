@@ -126,17 +126,17 @@ class BenchlingService(Benchling):
         """Returns a session made by the sessionmaker"""
         return self.get_session()
 
-    @cached_property
+    @property
     def registry_id(self) -> str:
         """The id of the registry this connection writes to. Raises if it can't be determined."""
         return self._registry_ref.id
 
-    @cached_property
+    @property
     def registry_name(self) -> str:
         """The name of the registry this connection writes to. Raises if it can't be determined."""
         return self._registry_ref.name
 
-    @cached_property
+    @property
     def organization_id(self) -> str:
         """The id of the organization that owns this connection's registry. Raises if it can't be determined."""
         return self._registry_ref.owner_id
