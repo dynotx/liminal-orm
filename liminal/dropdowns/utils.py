@@ -1,7 +1,7 @@
 from typing import Any
 
 from benchling_sdk.models import ArchiveRecord
-from benchling_sdk.models import Dropdown, DropdownOption, DropdownSummary
+from benchling_sdk.models import Dropdown, DropdownOption
 
 from liminal.connection import BenchlingService
 from liminal.dropdowns.api import list_dropdowns, list_dropdowns_with_options
@@ -11,7 +11,7 @@ from liminal.utils import to_pascal_case
 def get_benchling_dropdown_id_name_map(
     benchling_service: BenchlingService,
 ) -> dict[str, str]:
-    return {d.id: d.name for d in get_benchling_dropdown_summaries(benchling_service)}
+    return {d["id"]: d["name"] for d in list_dropdowns(benchling_service)}
 
 
 def get_benchling_dropdown_name_to_classname_map(
@@ -27,37 +27,26 @@ def get_benchling_dropdown_name_to_classname_map(
     }
 
 
-def get_benchling_dropdown_summaries(
-    benchling_service: BenchlingService,
-) -> list[DropdownSummary]:
-    return [
-        dropdown
-        for sublist in benchling_service.dropdowns.list()
-        for dropdown in sublist
-    ]
-
-
-def get_benchling_dropdown_summary_by_name(
+def get_benchling_dropdown_id_by_name(
     benchling_service: BenchlingService, name: str
-) -> DropdownSummary:
-    for dropdown in get_benchling_dropdown_summaries(benchling_service):
-        if dropdown.name == name:
-            return dropdown
-    raise Exception(f"Dropdown {name} not found in given list.")
+) -> str:
+    """Finds the id of a dropdown by name in the connection's registry. Names are unique within a registry."""
+    dropdown = next(
+        (d for d in list_dropdowns(benchling_service) if d["name"] == name), None
+    )
+    if dropdown is None:
+        raise ValueError(
+            f"Dropdown {name} not found in Benchling {benchling_service.tenant_registry_name}."
+        )
+    return dropdown["id"]
 
 
 def get_benchling_dropdown_by_name(
     benchling_service: BenchlingService, name: str
 ) -> Dropdown:
-    dropdown = None
-    for d in get_benchling_dropdown_summaries(benchling_service):
-        if d.name == name:
-            dropdown = d
-    if dropdown is None:
-        raise Exception(
-            f"Dropdown {name} not found in Benchling {benchling_service.benchling_tenant}."
-        )
-    return benchling_service.dropdowns.get_by_id(dropdown.id)
+    return benchling_service.dropdowns.get_by_id(
+        get_benchling_dropdown_id_by_name(benchling_service, name)
+    )
 
 
 def _convert_dropdown_from_v3_to_v2_sdk(
@@ -107,9 +96,7 @@ def get_benchling_dropdowns_dict(
 def dropdown_exists_in_benchling(
     benchling_service: BenchlingService, name: str
 ) -> bool:
-    return any(
-        d.name == name for d in get_benchling_dropdown_summaries(benchling_service)
-    )
+    return any(d["name"] == name for d in list_dropdowns(benchling_service))
 
 
 def get_schemas_with_dropdown(dropdown_name: str) -> list[str]:
