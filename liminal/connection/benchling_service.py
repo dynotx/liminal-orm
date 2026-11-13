@@ -33,6 +33,7 @@ REMOTE_REVISION_ID_FIELD_WH_NAME = "revision_id"
 class RegistryRef(BaseModel):
     """The registry a connection writes to, and the organization that owns it."""
 
+    name: str
     id: str
     owner_id: str
 
@@ -111,7 +112,8 @@ class BenchlingService(Benchling):
         if use_api and self.has_ambiguous_registries():
             raise ValueError(
                 f"Tenant {self.benchling_tenant} has {len(self._registries)} registries. "
-                "Liminal does not allow ambiguous registries. Set registry_id on the BenchlingConnection to choose one."
+                "Liminal does not allow ambiguous registries. Set registry_id on the BenchlingConnection to choose one. "
+                f"Registries found: {self._registries}"
             )
 
     @property
@@ -135,7 +137,7 @@ class BenchlingService(Benchling):
         from liminal.utils import list_all_items_v3
 
         return [
-            RegistryRef(id=r["id"], owner_id=r["owner"]["id"])
+            RegistryRef(id=r["id"], name=r["name"], owner_id=r["owner"]["id"])
             for r in list_all_items_v3(
                 self, "/api/v3/registry/items", include_archived=None
             )
