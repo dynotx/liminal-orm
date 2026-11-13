@@ -26,7 +26,8 @@ def _registry_page() -> Any:
     return SimpleNamespace(
         parsed={
             "items": [
-                {"id": r.id, "owner": {"id": r.owner.id}} for r in _TENANT_REGISTRIES
+                {"id": r.id, "name": r.name, "owner": {"id": r.owner.id}}
+                for r in _TENANT_REGISTRIES
             ]
         }
     )

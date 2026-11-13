@@ -25,7 +25,11 @@ def _connection() -> BenchlingConnection:
 def _single_registry_tenant() -> Iterator[None]:
     """BenchlingService lists the tenant's registries on init, so serve one instead of calling Benchling."""
     page = SimpleNamespace(
-        parsed={"items": [{"id": "src_main", "owner": {"id": "ent_main"}}]}
+        parsed={
+            "items": [
+                {"id": "src_main", "name": "Main", "owner": {"id": "ent_main"}}
+            ]
+        }
     )
     with patch("liminal.utils.rate_limited_get_v3", return_value=page):
         yield
