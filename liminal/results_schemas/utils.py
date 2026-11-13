@@ -66,7 +66,7 @@ def get_converted_results_schemas(
     benchling_service: BenchlingService, include_archived: bool = False
 ) -> list[tuple[ResultsSchemaProperties, dict[str, BaseFieldProperties]]]:
     """This functions gets all Results Schema schemas from Benchling and converts them to our internal representation of a schema and its fields.
-    It parses the Results Schema and creates ResultsSchemaProperties and a list of FieldProperties for each field in the schema.
+    It parses the Results Schema and creates ResultsSchemaProperties and a list of FieldProperties for each field in the schema
     """
     results_schemas = ResultsSchemaModel.get_all(benchling_service)
     dropdown_id_to_name_map = get_benchling_dropdown_id_name_map(benchling_service)
