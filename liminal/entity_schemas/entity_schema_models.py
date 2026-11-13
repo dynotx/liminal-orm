@@ -16,7 +16,7 @@ from liminal.base.properties.base_field_properties import BaseFieldProperties
 from liminal.base.properties.base_name_template import BaseNameTemplate
 from liminal.base.properties.base_schema_properties import BaseSchemaProperties
 from liminal.connection.benchling_service import BenchlingService
-from liminal.dropdowns.utils import get_benchling_dropdown_summary_by_name
+from liminal.dropdowns.utils import get_benchling_dropdown_id_by_name
 from liminal.entity_schemas.api import (
     attach_entity_schema_field_definitions,
     list_entity_schemas,
@@ -165,11 +165,11 @@ class EntitySchemaFieldModel(BaseModel):
                 raise ValueError(
                     "Benchling SDK must be provided to update dropdown field."
                 )
-            dropdown_summary_id = get_benchling_dropdown_summary_by_name(
+            dropdown_id = get_benchling_dropdown_id_by_name(
                 benchling_service, update_props.dropdown_link
-            ).id
+            )
             self.linkDefinition = FieldLinkDefinitionModel(
-                id=dropdown_summary_id,
+                id=dropdown_id,
                 typename=BenchlingLinkDefinitionType.DROPDOWN,
             )
         self.displayPrecision = (
@@ -304,9 +304,9 @@ class EntitySchemaFieldInputModel(BaseModel):
         )
         dropdown_id = None
         if field_props.dropdown_link is not None:
-            dropdown_id = get_benchling_dropdown_summary_by_name(
+            dropdown_id = get_benchling_dropdown_id_by_name(
                 benchling_service, field_props.dropdown_link
-            ).id
+            )
         unit_id = None
         if field_props.unit_name is not None and field_type.supports_unit():
             unit_id = get_unit_id_from_name(benchling_service, field_props.unit_name)
