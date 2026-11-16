@@ -6,7 +6,9 @@ For full release notes, please visit the [GitHub Releases page](https://github.c
 
 ### 🗒️ Summary
 
-v5.2.0 release adds support for Benchling tenants with multiple registries. Previously, Liminal only support tenant's with one registry and raised an error if multiple were found. Now, the error still gets raised but prompts the user to configure the `registry_id` on the `BenchlingConnection`. When this is configured, the endpoints become registry or organization scoped. It is recommended that if you have multiple registries, to initialize liminal for each registires, creating multiple separate directories to track the revisions and schemas.
+v5.2.0 release adds support for Benchling tenants with multiple registries. Previously, Liminal only supported tenants with one registry and raised an error if it found more than one. Now, the error still gets raised but prompts the user to configure the `registry_id` on the `BenchlingConnection`. Once this is configured, Liminal reads and writes become registry scoped for dropdowns and entity schemas, and organization scoped for results schemas.
+
+If you have multiple registries, it is recommend to initialize Liminal separately for each one, so that each registry has its own directory to track it's own revisions and schemas.
 
 This is a minor version upgrade since this is purely an addition of functionality and all current users with one registry are unaffected. If you have any issues or questions, reach out!
 
