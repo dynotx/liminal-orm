@@ -2,7 +2,7 @@ For full release notes, please visit the [GitHub Releases page](https://github.c
 
 ## v5.2.0
 
-[![github](https://img.shields.io/badge/github-v5.0.0-blue)](https://github.com/dynotx/liminal-orm/releases/tag/5.0.0) [![pypi](https://img.shields.io/pypi/v/liminal-orm/5.0.0.svg)](https://pypi.org/project/liminal-orm/5.0.0/)
+[![github](https://img.shields.io/badge/github-v5.2.0-blue)](https://github.com/dynotx/liminal-orm/releases/tag/5.2.0) [![pypi](https://img.shields.io/pypi/v/liminal-orm/5.2.0.svg)](https://pypi.org/project/liminal-orm/5.2.0/)
 
 ### 🗒️ Summary
 
