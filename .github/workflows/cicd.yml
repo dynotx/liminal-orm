@@ -91,6 +91,9 @@ jobs:
       - name: Run tests
         run: uv run --locked --python "${{ matrix.python-version }}" pytest liminal/
 
+      - name: Run tests on SQLAlchemy 2.0
+        run: uv run --locked --python "${{ matrix.python-version }}" --with "sqlalchemy>=2.0,<2.1" pytest liminal/
+
       - name: Download wheel
         uses: actions/download-artifact@v8
         with:

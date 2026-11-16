@@ -1,5 +1,5 @@
 from sqlalchemy import MetaData
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 
 # This is necessary for SQLAlchemy, all DBmodels inherit from Base, either directly or indirectly.
 # apply a naming convention to the metadata instance (for use in alembic revisions)
@@ -12,5 +12,13 @@ convention = {
     "pk": "pk_%(table_name)s",
 }
 
+
+class _BaseMixin:
+    # Liminal models annotate columns as `name: SqlColumn = Column(...)`, including generated
+    # model files. SQLAlchemy 2.0 rejects non-`Mapped[]` annotations on mapped attributes unless
+    # this flag is set; SQLAlchemy 1.4 ignores it. Keeps existing user models working on both.
+    __allow_unmapped__ = True
+
+
 meta = MetaData(naming_convention=convention)
-Base = declarative_base(metadata=meta)
+Base = declarative_base(metadata=meta, cls=_BaseMixin)
