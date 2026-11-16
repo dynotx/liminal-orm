@@ -13,8 +13,13 @@ _RESULT_SCHEMA_API_PATH = "/api/v3/result-schema"
 def list_results_schemas(
     benchling_service: BenchlingService,
 ) -> list[dict[str, Any]]:
-    """Fetch result schemas from the v3 API."""
-    return list_all_items_v3(benchling_service, f"{_RESULT_SCHEMA_API_PATH}/items")
+    """Fetch result schemas from the v3 API. Result schemas carry an organization but no registry,
+    so they are scoped to the organization that owns the connection's registry."""
+    return list_all_items_v3(
+        benchling_service,
+        f"{_RESULT_SCHEMA_API_PATH}/items",
+        organization_scoped=True,
+    )
 
 
 def list_result_schema_field_definitions(

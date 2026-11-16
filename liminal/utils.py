@@ -204,11 +204,22 @@ def rate_limited_get_v3(benchling_service: BenchlingService, url: str) -> Any:
 def list_all_items_v3(
     benchling_service: BenchlingService,
     url: str,
-    include_archived: bool = False,
+    include_archived: bool | None = False,
     page_size: int | None = MAX_PAGE_SIZE,
+    registry_scoped: bool = False,
+    organization_scoped: bool = False,
 ) -> list[dict[str, Any]]:
-    """Fetch every item from a v3 list endpoint, following nextToken pagination."""
-    query_params = [f"archived.anyOf={'true,false' if include_archived else 'false'}"]
+    """Fetch every item from a v3 list endpoint, following nextToken pagination.
+
+    With registry_scoped, drops items outside the connection's registry. With organization_scoped,
+    drops items outside the organization that owns the connection's registry. Only use them on
+    endpoints whose items carry a registry or an organization respectively, and never while
+    resolving the registry itself."""
+    query_params = (
+        []
+        if include_archived is None
+        else [f"archived.anyOf={'true,false' if include_archived else 'false'}"]
+    )
     if page_size:
         query_params.append(f"pageSize={page_size}")
     base_url = f"{url}?{'&'.join(query_params)}"
@@ -223,9 +234,20 @@ def list_all_items_v3(
         if parsed_response is None:
             raise ValueError(f"No response body returned for {url}.")
         if isinstance(parsed_response, list):
-            return items + parsed_response
-        items.extend(parsed_response.get("items", []))
-        next_token = parsed_response.get("nextToken")
+            page_items = parsed_response
+            next_token = None
+        else:
+            page_items = parsed_response.get("items", [])
+            next_token = parsed_response.get("nextToken")
+        if registry_scoped:
+            page_items = [
+                i for i in page_items if benchling_service.is_in_registry_scope(i)
+            ]
+        if organization_scoped:
+            page_items = [
+                i for i in page_items if benchling_service.is_in_organization_scope(i)
+            ]
+        items.extend(page_items)
         if not next_token:
             return items
 

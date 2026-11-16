@@ -142,13 +142,12 @@ class ResultsSchemaModel(BaseModel):
                 schema
                 for schema in schemas_data
                 if schema["systemName"] == wh_schema_name
-                # and schema["registryId"] == benchling_service.registry_id
             ),
             None,
         )
         if schema is None:
             raise ValueError(
-                f"Schema {wh_schema_name} not found in Benchling {benchling_service.benchling_tenant}."
+                f"Schema {wh_schema_name} not found in Benchling {benchling_service.tenant_registry_name}."
             )
         return cls.model_validate(schema)
 

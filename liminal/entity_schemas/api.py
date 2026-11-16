@@ -54,13 +54,14 @@ def list_entity_schemas(
 
 
 @lru_cache
-def list_entity_schemas_cached(
+def list_entity_schemas_v2_cached(
     benchling_service: BenchlingService,
 ) -> list[EntitySchema]:
     return [
         s
         for schemas in benchling_service.schemas.list_entity_schemas()
         for s in schemas
+        if s.registry_id == benchling_service.registry_id
     ]
 
 
@@ -74,6 +75,7 @@ def _list_entity_schemas_for_endpoint(
         benchling_service,
         f"{_entity_schema_specific_api_path(endpoint)}/items",
         include_archived,
+        organization_scoped=True,
     )
 
 

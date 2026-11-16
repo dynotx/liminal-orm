@@ -1,10 +1,12 @@
 import logging
 import warnings
+from functools import cached_property
 from typing import TYPE_CHECKING, Any
 
 from benchling_sdk.auth.client_credentials_oauth2 import ClientCredentialsOAuth2
 from benchling_sdk.benchling import Benchling, BenchlingApiClientDecorator
 from benchling_sdk.helpers.retry_helpers import RetryStrategy
+from pydantic import BaseModel
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, configure_mappers
@@ -26,6 +28,18 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 REMOTE_LIMINAL_SCHEMA_NAME = "liminal_remote"
 REMOTE_REVISION_ID_FIELD_WH_NAME = "revision_id"
+
+
+class RegistryRef(BaseModel):
+    """The registry a connection writes to, and the organization that owns it."""
+
+    name: str
+    id: str
+    owner_id: str
+
+
+class AmbiguousRegistryError(ValueError):
+    """A lookup matched objects that may sit in different registries, and the connection doesn't name one."""
 
 
 class BenchlingService(Benchling):
@@ -95,6 +109,17 @@ class BenchlingService(Benchling):
                 raise ValueError(
                     "use_db is True but warehouse_connection_string not provided in BenchlingConnection."
                 )
+        if use_api and self.has_ambiguous_registries():
+            raise ValueError(
+                f"Tenant {self.benchling_tenant} has {len(self._registries)} registries. "
+                "Liminal does not allow ambiguous registries. Set registry_id on the BenchlingConnection to choose one. "
+                f"Registries found: {self._registries}"
+            )
+
+    @property
+    def tenant_registry_name(self) -> str:
+        """The name of the tenant and registry this service is connected to. Raises if it can't be determined."""
+        return f"[Tenant {self.benchling_tenant}: Registry {self.registry_name}]"
 
     @property
     def session(self) -> Session:
@@ -103,17 +128,66 @@ class BenchlingService(Benchling):
 
     @property
     def registry_id(self) -> str:
-        # This assumes there is only one registry (which has always been the case at DynoTx)
-        registries = self.registry.registries()
-        assert len(registries) == 1
-        return registries[0].id
+        """The id of the registry this connection writes to. Raises if it can't be determined."""
+        return self._registry_ref.id
+
+    @property
+    def registry_name(self) -> str:
+        """The name of the registry this connection writes to. Raises if it can't be determined."""
+        return self._registry_ref.name
 
     @property
     def organization_id(self) -> str:
-        # This assumes there is only one registry (which has always been the case at DynoTx)
-        registries = self.registry.registries()
-        assert len(registries) == 1
-        return registries[0].owner.id
+        """The id of the organization that owns this connection's registry. Raises if it can't be determined."""
+        return self._registry_ref.owner_id
+
+    @cached_property
+    def _registries(self) -> list[RegistryRef]:
+        """Every registry on the tenant."""
+        from liminal.utils import list_all_items_v3
+
+        return [
+            RegistryRef(id=r["id"], name=r["name"], owner_id=r["owner"]["id"])
+            for r in list_all_items_v3(
+                self, "/api/v3/registry/items", include_archived=None
+            )
+        ]
+
+    @property
+    def _registry_ref(self) -> RegistryRef:
+        if self.connection.registry_id is not None:
+            registry_ref = next(
+                (r for r in self._registries if r.id == self.connection.registry_id),
+                None,
+            )
+            if registry_ref is None:
+                raise ValueError(
+                    f"Tenant {self.benchling_tenant}: registry {self.connection.registry_id} not found."
+                )
+            return registry_ref
+        if len(self._registries) != 1:
+            raise ValueError(
+                f"Tenant {self.benchling_tenant} has {len(self._registries)} registries. "
+                "Set registry_id on the BenchlingConnection to choose one."
+            )
+        return self._registries[0]
+
+    def is_in_registry_scope(self, record: dict[str, Any]) -> bool:
+        """Whether a v3 API record belongs to this connection's registry."""
+        registry_id = (record.get("registry") or {}).get("id")
+        if registry_id:
+            return registry_id == self.registry_id
+        return False
+
+    def is_in_organization_scope(self, record: dict[str, Any]) -> bool:
+        """Whether a v3 API record belongs to this connection's organization."""
+        organization_id = (record.get("organization") or {}).get("id")
+        if organization_id:
+            return organization_id == self.organization_id
+        return False
+
+    def has_ambiguous_registries(self) -> bool:
+        return len(self._registries) > 1 and self.connection.registry_id is None
 
     def __enter__(self) -> Session:
         self._session = self.get_session()
