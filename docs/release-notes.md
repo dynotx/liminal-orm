@@ -18,10 +18,6 @@ This is a minor version upgrade since this is purely an addition of functionalit
 #### PRs
 - PR [#274](https://github.com/dynotx/liminal-orm/pull/274): adds support for multiple registries. Closes [#43](https://github.com/dynotx/liminal-orm/issues/43).
 
-- PR [#283](https://github.com/dynotx/liminal-orm/pull/283): clarifies documentation for setting up the admin Benchling app. Closes [#256](https://github.com/dynotx/liminal-orm/issues/256).
-- PR [#282](https://github.com/dynotx/liminal-orm/pull/282): fixes the `parent_link` fieldset bug. Closes [#279](https://github.com/dynotx/liminal-orm/issues/279).
-- PR [#278](https://github.com/dynotx/liminal-orm/pull/278): fixes downgrade when a schema and a dropdown are created in the same operation. Closes [#275](https://github.com/dynotx/liminal-orm/issues/275).
-
 
 ## v5.0.0
 
