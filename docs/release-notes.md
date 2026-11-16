@@ -1,5 +1,28 @@
 For full release notes, please visit the [GitHub Releases page](https://github.com/dynotx/liminal-orm/releases). Release versions follow [semantic versioning](https://semver.org/). This page will document migration steps needed for major and minor version changes.
 
+## v5.2.0
+
+[![github](https://img.shields.io/badge/github-v5.0.0-blue)](https://github.com/dynotx/liminal-orm/releases/tag/5.0.0) [![pypi](https://img.shields.io/pypi/v/liminal-orm/5.0.0.svg)](https://pypi.org/project/liminal-orm/5.0.0/)
+
+### 🗒️ Summary
+
+v5.2.0 release adds support for Benchling tenants with multiple registries. Previously, Liminal only support tenant's with one registry and raised an error if multiple were found. Now, the error still gets raised but prompts the user to configure the `registry_id` on the `BenchlingConnection`. When this is configured, the endpoints become registry or organization scoped. It is recommended that if you have multiple registries, to initialize liminal for each registires, creating multiple separate directories to track the revisions and schemas.
+
+This is a minor version upgrade since this is purely an addition of functionality and all current users with one registry are unaffected. If you have any issues or questions, reach out!
+
+### 🚀 Upgrade Steps
+1. Run `uv add liminal-orm@5.2.0` or `pip install liminal-orm==5.2.0` to upgrade. If your tenant has a single registry, you're done.
+2. If your tenant has multiple registries, create a separate directory for each registry and run `liminal init` in each.
+3. In each `liminal/env.py`, set `registry_id` on the `BenchlingConnection`. See the [BenchlingConnection reference](reference/benchling-connection.md).
+
+#### PRs
+- PR [#274](https://github.com/dynotx/liminal-orm/pull/274): adds support for multiple registries. Closes [#43](https://github.com/dynotx/liminal-orm/issues/43).
+
+- PR [#283](https://github.com/dynotx/liminal-orm/pull/283): clarifies documentation for setting up the admin Benchling app. Closes [#256](https://github.com/dynotx/liminal-orm/issues/256).
+- PR [#282](https://github.com/dynotx/liminal-orm/pull/282): fixes the `parent_link` fieldset bug. Closes [#279](https://github.com/dynotx/liminal-orm/issues/279).
+- PR [#278](https://github.com/dynotx/liminal-orm/pull/278): fixes downgrade when a schema and a dropdown are created in the same operation. Closes [#275](https://github.com/dynotx/liminal-orm/issues/275).
+
+
 ## v5.0.0
 
 [![github](https://img.shields.io/badge/github-v5.0.0-blue)](https://github.com/dynotx/liminal-orm/releases/tag/5.0.0) [![pypi](https://img.shields.io/pypi/v/liminal-orm/5.0.0.svg)](https://pypi.org/project/liminal-orm/5.0.0/)
