@@ -75,7 +75,8 @@ class BaseOperation(ABC):
             if k.startswith("_"):
                 continue
             if isinstance(v, str):
-                args.append(f"'{v}'")
+                # repr() quotes and escapes, so names like "5' UTR" stay valid Python
+                args.append(repr(str(v)))
             else:
                 args.append(f"{v.__repr__()}")
         return f"{self.__class__.__name__}({', '.join(args)})"
